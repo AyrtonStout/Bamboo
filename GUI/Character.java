@@ -5,9 +5,18 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
 public class Character {
-	int x, dx, charX, y, charY, dy;
-	boolean moving = false;
-	Image currentImage, reverseImage;
+	int x, charX, charY;
+	
+	Action action = Action.STAND;				//The action the character is currently performing
+	Action queuedAction = Action.STAND;			//The action the character will perform after the current action completes
+	boolean movingEh = false;					//Is the character currently performing an action
+	boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
+	int MAX_STEPS = 40;							//The number of pixels in a "grid square"
+	int remainingSteps = 0;						//The number of pixels remaining in a character's move until it completes
+	int speed = 2;								//The number of pixels traveled each time the character is updated
+	
+	
+	Image currentImage;
 	
 	ImageIcon left = new ImageIcon("GUI/Sabin (Left).gif");
 	ImageIcon up= new ImageIcon("GUI/Sabin (Up).gif");
@@ -24,132 +33,117 @@ public class Character {
 		charX = 400;	//Character Location
 		charY = 172;
 		currentImage = left.getImage();
-		
 	
 	}
 
-	public void move() {
-		if (dx == 1){
-			if (charX+1 <= 550)	{
-				charX += 1;
-			}
-			else if (x < 450)	{
-				x = x + 1;
-			}
-			else if (charX < 668)	{
-				charX += 1;
-			}
+	public void move(KeyEvent e) {
+		queuedMove = true;
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+			queuedAction = Action.RIGHT;	
 		}
-		else if (dx == -1)	{
-			if (charX+dx >= 150)	{
-				charX += dx;
-			}
-			else if (x > 0)	{
-				x = x + dx;
-			}
-			else if (charX > 0)	{
-				charX += dx;
-			}
+		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+			queuedAction = Action.LEFT;	
 		}
-
-		else if (dy == -1)	{
-			if (charY+dy >= 150)	{
-				charY += dy;
-			}
-			else if (y > 0)	{
-				y = y + dy;
-			}
-			else if (charY > 0)	{
-				charY += dy;
-			}
+		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
+			queuedAction = Action.UP;	
 		}
-		else if (dy == 1)	{
-			if (charY+dy <= 300)	{
-				charY += dy;
-			}
-			else if (y < 300)	{
-				y = y + dy;
-			}
-			else if (charY < 430)	{
-				charY += dy;
-			}
+		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+			queuedAction = Action.DOWN;	
 		}
 	}
+	
+	public void cancelMove() {
+		queuedAction = Action.STAND;
+		queuedMove = false;
+	}
+	
+	public void update()	{
+		if (movingEh)	{
+			if (action == Action.RIGHT)	{
+				if (charX + speed <= 550)	{
+					charX += speed;
+					currentImage = walkRight.getImage();
+				}
+				else if (x < 450)	{
+					x += speed;
+					currentImage = walkRight.getImage();
+				}
+				else if (charX < 668)	{
+					charX += speed;
+					currentImage = walkRight.getImage();
+				}
+			}
+			else if (action == Action.LEFT)	{
+				if (charX - speed >= 150)	{
+					charX -= speed;
+				}
+				else if (x > 0)	{
+					x -= speed;
+				}
+				else if (charX > 0)	{
+					charX -= speed;
+				}	
+			}
+			else if (action == Action.UP)	{
+				if (charY > 0)	{
+					charY -= speed;
+				}	
+			}
+			else if (action == Action.DOWN)	{
+				if (charY <= 300)	{
+					charY += speed;
+				}	
+			}
+			remainingSteps -= speed;
+			if (remainingSteps == 0)	{
+				movingEh = false;
+				currentImage = stopAnimation(action).getImage();
+				action = Action.STAND;
+			}
+		}
+		if (!movingEh && queuedMove)	{
+			action = queuedAction;
+			remainingSteps = MAX_STEPS;
+			movingEh = true;
+			currentImage = startAnimation(queuedAction).getImage();
+		}
+	}
+	
+	public ImageIcon stopAnimation(Action action)	{
+		if (action == Action.LEFT)
+			return left;
+		else if (action == Action.UP)
+			return up;
+		else if (action == Action.RIGHT)
+			return right;
+		else 
+			return down;
+	}
+	public ImageIcon startAnimation(Action action)	{
+		if (action == Action.LEFT)
+			return walkLeft;
+		else if (action == Action.UP)
+			return walkUp;
+		else if (action == Action.RIGHT)
+			return walkRight;
+		else 
+			return walkDown;
+	}
+		
+
 
 	public int getX() {
 		return x;
 	}
-	public int getdx() {
-		return dx;
-	}
 	public int getCharX()	{
 		return charX;
-	}
-	
-	public int getY()	{
-		return y;
-	}
-	public int getdy()	{
-		return dy;
 	}
 	public int getCharY()	{
 		return charY;
 	}
+
 	
 	public Image getImage() {
 		return currentImage;
 	}
-
-	public void keyPressed(KeyEvent e) {
-		int key = e.getKeyCode();
-		if (moving == false)	{
-			if (key == KeyEvent.VK_LEFT)
-			{		
-				dx = -1;
-				currentImage = walkLeft.getImage();
-				moving = true;
-			}
-			if (key == KeyEvent.VK_RIGHT)	{
-				dx = 1;
-				currentImage = walkRight.getImage();
-				moving = true;
-			}
-			if (key == KeyEvent.VK_UP)	{
-				dy = -1;
-				currentImage = walkUp.getImage();
-				moving = true;
-			}
-			if (key == KeyEvent.VK_DOWN)	{
-				dy = 1;
-				currentImage = walkDown.getImage();
-				moving = true;
-			}
-		}
-	}
-
-	public void keyReleased(KeyEvent e) {
-		int key = e.getKeyCode();
-		
-		if (key == KeyEvent.VK_LEFT)	{
-			dx = 0;
-			currentImage = left.getImage();
-			moving = false;
-		}
-		if (key == KeyEvent.VK_RIGHT)	{
-			dx = 0;
-			currentImage = right.getImage();
-			moving = false;
-		}
-		if (key == KeyEvent.VK_UP)	{
-			dy = 0;
-			currentImage = up.getImage();
-			moving = false;
-		}
-		if (key == KeyEvent.VK_DOWN)	{
-			dy = 0;
-			currentImage = down.getImage();
-			moving = false;
-		}
-	}
-
 }
