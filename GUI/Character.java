@@ -5,33 +5,39 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
 public class Character {
-	int x, charX, charY;
+	private int backgroundX, backgroundY, charX, charY, coordX, coordY;
+	private Map map;
 	
-	Action action = Action.STAND;				//The action the character is currently performing
-	Action queuedAction = Action.STAND;			//The action the character will perform after the current action completes
-	boolean movingEh = false;					//Is the character currently performing an action
-	boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
-	int MAX_STEPS = 40;							//The number of pixels in a "grid square"
-	int remainingSteps = 0;						//The number of pixels remaining in a character's move until it completes
-	int speed = 2;								//The number of pixels traveled each time the character is updated
+	private Action action = Action.STAND;				//The action the character is currently performing
+	private Action queuedAction = Action.STAND;			//The action the character will perform after the current action completes
+	private boolean movingEh = false;					//Is the character currently performing an action
+	private boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
+	private int STEP_SIZE = 40;							//The number of pixels in a "grid square"
+	private int remainingSteps = 0;						//The number of pixels remaining in a character's move until it completes
+	private int speed = 2;								//The number of pixels traveled each time the character is updated
+	private int movementBuffer = 160;					/*Minimum number of pixels between the character and the side of the screen
+														for the screen to begin scrolling */
 	
+	private Image currentImage;
 	
-	Image currentImage;
+	private ImageIcon left = new ImageIcon("GUI/Sabin (Left).gif");
+	private ImageIcon up= new ImageIcon("GUI/Sabin (Up).gif");
+	private ImageIcon right= new ImageIcon("GUI/Sabin (Right).gif");
+	private ImageIcon down= new ImageIcon("GUI/Sabin (Down).gif");
 	
-	ImageIcon left = new ImageIcon("GUI/Sabin (Left).gif");
-	ImageIcon up= new ImageIcon("GUI/Sabin (Up).gif");
-	ImageIcon right= new ImageIcon("GUI/Sabin (Right).gif");
-	ImageIcon down= new ImageIcon("GUI/Sabin (Down).gif");
-	
-	ImageIcon walkLeft = new ImageIcon("GUI/Sabin - Walk (Left).gif");
-	ImageIcon walkUp = new ImageIcon("GUI/Sabin - Walk (Up).gif");
-	ImageIcon walkRight = new ImageIcon("GUI/Sabin - Walk (Right).gif");
-	ImageIcon walkDown = new ImageIcon("GUI/Sabin - Walk (Down).gif");
-	
+	private ImageIcon walkLeft = new ImageIcon("GUI/Sabin - Walk (Left).gif");
+	private ImageIcon walkUp = new ImageIcon("GUI/Sabin - Walk (Up).gif");
+	private ImageIcon walkRight = new ImageIcon("GUI/Sabin - Walk (Right).gif");
+	private ImageIcon walkDown = new ImageIcon("GUI/Sabin - Walk (Down).gif");
+
+
 	public Character() {
-		x = 75;			//How far the background has scrolled so far
-		charX = 400;	//Character Location
-		charY = 172;
+		backgroundX = 200;			//How far the background has scrolled so far
+		backgroundY = 0;
+		coordX = 12;				//Character grid location
+		coordY = 3;
+		charX = coordX * 40 + 4 - backgroundX;				//Character pixel location
+		charY = coordY * 40 + -10;
 		currentImage = left.getImage();
 	
 	}
@@ -60,56 +66,109 @@ public class Character {
 	public void update()	{
 		if (movingEh)	{
 			if (action == Action.RIGHT)	{
-				if (charX + speed <= 550)	{
+				if (charX + speed <= map.getWindowWidth() - movementBuffer)	{	//Movement until character reaches buffer
 					charX += speed;
-					currentImage = walkRight.getImage();
 				}
-				else if (x < 450)	{
-					x += speed;
-					currentImage = walkRight.getImage();
+				else if (backgroundX + map.getWindowWidth() < map.getWidth() * 40)	{			//Movement of screen while character on buffer
+					backgroundX += speed;
 				}
-				else if (charX < 668)	{
+				else if (charX < map.getWindowWidth() - 35)	{						//Movement of character when no more screen remains
 					charX += speed;
-					currentImage = walkRight.getImage();
 				}
 			}
 			else if (action == Action.LEFT)	{
-				if (charX - speed >= 150)	{
+				if (charX - speed >= movementBuffer)	{
 					charX -= speed;
 				}
-				else if (x > 0)	{
-					x -= speed;
+				else if (backgroundX > 0)	{
+					backgroundX -= speed;
 				}
-				else if (charX > 0)	{
+				else if (charX > 4)	{
 					charX -= speed;
 				}	
 			}
 			else if (action == Action.UP)	{
-				if (charY > 0)	{
+				if (charY - speed >= movementBuffer)	{
+					charY -= speed;
+				}
+				else if (backgroundY > 0)	{
+					backgroundY -= speed;
+				}
+				else if (charY > -10)	{
 					charY -= speed;
 				}	
 			}
 			else if (action == Action.DOWN)	{
-				if (charY <= 300)	{
+				if (charY + speed <= map.getWindowHeight() - movementBuffer)	{	
 					charY += speed;
-				}	
+				}
+				else if (backgroundY + map.getWindowHeight() < map.getHeight() * 40 + 30)	{		
+					backgroundY += speed;
+				}
+				else if (charY < map.getWindowHeight() - 80)	{						
+					charY += speed;
+				}
 			}
 			remainingSteps -= speed;
 			if (remainingSteps == 0)	{
 				movingEh = false;
 				currentImage = stopAnimation(action).getImage();
+				updateCoordinate(action);
 				action = Action.STAND;
 			}
 		}
 		if (!movingEh && queuedMove)	{
-			action = queuedAction;
-			remainingSteps = MAX_STEPS;
-			movingEh = true;
-			currentImage = startAnimation(queuedAction).getImage();
+			if (validMoveEh(queuedAction))	{
+				action = queuedAction;
+				remainingSteps = STEP_SIZE;
+				movingEh = true;
+				currentImage = startAnimation(queuedAction).getImage();
+			}
 		}
+		System.out.println("X -   " + backgroundX + "   charX -   " + charX + "    coordX -   " + coordX + "    coordY -  " + coordY);
 	}
 	
-	public ImageIcon stopAnimation(Action action)	{
+	private void updateCoordinate(Action action) {
+		if (action == Action.LEFT)
+			coordX--;
+		else if (action == Action.UP)
+			coordY--;
+		else if (action == Action.RIGHT)
+			coordX++;
+		else 
+			coordY++;
+	}
+
+	private boolean validMoveEh (Action action)	{
+		Tile[][] moveCheck = map.getArray();
+		if (action == Action.LEFT)	{
+			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())	{
+				currentImage = left.getImage();
+				return false;
+			}
+		}
+		else if (action == Action.UP)	{
+			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())	{
+				currentImage = up.getImage();
+				return false;
+			}
+		}
+		else if (action == Action.RIGHT)	{
+			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())	{
+				currentImage = right.getImage();
+				return false;
+			}
+		}
+		else if (action == Action.DOWN)	{
+			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())	{
+				currentImage = down.getImage();
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private ImageIcon stopAnimation(Action action)	{
 		if (action == Action.LEFT)
 			return left;
 		else if (action == Action.UP)
@@ -119,7 +178,7 @@ public class Character {
 		else 
 			return down;
 	}
-	public ImageIcon startAnimation(Action action)	{
+	private ImageIcon startAnimation(Action action)	{
 		if (action == Action.LEFT)
 			return walkLeft;
 		else if (action == Action.UP)
@@ -132,8 +191,11 @@ public class Character {
 		
 
 
-	public int getX() {
-		return x;
+	public int getBackgroundX() {
+		return backgroundX;
+	}
+	public int getBackgroundY()	{
+		return backgroundY;
 	}
 	public int getCharX()	{
 		return charX;
@@ -142,8 +204,11 @@ public class Character {
 		return charY;
 	}
 
-	
 	public Image getImage() {
 		return currentImage;
+	}
+	
+	public void setMap(Map map)	{
+		this.map = map;
 	}
 }

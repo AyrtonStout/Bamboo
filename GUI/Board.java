@@ -12,18 +12,50 @@ public class Board extends JPanel implements ActionListener {
 	private ArrayList<Character> characters = new ArrayList<Character>();
 	private int gameState = 0;
 	private Character player = new Character();
-	private ImageIcon i = new ImageIcon("GUI/background.jpg");
-	private Image background = i.getImage();
 	private Timer time;
 	private int FPS = 60;
+	private int windowWidth, windowHeight;
 
-	public Board() {
+	private Map map;
+	private Tile grassTile = new Tile(TILE_TYPE.GRASS);
+	private Tile waterTile = new Tile(TILE_TYPE.WATER);
+	
+	public Board(int windowWidth, int windowHeight) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
+		
 		addKeyListener(new AL());
 		setFocusable(true);
 		time = new Timer((int)(1000 / FPS), this);
 		time.start();
 		
 		characters.add(player);
+		
+		Tile[][] tiles = new Tile[22][18];
+		for (int i = 0; i < tiles.length; i++)	{
+			for (int j = 0; j < tiles[i].length; j++)	{
+				tiles[i][j] = grassTile;
+			}
+		}
+		tiles[6][7] = waterTile;
+		tiles[6][8] = waterTile;
+		tiles[6][9] = waterTile;
+		tiles[5][8] = waterTile;
+		tiles[5][9] = waterTile;
+		tiles[7][7] = waterTile;
+		tiles[7][8] = waterTile;
+		tiles[8][7] = waterTile;
+		tiles[15][7] = waterTile;
+		tiles[21][7] = waterTile;
+		tiles[21][6] = waterTile;
+		tiles[21][5] = waterTile;
+		tiles[14][12] = waterTile;
+		tiles[13][17] = waterTile;
+		tiles[12][17] = waterTile;
+		tiles[14][17] = waterTile;
+		map = new Map(tiles, this.windowWidth, this.windowHeight);
+		
+		player.setMap(map);
 	}
 
 	//Timer's event
@@ -34,10 +66,9 @@ public class Board extends JPanel implements ActionListener {
 
 	public void paint(Graphics g) {
 
-		g.drawImage(background, -player.getX(), 0, null);
-
+		map.drawImage(g, player.getBackgroundX(), player.getBackgroundY());
 		g.drawImage(player.getImage(), player.getCharX(), player.getCharY(), null);
-
+		
 	}
 
 	private class AL extends KeyAdapter{

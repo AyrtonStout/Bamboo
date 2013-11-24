@@ -4,12 +4,15 @@ import javax.swing.*;
 
 public class Frame {
 
+	public final int WINDOW_HEIGHT = 600;
+	public final int WINDOW_WIDTH = 600;
+	
 	public Frame(){
 		JFrame frame = new JFrame();
-		frame.add(new Board());	
+		frame.add(new Board(WINDOW_WIDTH, WINDOW_HEIGHT));	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(700,365);
+		frame.setSize(600,600);
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 	}
