@@ -23,12 +23,12 @@ public class Tile {
 	
 	public Tile(TILE_TYPE type)	{
 		if (type == TILE_TYPE.GRASS)	{
-			ImageIcon i = new ImageIcon("GUI/GrassTile.png");
+			ImageIcon i = new ImageIcon("GUI/Resources/GrassTile.png");
 			background = i.getImage();
 			moveBlockEh = false;
 		}
 		else if (type == TILE_TYPE.WATER)	{
-			ImageIcon i = new ImageIcon("GUI/WaterTile.png");
+			ImageIcon i = new ImageIcon("GUI/Resources/WaterTile.png");
 			background = i.getImage();
 			moveBlockEh = true;
 		}

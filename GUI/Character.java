@@ -25,15 +25,15 @@ public class Character {
 	
 	private Image currentImage;							//The image that the game draws when update() is called
 	
-	private ImageIcon left = new ImageIcon("GUI/Sabin (Left).gif");
-	private ImageIcon up= new ImageIcon("GUI/Sabin (Up).gif");
-	private ImageIcon right= new ImageIcon("GUI/Sabin (Right).gif");
-	private ImageIcon down= new ImageIcon("GUI/Sabin (Down).gif");
+	private ImageIcon left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
+	private ImageIcon up= new ImageIcon("GUI/Resources/Sabin (Up).gif");
+	private ImageIcon right= new ImageIcon("GUI/Resources/Sabin (Right).gif");
+	private ImageIcon down= new ImageIcon("GUI/Resources/Sabin (Down).gif");
 	
-	private ImageIcon walkLeft = new ImageIcon("GUI/Sabin - Walk (Left).gif");
-	private ImageIcon walkUp = new ImageIcon("GUI/Sabin - Walk (Up).gif");
-	private ImageIcon walkRight = new ImageIcon("GUI/Sabin - Walk (Right).gif");
-	private ImageIcon walkDown = new ImageIcon("GUI/Sabin - Walk (Down).gif");
+	private ImageIcon walkLeft = new ImageIcon("GUI/Resources/Sabin - Walk (Left).gif");
+	private ImageIcon walkUp = new ImageIcon("GUI/Resources/Sabin - Walk (Up).gif");
+	private ImageIcon walkRight = new ImageIcon("GUI/Resources/Sabin - Walk (Right).gif");
+	private ImageIcon walkDown = new ImageIcon("GUI/Resources/Sabin - Walk (Down).gif");
 
 
 	public Character() {
