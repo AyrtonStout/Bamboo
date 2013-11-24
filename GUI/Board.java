@@ -6,10 +6,15 @@ import java.util.ArrayList;
 
 import javax.swing.*;
  
+/**
+ * @author mobius
+ * Contains the main game loop. Instantiates the player object and updates it with the timer
+ * Player object's actions to be called when updated determined by the key adapter
+ */
 @SuppressWarnings("serial")
 public class Board extends JPanel implements ActionListener {
 
-	private ArrayList<Character> characters = new ArrayList<Character>();
+	private ArrayList<Character> characters = new ArrayList<Character>();	//Will be used to update all of a map's characters
 	private int gameState = 0;
 	private Character player = new Character();
 	private Timer time;
@@ -31,6 +36,10 @@ public class Board extends JPanel implements ActionListener {
 		
 		characters.add(player);
 		
+		/*
+		 * Creation of background map
+		 * Loop fills the map with grass and then subsequent statements add water
+		 */
 		Tile[][] tiles = new Tile[22][18];
 		for (int i = 0; i < tiles.length; i++)	{
 			for (int j = 0; j < tiles[i].length; j++)	{
@@ -71,6 +80,12 @@ public class Board extends JPanel implements ActionListener {
 		
 	}
 
+	/**
+	 * @author mobius
+	 * If the key pressed during the overworld screen (gamestate 0) is an arrow key, this will send the key event
+	 * to the character object to queue up its corresponding next action to perform when update() is called. Releasing
+	 * the key will clear the queued command
+	 */
 	private class AL extends KeyAdapter{
 		public void keyPressed(KeyEvent e) {
 			if (gameState == 0)	{
@@ -81,8 +96,12 @@ public class Board extends JPanel implements ActionListener {
 			}
 		}
 
+		/* 
+		 * Cancels the character's queued action causing it to stand still after its current action completes
+		 */
 		public void keyReleased(KeyEvent e) {
 			player.cancelMove();
+			//TODO Fix bug where releasing a key other than the arrow keys will cause the player to quit moving
 		}
 	}
 }

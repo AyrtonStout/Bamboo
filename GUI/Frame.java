@@ -2,6 +2,10 @@ package GUI;
 
 import javax.swing.*;
 
+/**
+ * @author mobius
+ * Version 0.10
+ */
 public class Frame {
 
 	public final int WINDOW_HEIGHT = 600;
