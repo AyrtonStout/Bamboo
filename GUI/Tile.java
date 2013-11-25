@@ -31,12 +31,12 @@ public class Tile {
 	
 	private void createBase(TILE_TYPE type)	{
 		if (type == TILE_TYPE.GRASS)	{
-			ImageIcon i = new ImageIcon("GUI/Resources/GrassTile.png");
+			ImageIcon i = new ImageIcon("GUI/Resources/Tile_Grass.png");
 			background = i.getImage();
 			moveBlock = false;
 		}
 		else if (type == TILE_TYPE.WATER)	{
-			ImageIcon i = new ImageIcon("GUI/Resources/WaterTile.png");
+			ImageIcon i = new ImageIcon("GUI/Resources/Tile_Water.png");
 			background = i.getImage();
 			moveBlock = true;
 		}
