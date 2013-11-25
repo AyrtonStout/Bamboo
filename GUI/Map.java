@@ -17,18 +17,70 @@ public class Map {
 		this.windowHeight = windowHeight;
 	}
 	
+	
 	/**
 	 * @param g Graphics component to be drawn on
-	 * @param backgroundX The offset of the background's X coordinate based on the player's movement
-	 * @param backgroundY The offset of the background's Y coordinate based on the player's movement
+	 * @param player Player character
 	 */
-	public void drawImage(Graphics g, int backgroundX, int backgroundY)	{
-		for (int i = 0; i < tiles.length; i++)	{
-			for (int j = 0; j < tiles[i].length; j++)	{
-				if (tiles[i][j] != null)	{
-					g.drawImage(tiles[i][j].getBackground(), i*40 - backgroundX, j*40 - backgroundY, null);
+	public void drawImage(Graphics g, Character player)	{
+		
+		/*
+		 * Draws the base texture for all background tiles
+		 */
+		for (int row = 0; row < tiles.length; row++)	{
+			for (int column = 0; column < tiles[row].length; column++)	{
+				if (tiles[row][column] != null)	{
+					g.drawImage(tiles[row][column].getBackground(), row*40 - player.getBackgroundX(), column*40 - player.getBackgroundY(), null);
 				}
 			}
+		}
+		/*
+		 * Draws all of the tiles' doodads
+		 */
+		for (int row = 0; row < tiles.length; row++)	{
+			for (int column = 0; column < tiles[row].length; column++)	{
+				if (tiles[row][column].getDoodad() != null)	{
+					g.drawImage(tiles[row][column].getDoodad().getBackground(), 
+							row*40 - player.getBackgroundX() - tiles[row][column].getDoodad().getOffsetX(), 
+							column*40 - player.getBackgroundY() -tiles[row][column].getDoodad().getOffsetY(), null);
+				}
+			}
+		}
+		/*
+		 * Draws the player character
+		 */
+		g.drawImage(player.getImage(), player.getCharX(), player.getCharY(), null);
+		
+		/*
+		 * Redraws the doodads that are below the character so that they appear above it
+		 */
+		//Down Center
+		if (player.getCoordY() + 1 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad() != null)	{
+			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getBackground(), 
+					player.getCoordX()*40 - player.getBackgroundX() - tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					null);
+		}
+		//Down Right
+		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() + 1 < tiles.length && tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad() != null)	{
+			g.drawImage(tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getBackground(), 
+					(player.getCoordX() + 1)*40 - player.getBackgroundX() - tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					null);
+		}
+		//Down Left
+		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() - 1 >= 0 &&tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad() != null)	{
+			g.drawImage(tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getBackground(), 
+					(player.getCoordX() - 1)*40 - player.getBackgroundX() - tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					null);
+		}
+		//Double Down
+		if (player.getCoordY() + 2 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad() != null)	{
+			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getBackground(), 
+					player.getCoordX()*40 - player.getBackgroundX() - tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetX(), 
+					(player.getCoordY() +2)*40 -player.getBackgroundY() -tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetY(), 
+					null);
 		}
 	}
 	

@@ -135,8 +135,8 @@ public class Character {
 			
 			remainingSteps -= speed;	
 			
-			
-			if (remainingSteps == 0)	{								//Stops animation of current action once the current action has completed all of its updates
+			//Stops animation of current action once the current action has completed all of its updates
+			if (remainingSteps == 0)		{
 				movingEh = false;
 				currentImage = stopAnimation(action).getImage();
 				updateCoordinate(action);
@@ -144,7 +144,8 @@ public class Character {
 			}
 		}
 		
-		if (!movingEh && queuedMove)	{			//If there is no current action but one is queued, the queued action becomes the current action
+		//If there is no current action but one is queued, the queued action becomes the current action
+		if (!movingEh && queuedMove)	{			
 			if (validMoveEh(queuedAction))	{
 				action = queuedAction;
 				remainingSteps = STEP_SIZE;
@@ -152,7 +153,6 @@ public class Character {
 				currentImage = startAnimation(queuedAction).getImage();
 			}
 		}
-//		System.out.println("X -   " + backgroundX + "   charX -   " + charX + "    coordX -   " + coordX + "    coordY -  " + coordY);
 	}
 	
 	/**
@@ -263,6 +263,19 @@ public class Character {
 	 */
 	public int getCharY()	{
 		return charY;
+	}
+	
+	/**
+	 * @return The character's grid X coordinate on the map
+	 */
+	public int getCoordX()	{
+		return coordX;
+	}
+	/**
+	 * @return The character's grid Y coordinate on the map
+	 */
+	public int getCoordY()	{
+		return coordY;
 	}
 
 	/**

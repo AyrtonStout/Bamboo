@@ -24,6 +24,7 @@ public class Board extends JPanel implements ActionListener {
 	private Map map;
 	private Tile grassTile = new Tile(TILE_TYPE.GRASS);
 	private Tile waterTile = new Tile(TILE_TYPE.WATER);
+	private Tile treeTile = new Tile(TILE_TYPE.GRASS, DOODAD_TYPE.TREE_PALM);
 	
 	public Board(int windowWidth, int windowHeight) {
 		this.windowWidth = windowWidth;
@@ -38,7 +39,7 @@ public class Board extends JPanel implements ActionListener {
 		
 		/*
 		 * Creation of background map
-		 * Loop fills the map with grass and then subsequent statements add water
+		 * Loop fills the map with grass and subsequent statements add detail
 		 */
 		Tile[][] tiles = new Tile[22][18];
 		for (int i = 0; i < tiles.length; i++)	{
@@ -62,6 +63,10 @@ public class Board extends JPanel implements ActionListener {
 		tiles[13][17] = waterTile;
 		tiles[12][17] = waterTile;
 		tiles[14][17] = waterTile;
+		tiles[7][9] = treeTile;
+		tiles[10][8] = treeTile;
+		tiles[11][8] = treeTile;
+		tiles[9][12] = new Tile(TILE_TYPE.GRASS, DOODAD_TYPE.TREASURE_CHEST);
 		map = new Map(tiles, this.windowWidth, this.windowHeight);
 		
 		player.setMap(map);
@@ -75,9 +80,7 @@ public class Board extends JPanel implements ActionListener {
 
 	public void paint(Graphics g) {
 
-		map.drawImage(g, player.getBackgroundX(), player.getBackgroundY());
-		g.drawImage(player.getImage(), player.getCharX(), player.getCharY(), null);
-		
+		map.drawImage(g, player);
 	}
 
 	/**

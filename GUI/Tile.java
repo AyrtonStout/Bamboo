@@ -1,7 +1,6 @@
 package GUI;
 
 import java.awt.Image;
-
 import javax.swing.ImageIcon;
 
 /**
@@ -17,20 +16,29 @@ public class Tile {
 	
 	public final int SIZE = 40;
 	private Image background;
-	private boolean moveBlockEh;
-//	private Doodad doodad;
+	private boolean moveBlock;
+	private Doodad doodad;
 //	private int spawnChance
 	
 	public Tile(TILE_TYPE type)	{
+		createBase(type);
+	}
+	public Tile(TILE_TYPE type1, DOODAD_TYPE type2)	{
+		createBase(type1);
+		this.doodad = new Doodad(type2);
+		moveBlock = doodad.moveBlockEh();
+	}
+	
+	private void createBase(TILE_TYPE type)	{
 		if (type == TILE_TYPE.GRASS)	{
 			ImageIcon i = new ImageIcon("GUI/Resources/GrassTile.png");
 			background = i.getImage();
-			moveBlockEh = false;
+			moveBlock = false;
 		}
 		else if (type == TILE_TYPE.WATER)	{
 			ImageIcon i = new ImageIcon("GUI/Resources/WaterTile.png");
 			background = i.getImage();
-			moveBlockEh = true;
+			moveBlock = true;
 		}
 	}
 	
@@ -38,7 +46,7 @@ public class Tile {
 	 * @return Returns true if the tile is unable to be crossed
 	 */
 	public boolean moveBlockEh()	{
-		return moveBlockEh;
+		return moveBlock;
 	}
 	
 	/**
@@ -48,5 +56,10 @@ public class Tile {
 		return background;
 	}
 	
-//	public Doodad getDoodad();
+	/**
+	 * @return The doodad that the tile contains. Returns null if empty
+	 */
+	public Doodad getDoodad()	{
+		return doodad;
+	}
 }
