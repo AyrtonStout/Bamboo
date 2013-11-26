@@ -1,7 +1,0 @@
-package GUI;
-
-public enum DECORATION_TYPE {
-
-	TREE_PALM, TREE_PINE, WATER_ROCKS, GRASS_FLOWERS;
-	
-}

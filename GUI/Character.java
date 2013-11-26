@@ -3,6 +3,7 @@ package GUI;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
+import GUI.Enums.*;
 
 /**
  * @author mobius
@@ -13,9 +14,9 @@ public class Character {
 	private int backgroundX, backgroundY, charX, charY, coordX, coordY;
 	private Map map;									//Current map passed in by the Board
 	
-	private Action action = Action.STAND;				//The action the character is currently performing
-	private Action queuedAction = Action.STAND;			//The action the character will perform after the current action completes
-	private Action facing;								//Direction the character is facing. Also the last performed action
+	private ACTION action = ACTION.STAND;				//The action the character is currently performing
+	private ACTION queuedAction = ACTION.STAND;			//The action the character will perform after the current action completes
+	private ACTION facing;								//Direction the character is facing. Also the last performed action
 	private boolean movingEh = false;					//Is the character currently performing an action
 	private boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
 	private int STEP_SIZE = 40;							//The number of pixels in a "grid square"
@@ -45,7 +46,7 @@ public class Character {
 		charX = coordX * 40 + 4 - backgroundX;				//Character pixel location
 		charY = coordY * 40 + -10;
 		currentImage = left.getImage();
-		facing = Action.LEFT;
+		facing = ACTION.LEFT;
 	
 	}
 
@@ -58,16 +59,16 @@ public class Character {
 	public void move(KeyEvent e) {
 		queuedMove = true;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-			queuedAction = Action.RIGHT;	
+			queuedAction = ACTION.RIGHT;	
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-			queuedAction = Action.LEFT;	
+			queuedAction = ACTION.LEFT;	
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
-			queuedAction = Action.UP;	
+			queuedAction = ACTION.UP;	
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-			queuedAction = Action.DOWN;	
+			queuedAction = ACTION.DOWN;	
 		}
 	}
 	
@@ -76,7 +77,7 @@ public class Character {
 	 * This results from the arrow keys being released
 	 */
 	public void cancelMove() {
-		queuedAction = Action.STAND;
+		queuedAction = ACTION.STAND;
 		queuedMove = false;
 	}
 	
@@ -90,7 +91,7 @@ public class Character {
 	 */
 	public void update()	{
 		if (movingEh)	{
-			if (action == Action.RIGHT)	{
+			if (action == ACTION.RIGHT)	{
 				if (charX + speed <= map.getWindowWidth() - movementBuffer)	{		//Movement until character reaches the screen scroll buffer
 					charX += speed;	
 				}
@@ -101,7 +102,7 @@ public class Character {
 					charX += speed;
 				}
 			}
-			else if (action == Action.LEFT)	{
+			else if (action == ACTION.LEFT)	{
 				if (charX - speed >= movementBuffer)	{
 					charX -= speed;
 				}
@@ -112,7 +113,7 @@ public class Character {
 					charX -= speed;
 				}	
 			}
-			else if (action == Action.UP)	{
+			else if (action == ACTION.UP)	{
 				if (charY - speed >= movementBuffer)	{
 					charY -= speed;
 				}
@@ -123,7 +124,7 @@ public class Character {
 					charY -= speed;
 				}	
 			}
-			else if (action == Action.DOWN)	{
+			else if (action == ACTION.DOWN)	{
 				if (charY + speed <= map.getWindowHeight() - movementBuffer)	{	
 					charY += speed;
 				}
@@ -142,7 +143,7 @@ public class Character {
 				movingEh = false;
 				currentImage = stopAnimation(action).getImage();
 				updateCoordinate(action);
-				action = Action.STAND;
+				action = ACTION.STAND;
 			}
 		}
 		
@@ -164,12 +165,12 @@ public class Character {
 	 * 
 	 * ^Note that this will probably create bugs with another NPC moving onto the same tile as the player
 	 */
-	private void updateCoordinate(Action action) {
-		if (action == Action.LEFT)
+	private void updateCoordinate(ACTION action) {
+		if (action == ACTION.LEFT)
 			coordX--;
-		else if (action == Action.UP)
+		else if (action == ACTION.UP)
 			coordY--;
-		else if (action == Action.RIGHT)
+		else if (action == ACTION.RIGHT)
 			coordX++;
 		else 
 			coordY++;
@@ -184,31 +185,31 @@ public class Character {
 	 * 
 	 * Even if the move is false, the player will turn to face the pressed direction
 	 */
-	private boolean validMoveEh (Action action)	{
+	private boolean validMoveEh (ACTION action)	{
 		Tile[][] moveCheck = map.getArray();
-		if (action == Action.LEFT)	{
-			facing = Action.LEFT;
+		if (action == ACTION.LEFT)	{
+			facing = ACTION.LEFT;
 			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())	{
 				currentImage = left.getImage();
 				return false;
 			}
 		}
-		else if (action == Action.UP)	{
-			facing = Action.UP;
+		else if (action == ACTION.UP)	{
+			facing = ACTION.UP;
 			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())	{
 				currentImage = up.getImage();
 				return false;
 			}
 		}
-		else if (action == Action.RIGHT)	{
-			facing = Action.RIGHT;
+		else if (action == ACTION.RIGHT)	{
+			facing = ACTION.RIGHT;
 			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())	{
 				currentImage = right.getImage();
 				return false;
 			}
 		}
-		else if (action == Action.DOWN)	{
-			facing = Action.DOWN;
+		else if (action == ACTION.DOWN)	{
+			facing = ACTION.DOWN;
 			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())	{
 				currentImage = down.getImage();
 				return false;
@@ -221,12 +222,12 @@ public class Character {
 	 * @param action Action that has just come to an end
 	 * @return the non animated version of the ending action
 	 */
-	private ImageIcon stopAnimation(Action action)	{
-		if (action == Action.LEFT)
+	private ImageIcon stopAnimation(ACTION action)	{
+		if (action == ACTION.LEFT)
 			return left;
-		else if (action == Action.UP)
+		else if (action == ACTION.UP)
 			return up;
-		else if (action == Action.RIGHT)
+		else if (action == ACTION.RIGHT)
 			return right;
 		else 
 			return down;
@@ -235,12 +236,12 @@ public class Character {
 	 * @param action Action to be started
 	 * @return The animated version of that action
 	 */
-	private ImageIcon startAnimation(Action action)	{
-		if (action == Action.LEFT)
+	private ImageIcon startAnimation(ACTION action)	{
+		if (action == ACTION.LEFT)
 			return walkLeft;
-		else if (action == Action.UP)
+		else if (action == ACTION.UP)
 			return walkUp;
-		else if (action == Action.RIGHT)
+		else if (action == ACTION.RIGHT)
 			return walkRight;
 		else 
 			return walkDown;
@@ -296,7 +297,7 @@ public class Character {
 	/**
 	 * @return The player's current action
 	 */
-	public Action getFacing()	{
+	public ACTION getFacing()	{
 		return facing;
 	}
 	/**

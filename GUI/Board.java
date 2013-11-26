@@ -5,6 +5,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import GUI.Enums.*;
  
 /**
  * @author mobius
@@ -22,9 +24,9 @@ public class Board extends JPanel implements ActionListener {
 	private int windowWidth, windowHeight;
 
 	private Map map;
-	private Tile grassTile = new Tile(TILE_TYPE.GROUND_GRASS);
-	private Tile waterTile = new Tile(TILE_TYPE.GROUND_WATER);
-	private Tile treeTile = new Tile(TILE_TYPE.GROUND_GRASS, DECORATION_TYPE.TREE_PALM);
+	private Tile grassTile = new Tile(TILE.GROUND_GRASS);
+	private Tile waterTile = new Tile(TILE.GROUND_WATER);
+	private Tile treeTile = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 	
 	public Board(int windowWidth, int windowHeight) {
 		this.windowWidth = windowWidth;
@@ -66,14 +68,14 @@ public class Board extends JPanel implements ActionListener {
 		tiles[7][9] = treeTile;
 		tiles[10][8] = treeTile;
 		tiles[11][8] = treeTile;
-		tiles[9][12] = new Tile(TILE_TYPE.GROUND_GRASS, INTERACTABLE_TYPE.GROUND_TREASURE_CHEST);
-		tiles[13][12] = new Tile(TILE_TYPE.GROUND_GRASS, DECORATION_TYPE.TREE_PALM);
+		tiles[9][12] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.GROUND_TREASURE_CHEST);
+		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 		
 		for (int i = 0; i < tiles.length; i++)	{
-			tiles[i][0] = new Tile(TILE_TYPE.WALL_CAVE);
-			tiles[i][1] = new Tile(TILE_TYPE.WALL_CAVE);
+			tiles[i][0] = new Tile(TILE.WALL_CAVE);
+			tiles[i][1] = new Tile(TILE.WALL_CAVE);
 		}
-		tiles[12][1] = new Tile(TILE_TYPE.WALL_CAVE, DOOR_TYPE.WALL_CAVE_DOOR);
+		tiles[12][1] = new Tile(TILE.WALL_CAVE, DOOR.WALL_CAVE_DOOR);
 		
 		map = new Map(tiles, this.windowWidth, this.windowHeight);
 		

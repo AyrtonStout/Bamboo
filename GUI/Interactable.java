@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
+import GUI.Enums.*;
 
 /**
  * @author mobius
@@ -15,8 +16,8 @@ public class Interactable extends Doodad {
 	private Image passiveImg;
 	private Image activeImg;
 	
-	public Interactable(INTERACTABLE_TYPE type)	{
-		if (type == INTERACTABLE_TYPE.GROUND_TREASURE_CHEST)		{
+	public Interactable(INTERACTABLE type)	{
+		if (type == INTERACTABLE.GROUND_TREASURE_CHEST)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed.png").getImage();
 			activeImg = new ImageIcon("GUI/Resources/Tree_Palm.png").getImage();
 			background = passiveImg;

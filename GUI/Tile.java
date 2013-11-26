@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
+import GUI.Enums.*;
+
 /**
  * @author mobius
  * One square of the world map
@@ -20,35 +22,35 @@ public class Tile {
 	private Doodad doodad;
 //	private int spawnChance
 	
-	public Tile(TILE_TYPE type)	{
+	public Tile(TILE type)	{
 		createBase(type);
 	}
-	public Tile(TILE_TYPE type1, DECORATION_TYPE type2)	{
+	public Tile(TILE type1, DECORATION type2)	{
 		createBase(type1);
 		this.doodad = new Decoration(type2);
 		moveBlock = doodad.moveBlockEh();
 	}
-	public Tile(TILE_TYPE type1, INTERACTABLE_TYPE type2)	{
+	public Tile(TILE type1, INTERACTABLE type2)	{
 		createBase(type1);
 		this.doodad = new Interactable(type2);
 		moveBlock = doodad.moveBlockEh();
 	}
 	
-	public Tile(TILE_TYPE type1, DOOR_TYPE type2) {
+	public Tile(TILE type1, DOOR type2) {
 		createBase(type1);
 		this.doodad = new Door(type2);
 		moveBlock = doodad.moveBlockEh();
 	}
-	private void createBase(TILE_TYPE type)	{
-		if (type == TILE_TYPE.GROUND_GRASS)	{
+	private void createBase(TILE type)	{
+		if (type == TILE.GROUND_GRASS)	{
 			background = new ImageIcon("GUI/Resources/Tile_Grass.png").getImage();
 			moveBlock = false;
 		}
-		else if (type == TILE_TYPE.GROUND_WATER)	{
+		else if (type == TILE.GROUND_WATER)	{
 			background = new ImageIcon("GUI/Resources/Tile_Water.png").getImage();
 			moveBlock = true;
 		}
-		else if (type == TILE_TYPE.WALL_CAVE)	{
+		else if (type == TILE.WALL_CAVE)	{
 			background = new ImageIcon("GUI/Resources/Tile_CaveWall.png").getImage();
 			moveBlock = true;
 		}

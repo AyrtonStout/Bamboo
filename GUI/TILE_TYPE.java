@@ -1,7 +1,0 @@
-package GUI;
-
-public enum TILE_TYPE {
-
-	GROUND_GRASS, GROUND_WATER, GROUND_ROAD, WALL_CAVE;
-	
-}
