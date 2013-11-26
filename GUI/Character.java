@@ -15,6 +15,7 @@ public class Character {
 	
 	private Action action = Action.STAND;				//The action the character is currently performing
 	private Action queuedAction = Action.STAND;			//The action the character will perform after the current action completes
+	private Action facing;								//Direction the character is facing. Also the last performed action
 	private boolean movingEh = false;					//Is the character currently performing an action
 	private boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
 	private int STEP_SIZE = 40;							//The number of pixels in a "grid square"
@@ -40,10 +41,11 @@ public class Character {
 		backgroundX = 200;			//How far the background has scrolled so far
 		backgroundY = 0;
 		coordX = 12;				//Character grid location
-		coordY = 3;
+		coordY = 5;
 		charX = coordX * 40 + 4 - backgroundX;				//Character pixel location
 		charY = coordY * 40 + -10;
 		currentImage = left.getImage();
+		facing = Action.LEFT;
 	
 	}
 
@@ -179,28 +181,34 @@ public class Character {
 	 * 
 	 * This will return false if the player is attempting to walk off the map or if the tile the player is moving onto
 	 * has the "moveBlock == true" property
+	 * 
+	 * Even if the move is false, the player will turn to face the pressed direction
 	 */
 	private boolean validMoveEh (Action action)	{
 		Tile[][] moveCheck = map.getArray();
 		if (action == Action.LEFT)	{
+			facing = Action.LEFT;
 			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())	{
 				currentImage = left.getImage();
 				return false;
 			}
 		}
 		else if (action == Action.UP)	{
+			facing = Action.UP;
 			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())	{
 				currentImage = up.getImage();
 				return false;
 			}
 		}
 		else if (action == Action.RIGHT)	{
+			facing = Action.RIGHT;
 			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())	{
 				currentImage = right.getImage();
 				return false;
 			}
 		}
 		else if (action == Action.DOWN)	{
+			facing = Action.DOWN;
 			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())	{
 				currentImage = down.getImage();
 				return false;
@@ -285,6 +293,12 @@ public class Character {
 		return currentImage;
 	}
 	
+	/**
+	 * @return The player's current action
+	 */
+	public Action getFacing()	{
+		return facing;
+	}
 	/**
 	 * @param map Sets the map the character uses to determine the outcome of collision-based decisions
 	 */

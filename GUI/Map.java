@@ -41,8 +41,8 @@ public class Map {
 			for (int column = 0; column < tiles[row].length; column++)	{
 				if (tiles[row][column].getDoodad() != null)	{
 					g.drawImage(tiles[row][column].getDoodad().getBackground(), 
-							row*40 - player.getBackgroundX() - tiles[row][column].getDoodad().getOffsetX(), 
-							column*40 - player.getBackgroundY() -tiles[row][column].getDoodad().getOffsetY(), null);
+							row*40 - player.getBackgroundX() + tiles[row][column].getDoodad().getOffsetX(), 
+							column*40 - player.getBackgroundY() + tiles[row][column].getDoodad().getOffsetY(), null);
 				}
 			}
 		}
@@ -57,29 +57,29 @@ public class Map {
 		//Down Center
 		if (player.getCoordY() + 1 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad() != null)	{
 			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getBackground(), 
-					player.getCoordX()*40 - player.getBackgroundX() - tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					player.getCoordX()*40 - player.getBackgroundX() + tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetY(), 
 					null);
 		}
 		//Down Right
 		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() + 1 < tiles.length && tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad() != null)	{
 			g.drawImage(tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getBackground(), 
-					(player.getCoordX() + 1)*40 - player.getBackgroundX() - tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					(player.getCoordX() + 1)*40 - player.getBackgroundX() + tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
 					null);
 		}
 		//Down Left
 		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() - 1 >= 0 &&tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad() != null)	{
 			g.drawImage(tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getBackground(), 
-					(player.getCoordX() - 1)*40 - player.getBackgroundX() - tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() -tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
+					(player.getCoordX() - 1)*40 - player.getBackgroundX() + tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
+					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
 					null);
 		}
 		//Double Down
 		if (player.getCoordY() + 2 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad() != null)	{
 			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getBackground(), 
-					player.getCoordX()*40 - player.getBackgroundX() - tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetX(), 
-					(player.getCoordY() +2)*40 -player.getBackgroundY() -tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetY(), 
+					player.getCoordX()*40 - player.getBackgroundX() + tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetX(), 
+					(player.getCoordY() +2)*40 -player.getBackgroundY() + tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetY(), 
 					null);
 		}
 	}
@@ -125,5 +125,29 @@ public class Map {
 	 */
 	public int getWindowHeight()	{
 		return windowHeight;
+	}
+
+
+	@SuppressWarnings("incomplete-switch")
+	public void activate(Character player) {
+		Tile facedTile = null;
+		switch (player.getFacing())	{
+		case LEFT:
+			facedTile = tiles[player.getCoordX() - 1][player.getCoordY()]; break;
+		case UP:
+			facedTile = tiles[player.getCoordX()][player.getCoordY() - 1]; break;
+		case RIGHT:
+			facedTile = tiles[player.getCoordX() + 1][player.getCoordY()]; break;
+		case DOWN:
+			facedTile = tiles[player.getCoordX()][player.getCoordY() + 1]; break;
+		}
+		interact(facedTile);
+	}
+	private void interact(Tile facedTile)	{
+		if (facedTile.getDoodad() != null)	{
+			if(facedTile.getDoodad().getClass() == Interactable.class)	{
+				((Interactable) facedTile.getDoodad()).interact();
+			}
+		}
 	}
 }

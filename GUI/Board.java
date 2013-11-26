@@ -22,9 +22,9 @@ public class Board extends JPanel implements ActionListener {
 	private int windowWidth, windowHeight;
 
 	private Map map;
-	private Tile grassTile = new Tile(TILE_TYPE.GRASS);
-	private Tile waterTile = new Tile(TILE_TYPE.WATER);
-	private Tile treeTile = new Tile(TILE_TYPE.GRASS, DOODAD_TYPE.TREE_PALM);
+	private Tile grassTile = new Tile(TILE_TYPE.GROUND_GRASS);
+	private Tile waterTile = new Tile(TILE_TYPE.GROUND_WATER);
+	private Tile treeTile = new Tile(TILE_TYPE.GROUND_GRASS, DECORATION_TYPE.TREE_PALM);
 	
 	public Board(int windowWidth, int windowHeight) {
 		this.windowWidth = windowWidth;
@@ -66,7 +66,15 @@ public class Board extends JPanel implements ActionListener {
 		tiles[7][9] = treeTile;
 		tiles[10][8] = treeTile;
 		tiles[11][8] = treeTile;
-		tiles[9][12] = new Tile(TILE_TYPE.GRASS, DOODAD_TYPE.TREASURE_CHEST);
+		tiles[9][12] = new Tile(TILE_TYPE.GROUND_GRASS, INTERACTABLE_TYPE.GROUND_TREASURE_CHEST);
+		tiles[13][12] = new Tile(TILE_TYPE.GROUND_GRASS, DECORATION_TYPE.TREE_PALM);
+		
+		for (int i = 0; i < tiles.length; i++)	{
+			tiles[i][0] = new Tile(TILE_TYPE.WALL_CAVE);
+			tiles[i][1] = new Tile(TILE_TYPE.WALL_CAVE);
+		}
+		tiles[12][1] = new Tile(TILE_TYPE.WALL_CAVE, DOOR_TYPE.WALL_CAVE_DOOR);
+		
 		map = new Map(tiles, this.windowWidth, this.windowHeight);
 		
 		player.setMap(map);
@@ -95,6 +103,9 @@ public class Board extends JPanel implements ActionListener {
 				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || 
 						e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)	{
 					player.move(e);
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+					map.activate(player);
 				}
 			}
 		}

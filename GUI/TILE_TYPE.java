@@ -2,6 +2,6 @@ package GUI;
 
 public enum TILE_TYPE {
 
-	GRASS, WATER, ROAD;
+	GROUND_GRASS, GROUND_WATER, GROUND_ROAD, WALL_CAVE;
 	
 }

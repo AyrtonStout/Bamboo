@@ -23,25 +23,37 @@ public class Tile {
 	public Tile(TILE_TYPE type)	{
 		createBase(type);
 	}
-	public Tile(TILE_TYPE type1, DOODAD_TYPE type2)	{
+	public Tile(TILE_TYPE type1, DECORATION_TYPE type2)	{
 		createBase(type1);
-		this.doodad = new Doodad(type2);
+		this.doodad = new Decoration(type2);
+		moveBlock = doodad.moveBlockEh();
+	}
+	public Tile(TILE_TYPE type1, INTERACTABLE_TYPE type2)	{
+		createBase(type1);
+		this.doodad = new Interactable(type2);
 		moveBlock = doodad.moveBlockEh();
 	}
 	
+	public Tile(TILE_TYPE type1, DOOR_TYPE type2) {
+		createBase(type1);
+		this.doodad = new Door(type2);
+		moveBlock = doodad.moveBlockEh();
+	}
 	private void createBase(TILE_TYPE type)	{
-		if (type == TILE_TYPE.GRASS)	{
-			ImageIcon i = new ImageIcon("GUI/Resources/Tile_Grass.png");
-			background = i.getImage();
+		if (type == TILE_TYPE.GROUND_GRASS)	{
+			background = new ImageIcon("GUI/Resources/Tile_Grass.png").getImage();
 			moveBlock = false;
 		}
-		else if (type == TILE_TYPE.WATER)	{
-			ImageIcon i = new ImageIcon("GUI/Resources/Tile_Water.png");
-			background = i.getImage();
+		else if (type == TILE_TYPE.GROUND_WATER)	{
+			background = new ImageIcon("GUI/Resources/Tile_Water.png").getImage();
+			moveBlock = true;
+		}
+		else if (type == TILE_TYPE.WALL_CAVE)	{
+			background = new ImageIcon("GUI/Resources/Tile_CaveWall.png").getImage();
 			moveBlock = true;
 		}
 	}
-	
+
 	/**
 	 * @return Returns true if the tile is unable to be crossed
 	 */
