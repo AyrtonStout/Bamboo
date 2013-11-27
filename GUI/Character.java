@@ -11,27 +11,27 @@ import GUI.Enums.*;
  * as well as its pixels for when it is drawn to the screen. The offset for the background is also contained here
  */
 public class Character {
-	private int backgroundX, backgroundY, charX, charY, coordX, coordY;
-	private Map map;									//Current map passed in by the Board
-	
-	private ACTION action = ACTION.STAND;				//The action the character is currently performing
-	private ACTION queuedAction = ACTION.STAND;			//The action the character will perform after the current action completes
-	private ACTION facing;								//Direction the character is facing. Also the last performed action
-	private boolean movingEh = false;					//Is the character currently performing an action
-	private boolean queuedMove = false;					//Does the character have an action ready for when the current action completes
-	private int STEP_SIZE = 40;							//The number of pixels in a "grid square"
-	private int remainingSteps = 0;						//The number of pixels remaining in a character's move until it completes
-	private int speed = 2;								//The number of pixels traveled each time the character is updated
-	private int movementBuffer = 160;					/*Minimum number of pixels between the character and the side of the screen
-														for the screen to begin scrolling */
-	
-	private Image currentImage;							//The image that the game draws when update() is called
-	
+	private int backgroundX, backgroundY, charX, charY, coordX, coordY, walkDelay;
+	private Map map;                                                 //Current map passed in by the Board
+
+	private ACTION action = ACTION.STAND;                            //The action the character is currently performing
+	private ACTION queuedAction = ACTION.STAND;                      //The action the character will perform after the current action completes
+	private ACTION facing;                                           //Direction the character is facing. Also the last performed action
+	private boolean movingEh = false;                                //Is the character currently performing an action
+	private boolean queuedMove = false;                              //Does the character have an action ready for when the current action completes
+	private int STEP_SIZE = 40;                                      //The number of pixels in a "grid square"
+	private int remainingSteps = 0;                                  //The number of pixels remaining in a character's move until it completes
+	private int speed = 2;                                           //The number of pixels traveled each time the character is updated
+	private int movementBuffer = 160;                                /*Minimum number of pixels between the character and the side of the screen
+                                                                      for the screen to begin scrolling */
+
+	private Image currentImage;                                      //The image that the game draws when update() is called
+
 	private ImageIcon left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
 	private ImageIcon up= new ImageIcon("GUI/Resources/Sabin (Up).gif");
 	private ImageIcon right= new ImageIcon("GUI/Resources/Sabin (Right).gif");
 	private ImageIcon down= new ImageIcon("GUI/Resources/Sabin (Down).gif");
-	
+
 	private ImageIcon walkLeft = new ImageIcon("GUI/Resources/Sabin - Walk (Left).gif");
 	private ImageIcon walkUp = new ImageIcon("GUI/Resources/Sabin - Walk (Up).gif");
 	private ImageIcon walkRight = new ImageIcon("GUI/Resources/Sabin - Walk (Right).gif");
@@ -39,15 +39,15 @@ public class Character {
 
 
 	public Character() {
-		backgroundX = 200;			//How far the background has scrolled so far
+		backgroundX = 200;                        //How far the background has scrolled so far
 		backgroundY = 0;
-		coordX = 12;				//Character grid location
+		coordX = 12;                                //Character's grid location
 		coordY = 5;
-		charX = coordX * 40 + 4 - backgroundX;				//Character pixel location
+		charX = coordX * 40 + 4 - backgroundX;          //Character's pixel location
 		charY = coordY * 40 + -10;
 		currentImage = left.getImage();
 		facing = ACTION.LEFT;
-	
+
 	}
 
 	/**
@@ -58,20 +58,20 @@ public class Character {
 	 */
 	public void move(KeyEvent e) {
 		queuedMove = true;
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-			queuedAction = ACTION.RIGHT;	
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)        {
+			queuedAction = ACTION.RIGHT;        
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-			queuedAction = ACTION.LEFT;	
+		else if (e.getKeyCode() == KeyEvent.VK_LEFT)        {
+			queuedAction = ACTION.LEFT;        
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
-			queuedAction = ACTION.UP;	
+		else if (e.getKeyCode() == KeyEvent.VK_UP)        {
+			queuedAction = ACTION.UP;        
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-			queuedAction = ACTION.DOWN;	
+		else if (e.getKeyCode() == KeyEvent.VK_DOWN)        {
+			queuedAction = ACTION.DOWN;        
 		}
 	}
-	
+
 	/**
 	 * Cancels the queued move the character was going to make after its current move expired
 	 * This results from the arrow keys being released
@@ -80,7 +80,7 @@ public class Character {
 		queuedAction = ACTION.STAND;
 		queuedMove = false;
 	}
-	
+
 	/**
 	 * Actions to be performed when the Board updates the character.
 	 * If the character is moving, it will move 'speed' pixels (currently 2) in that direction
@@ -89,75 +89,116 @@ public class Character {
 	 * If there is no current action playing, any queued action will become the current action for the next 
 	 * (STEP_SIZE / speed) updates (currently 20 updates)
 	 */
-	public void update()	{
-		if (movingEh)	{
-			if (action == ACTION.RIGHT)	{
-				if (charX + speed <= map.getWindowWidth() - movementBuffer)	{		//Movement until character reaches the screen scroll buffer
-					charX += speed;	
+	public void update()        {
+		if (movingEh)        {
+			if (action == ACTION.RIGHT)        {
+				if (charX + speed <= map.getWindowWidth() - movementBuffer)        {                //Movement until character reaches the screen scroll buffer
+					charX += speed;        
 				}
-				else if (backgroundX + map.getWindowWidth() < map.getDrawingX())	{		//Movement of screen while character on buffer
+				else if (backgroundX + map.getWindowWidth() < map.getDrawingX())        {                //Movement of screen while character on buffer
 					backgroundX += speed;
 				}
-				else if (charX < map.getWindowWidth() - 35)	{						//Movement of character when there is no more screen left to scroll
+				else if (charX < map.getWindowWidth() - 35)        {                                                //Movement of character when there is no more screen left to scroll
 					charX += speed;
 				}
 			}
-			else if (action == ACTION.LEFT)	{
-				if (charX - speed >= movementBuffer)	{
+			else if (action == ACTION.LEFT)        {
+				if (charX - speed >= movementBuffer)        {
 					charX -= speed;
 				}
-				else if (backgroundX > 0)	{
+				else if (backgroundX > 0)        {
 					backgroundX -= speed;
 				}
-				else if (charX > 4)	{
+				else if (charX > 4)        {
 					charX -= speed;
-				}	
+				}        
 			}
-			else if (action == ACTION.UP)	{
-				if (charY - speed >= movementBuffer)	{
+			else if (action == ACTION.UP)        {
+				if (charY - speed >= movementBuffer)        {
 					charY -= speed;
 				}
-				else if (backgroundY > 0)	{
+				else if (backgroundY > 0)        {
 					backgroundY -= speed;
 				}
-				else if (charY > -10)	{
+				else if (charY > -10)        {
 					charY -= speed;
-				}	
+				}        
 			}
-			else if (action == ACTION.DOWN)	{
-				if (charY + speed <= map.getWindowHeight() - movementBuffer)	{	
+			else if (action == ACTION.DOWN)        {
+				if (charY + speed <= map.getWindowHeight() - movementBuffer)        {        
 					charY += speed;
 				}
-				else if (backgroundY + map.getWindowHeight() < map.getDrawingY() + 30)	{		
+				else if (backgroundY + map.getWindowHeight() < map.getDrawingY() + 30)        {                
 					backgroundY += speed;
 				}
-				else if (charY < map.getWindowHeight() - 80)	{						
+				else if (charY < map.getWindowHeight() - 80)        {                                                
 					charY += speed;
 				}
 			}
-			
-			remainingSteps -= speed;	
-			
-			//Stops animation of current action once the current action has completed all of its updates
-			if (remainingSteps == 0)		{
-				movingEh = false;
-				currentImage = stopAnimation(action).getImage();
+
+			remainingSteps -= speed;        
+
+			//When current move finishes, keep moving or stop movement
+			if (remainingSteps == 0) {
 				updateCoordinate(action);
-				action = ACTION.STAND;
+				if (queuedMove & validMoveEh(queuedAction))	{
+					action = queuedAction;
+					remainingSteps = STEP_SIZE;
+					currentImage = startAnimation(action).getImage();
+				}
+				else	{
+					currentImage = stopAnimation(action).getImage();
+					movingEh = false;
+					action = ACTION.STAND;
+				}
 			}
 		}
-		
-		//If there is no current action but one is queued, the queued action becomes the current action
-		if (!movingEh && queuedMove)	{			
-			if (validMoveEh(queuedAction))	{
-				action = queuedAction;
-				remainingSteps = STEP_SIZE;
-				movingEh = true;
-				currentImage = startAnimation(queuedAction).getImage();
+
+		/*
+		 * If player isn't moving, test and see if the move is a valid move. If the move is valid and in the same
+		 * direction the player is facing, do the move. If the player is facing a different direction than the direction
+		 * to be moved, turn the player and wait a slight amount before beginning the move.
+		 * 
+		 * This allows the player to change the direction they are facing without having to walk
+		 */
+		else if (!movingEh)	{
+			if (walkDelay > -1)	{
+				walkDelay--;
 			}
+			if (queuedMove && validMoveEh(queuedAction))	{
+				if (walkDelay == 0)	{
+					action = queuedAction;
+					remainingSteps = STEP_SIZE;
+					movingEh = true;
+					currentImage = startAnimation(queuedAction).getImage();
+				}
+				else if (walkDelay < 1)	{
+					facingDelay(queuedAction);
+				}
+			}
+			else if (queuedMove)	{
+				facing = queuedAction;
+			}	
 		}
 	}
-	
+
+	/**
+	 * @param action The player's queued move
+	 * 
+	 * Delays the next move of the player if it is facing a new direction
+	 */
+	private void facingDelay(ACTION action)	{
+		if (facing == action)	{
+			currentImage = stopAnimation(action).getImage();
+			walkDelay = 1;
+		}
+		else if (action != ACTION.STAND)	{
+			currentImage = stopAnimation(action).getImage();
+			facing = action;
+			walkDelay = 5;
+		}
+	}
+
 	/**
 	 * Updates the grid coordinate of the character based on the action being performed
 	 * This is called once the current action completes, meaning that the game thinks the character is
@@ -174,6 +215,7 @@ public class Character {
 			coordX++;
 		else 
 			coordY++;
+		System.out.println("X- " + coordX + "   Y- " + coordY);
 	}
 
 	/**
@@ -185,44 +227,40 @@ public class Character {
 	 * 
 	 * Even if the move is false, the player will turn to face the pressed direction
 	 */
-	private boolean validMoveEh (ACTION action)	{
+	private boolean validMoveEh (ACTION action)        {
 		Tile[][] moveCheck = map.getArray();
-		if (action == ACTION.LEFT)	{
-			facing = ACTION.LEFT;
-			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())	{
+		if (action == ACTION.LEFT)        {
+			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())        {
 				currentImage = left.getImage();
 				return false;
 			}
 		}
-		else if (action == ACTION.UP)	{
-			facing = ACTION.UP;
-			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())	{
+		else if (action == ACTION.UP)        {
+			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())        {
 				currentImage = up.getImage();
 				return false;
 			}
 		}
-		else if (action == ACTION.RIGHT)	{
-			facing = ACTION.RIGHT;
-			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())	{
+		else if (action == ACTION.RIGHT)        {
+			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())        {
 				currentImage = right.getImage();
 				return false;
 			}
 		}
-		else if (action == ACTION.DOWN)	{
-			facing = ACTION.DOWN;
-			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())	{
+		else if (action == ACTION.DOWN)        {
+			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())        {
 				currentImage = down.getImage();
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @param action Action that has just come to an end
 	 * @return the non animated version of the ending action
 	 */
-	private ImageIcon stopAnimation(ACTION action)	{
+	private ImageIcon stopAnimation(ACTION action)        {
 		if (action == ACTION.LEFT)
 			return left;
 		else if (action == ACTION.UP)
@@ -236,7 +274,7 @@ public class Character {
 	 * @param action Action to be started
 	 * @return The animated version of that action
 	 */
-	private ImageIcon startAnimation(ACTION action)	{
+	private ImageIcon startAnimation(ACTION action)        {
 		if (action == ACTION.LEFT)
 			return walkLeft;
 		else if (action == ACTION.UP)
@@ -246,8 +284,6 @@ public class Character {
 		else 
 			return walkDown;
 	}
-		
-
 
 	/**
 	 * @return Background's X offset due to player movement
@@ -258,32 +294,32 @@ public class Character {
 	/**
 	 * @return Background's Y offset due to player movement
 	 */
-	public int getBackgroundY()	{
+	public int getBackgroundY()        {
 		return backgroundY;
 	}
 	/**
 	 * @return Character's X coordinate on the visible screen. Left hand side is always 0 regardless of how far the map has scrolled
 	 */
-	public int getCharX()	{
+	public int getCharX()        {
 		return charX;
 	}
 	/**
 	 * @return Character's Y coordinate on the visible screen. Top side is always 0 regardless of how far the map has scrolled
 	 */
-	public int getCharY()	{
+	public int getCharY()        {
 		return charY;
 	}
-	
+
 	/**
 	 * @return The character's grid X coordinate on the map
 	 */
-	public int getCoordX()	{
+	public int getCoordX()        {
 		return coordX;
 	}
 	/**
 	 * @return The character's grid Y coordinate on the map
 	 */
-	public int getCoordY()	{
+	public int getCoordY()        {
 		return coordY;
 	}
 
@@ -293,17 +329,17 @@ public class Character {
 	public Image getImage() {
 		return currentImage;
 	}
-	
+
 	/**
 	 * @return The player's current action
 	 */
-	public ACTION getFacing()	{
+	public ACTION getFacing()        {
 		return facing;
 	}
 	/**
 	 * @param map Sets the map the character uses to determine the outcome of collision-based decisions
 	 */
-	public void setMap(Map map)	{
+	public void setMap(Map map)        {
 		this.map = map;
 	}
 }
