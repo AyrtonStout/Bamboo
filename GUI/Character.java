@@ -215,7 +215,6 @@ public class Character {
 			coordX++;
 		else 
 			coordY++;
-		System.out.println("X- " + coordX + "   Y- " + coordY);
 	}
 
 	/**
