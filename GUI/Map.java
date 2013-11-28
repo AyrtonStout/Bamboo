@@ -1,20 +1,32 @@
 package GUI;
 
 import java.awt.Graphics;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * @author mobius
  * Glorified two dimensional array of Tile objects. Has the ability to draw all of the tiles it contains
  */
-public class Map {
+public class Map implements Serializable {
 
+	private static final long serialVersionUID = 861097006138182602L;
 	Tile[][] tiles;
+	ArrayList<Door> doors = new ArrayList<Door>();
 	int windowWidth, windowHeight;
 	
-	public Map(Tile[][] tiles, int windowWidth, int windowHeight)	{
+	public Map(Tile[][] tiles)	{
 		this.tiles = tiles;
-		this.windowWidth = windowWidth;
-		this.windowHeight = windowHeight;
+		
+		for (int row = 0; row < tiles.length; row++)	{
+			for (int column = 0; column < tiles[row].length; column++)	{
+				if (tiles[row][column].getDoodad() != null)	{
+					if (tiles[row][column].getDoodad().getClass() == Door.class)	{
+						doors.add((Door) tiles[row][column].getDoodad());
+					}
+				}
+			}
+		}
 	}
 	
 	
@@ -84,6 +96,36 @@ public class Map {
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
+	public void activate(Character player) {
+		Tile facedTile = null;
+		switch (player.getFacing())	{
+		case LEFT:
+			facedTile = tiles[player.getCoordX() - 1][player.getCoordY()]; break;
+		case UP:
+			facedTile = tiles[player.getCoordX()][player.getCoordY() - 1]; break;
+		case RIGHT:
+			facedTile = tiles[player.getCoordX() + 1][player.getCoordY()]; break;
+		case DOWN:
+			facedTile = tiles[player.getCoordX()][player.getCoordY() + 1]; break;
+		}
+		interact(facedTile);
+	}
+	private void interact(Tile facedTile)	{
+		if (facedTile.getDoodad() != null)	{
+			if(facedTile.getDoodad().getClass() == Interactable.class)	{
+				((Interactable) facedTile.getDoodad()).interact();
+			}
+		}
+	}
+	
+	public ArrayList<Door> getDoors()	{
+		return doors;
+	}
+	public void addDoor(Door door)	{
+		doors.add(door);
+	}
+	
 	/**
 	 * @return Array representation of the map
 	 */
@@ -113,41 +155,5 @@ public class Map {
 	 */
 	public int getDrawingY()	{
 		return tiles[0].length * 40;
-	}
-	/**
-	 * @return Width of the game window
-	 */
-	public int getWindowWidth()	{
-		return windowWidth;
-	}
-	/**
-	 * @return Height of the game window
-	 */
-	public int getWindowHeight()	{
-		return windowHeight;
-	}
-
-
-	@SuppressWarnings("incomplete-switch")
-	public void activate(Character player) {
-		Tile facedTile = null;
-		switch (player.getFacing())	{
-		case LEFT:
-			facedTile = tiles[player.getCoordX() - 1][player.getCoordY()]; break;
-		case UP:
-			facedTile = tiles[player.getCoordX()][player.getCoordY() - 1]; break;
-		case RIGHT:
-			facedTile = tiles[player.getCoordX() + 1][player.getCoordY()]; break;
-		case DOWN:
-			facedTile = tiles[player.getCoordX()][player.getCoordY() + 1]; break;
-		}
-		interact(facedTile);
-	}
-	private void interact(Tile facedTile)	{
-		if (facedTile.getDoodad() != null)	{
-			if(facedTile.getDoodad().getClass() == Interactable.class)	{
-				((Interactable) facedTile.getDoodad()).interact();
-			}
-		}
 	}
 }

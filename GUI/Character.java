@@ -13,6 +13,7 @@ import GUI.Enums.*;
 public class Character {
 	private int backgroundX, backgroundY, charX, charY, coordX, coordY, walkDelay;
 	private Map map;                                                 //Current map passed in by the Board
+	int windowWidth, windowHeight;
 
 	private ACTION action = ACTION.STAND;                            //The action the character is currently performing
 	private ACTION queuedAction = ACTION.STAND;                      //The action the character will perform after the current action completes
@@ -38,15 +39,17 @@ public class Character {
 	private ImageIcon walkDown = new ImageIcon("GUI/Resources/Sabin - Walk (Down).gif");
 
 
-	public Character() {
+	public Character(int windowWidth, int windowHeight) {
 		backgroundX = 200;                        //How far the background has scrolled so far
 		backgroundY = 0;
-		coordX = 12;                                //Character's grid location
+		coordX = 10;                                //Character's grid location
 		coordY = 5;
 		charX = coordX * 40 + 4 - backgroundX;          //Character's pixel location
-		charY = coordY * 40 + -10;
+		charY = coordY * 40 + -10 - backgroundY;
 		currentImage = left.getImage();
 		facing = ACTION.LEFT;
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
 
 	}
 
@@ -92,13 +95,13 @@ public class Character {
 	public void update()        {
 		if (movingEh)        {
 			if (action == ACTION.RIGHT)        {
-				if (charX + speed <= map.getWindowWidth() - movementBuffer)        {                //Movement until character reaches the screen scroll buffer
+				if (charX + speed <= windowWidth - movementBuffer)        {                //Movement until character reaches the screen scroll buffer
 					charX += speed;        
 				}
-				else if (backgroundX + map.getWindowWidth() < map.getDrawingX())        {                //Movement of screen while character on buffer
+				else if (backgroundX + windowWidth < map.getDrawingX())        {                //Movement of screen while character on buffer
 					backgroundX += speed;
 				}
-				else if (charX < map.getWindowWidth() - 35)        {                                                //Movement of character when there is no more screen left to scroll
+				else if (charX < windowWidth - 35)        {                                                //Movement of character when there is no more screen left to scroll
 					charX += speed;
 				}
 			}
@@ -125,13 +128,13 @@ public class Character {
 				}        
 			}
 			else if (action == ACTION.DOWN)        {
-				if (charY + speed <= map.getWindowHeight() - movementBuffer)        {        
+				if (charY + speed <= windowHeight - movementBuffer)        {        
 					charY += speed;
 				}
-				else if (backgroundY + map.getWindowHeight() < map.getDrawingY() + 30)        {                
+				else if (backgroundY + windowHeight < map.getDrawingY() + 30)        {                
 					backgroundY += speed;
 				}
-				else if (charY < map.getWindowHeight() - 80)        {                                                
+				else if (charY < windowHeight - 80)        {                                                
 					charY += speed;
 				}
 			}
@@ -283,6 +286,15 @@ public class Character {
 		else 
 			return walkDown;
 	}
+	
+	public boolean transitionEh()	{
+		if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
+			if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @return Background's X offset due to player movement
@@ -340,5 +352,9 @@ public class Character {
 	 */
 	public void setMap(Map map)        {
 		this.map = map;
+	}
+	
+	public Map getMap()	{
+		return map;
 	}
 }
