@@ -17,6 +17,9 @@ public class Interactable extends Doodad implements Serializable {
 	private ImageIcon passiveImg;
 	private ImageIcon activeImg;
 	
+	/**
+	 * @param type The type of interactable Doodad to be created
+	 */
 	public Interactable(INTERACTABLE type)	{
 		if (type == INTERACTABLE.GROUND_TREASURE_CHEST)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed.png");
@@ -28,14 +31,23 @@ public class Interactable extends Doodad implements Serializable {
 		}
 	}
 
+	/**
+	 * Performs the object's activated action
+	 */
 	public void interact()	{
 		background = activeImg;
 		activated = true;
 	}
+	/**
+	 * Returns the object to its deactivated state
+	 */
 	public void revert()	{
 		background = passiveImg;
 		activated = false;
 	}
+	/**
+	 * @return Whether or not the object is activated
+	 */
 	public boolean activeEh()	{
 		return activated;
 	}

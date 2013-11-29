@@ -2,15 +2,12 @@ package GUI;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import GUI.Enums.DECORATION;
-import GUI.Enums.DOOR;
-import GUI.Enums.INTERACTABLE;
-import GUI.Enums.TILE;
-
+/**
+ * @author mobius
+ * Holds the game data and updates the state of all objects every frame
+ */
 public class GameData {
 	
 	Character player;
@@ -21,48 +18,81 @@ public class GameData {
 	private Map currentMap;
 	private Map map1;
 	private Map map2;
-	
+
 	ObjectInputStream stream;
 	
+	/**
+	 * @param windowWidth Width of the game window
+	 * @param windowHeight Height of the game window
+	 * 
+	 * Loads all game maps from files and sets the current map
+	 */
 	public GameData(int windowWidth, int windowHeight)	{
 		player = new Character(windowWidth, windowHeight);
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
 		try {
-			map1 = (Map) new ObjectInputStream( new FileInputStream(new File("test1"))).readObject();
-			map2 = (Map) new ObjectInputStream( new FileInputStream(new File("test2"))).readObject();
+			stream = new ObjectInputStream( new FileInputStream(new File("test1")));
+			map1 = (Map) stream.readObject();
+			map2 = (Map) stream.readObject();
 		} catch (Exception e) {
 			System.err.println("Something went horribly wrong grabbing the map!");
 			e.printStackTrace();
 		}
+		
+		//TODO Figure out why I have to do this in GameData and not MapWriter
+		map1.getDoors().get(0).setParentMap(map1);
+		map2.getDoors().get(0).setParentMap(map2);
+	
 		currentMap = map1;
 		player.setMap(currentMap);
 	}
 
+	
+	/**
+	 * Updates all the game elements in the current map
+	 */
 	public void update()	{
 		player.update();
+		
+		//TODO Relocate this logic into the Character class and tie it into player.update();
 		if (player.transitionEh())	{
-			if (currentMap == map1)	{
-//				currentMap = ((Door) currentMap.tiles[player.getCoordX()][player.getCoordY()].getDoodad()).getParentMap();
-				
-				currentMap = map2;
-				player.setMap(map2);
+			Door enteredDoor = currentMap.findDoor(player.getCoordX(), player.getCoordY());
+			currentMap = enteredDoor.getLink().getParentMap();
+			player.setMap(currentMap);
+			if (enteredDoor.getLink().getX() * 40 - (windowWidth / 2) < 0)	{
+				player.setBackgroundX(0);
 			}
-			else if (currentMap == map2)	{
-				currentMap = map1;
-				player.setMap(map1);
+			else	{
+				player.setBackgroundX(enteredDoor.getLink().getX() * 40 - (windowWidth / 2));
 			}
+			if (enteredDoor.getLink().getY() * 40 - (windowHeight / 2) < 0)	{
+				player.setBackgroundY(0);
+			}
+			else	{
+				player.setBackgroundY(enteredDoor.getLink().getY() * 40 - (windowHeight / 2));
+			}
+			player.setCoordX(enteredDoor.getLink().getX());
+			player.setCoordY(enteredDoor.getLink().getY());
 		}
-//		currentMap = player.getMap();
 	}
 	
+	/**
+	 * @return Returns the player character
+	 */
 	public Character getPlayer()	{
 		return player;
 	}
+	/**
+	 * @return The game's current state
+	 */
 	public int getGameState()	{
 		return gameState;
 	}
+	/**
+	 * @return The map being played on
+	 */
 	public Map getCurrentMap()	{
 		return currentMap;
 	}

@@ -4,7 +4,7 @@ import javax.swing.*;
 
 /**
  * @author mobius
- * Version 0.10
+ * Version 0.12
  */
 public class Frame {
 

@@ -7,8 +7,10 @@ import javax.swing.*;
  
 /**
  * @author mobius
- * Contains the main game loop. Instantiates the player object and updates it with the timer
- * Player object's actions to be called when updated determined by the key adapter
+ * Contains the main game loop. Instantiates the GameData object and updates it with the timer
+ * Player objects or game's actions are determined by the implemented KeyAdaptor
+ * KeyAdaptor does not start behavior by itself, but merely sets the behavior for the object
+ * the next time update is called
  */
 @SuppressWarnings("serial")
 public class Board extends JPanel implements ActionListener {

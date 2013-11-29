@@ -20,6 +20,7 @@ public class Character {
 	private ACTION facing;                                           //Direction the character is facing. Also the last performed action
 	private boolean movingEh = false;                                //Is the character currently performing an action
 	private boolean queuedMove = false;                              //Does the character have an action ready for when the current action completes
+	private boolean doorTransition = false;
 	private int STEP_SIZE = 40;                                      //The number of pixels in a "grid square"
 	private int remainingSteps = 0;                                  //The number of pixels remaining in a character's move until it completes
 	private int speed = 2;                                           //The number of pixels traveled each time the character is updated
@@ -144,6 +145,8 @@ public class Character {
 			//When current move finishes, keep moving or stop movement
 			if (remainingSteps == 0) {
 				updateCoordinate(action);
+				if (doorTransition = true)
+					doorTransition = false;
 				if (queuedMove & validMoveEh(queuedAction))	{
 					action = queuedAction;
 					remainingSteps = STEP_SIZE;
@@ -162,7 +165,7 @@ public class Character {
 		 * direction the player is facing, do the move. If the player is facing a different direction than the direction
 		 * to be moved, turn the player and wait a slight amount before beginning the move.
 		 * 
-		 * This allows the player to change the direction they are facing without having to walk
+		 * This allows the player to change the direction they are facing while standing still
 		 */
 		else if (!movingEh)	{
 			if (walkDelay > -1)	{
@@ -287,10 +290,16 @@ public class Character {
 			return walkDown;
 	}
 	
+	/**
+	 * @return Whether or not the player has ended on a tile that warrants a map or area transition
+	 */
 	public boolean transitionEh()	{
-		if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
-			if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
-				return true;
+		if (!doorTransition)	{
+			if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
+				if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
+					doorTransition = true;
+					return true;
+				}
 			}
 		}
 		return false;
@@ -354,7 +363,40 @@ public class Character {
 		this.map = map;
 	}
 	
+	/**
+	 * @return The currently used map
+	 */
 	public Map getMap()	{
 		return map;
+	}
+	/**
+	 * @param x The new X coordinate for the player
+	 * 
+	 * This method also updates the player's charX value (where the player is drawn on the screen)
+	 */
+	public void setCoordX(int x)	{
+		coordX = x;
+		charX = coordX * 40 + 4 - backgroundX;
+	}
+	/**
+	 * @param y The new Y coordinate for the player
+	 * 
+	 * This method also updates the player's charY value (where the player is drawn on the screen)
+	 */
+	public void setCoordY(int y)	{
+		coordY = y;
+		charY = coordY * 40 - 10 - backgroundY;
+	}
+	/**
+	 * @param x The new X offset for the background
+	 */
+	public void setBackgroundX(int x)	{
+		backgroundX = x;
+	}
+	/**
+	 * @param y The new Y offset for the background
+	 */
+	public void setBackgroundY(int y)	{
+		backgroundY = y;
 	}
 }
