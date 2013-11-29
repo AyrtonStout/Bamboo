@@ -32,7 +32,7 @@ public class MapWriter {
 		
 		ObjectOutputStream stream;
 		try {
-			stream = new ObjectOutputStream(new FileOutputStream ("test1"));
+			stream = new ObjectOutputStream(new FileOutputStream ("GUI/Maps/test1"));
 			stream.writeObject(map1);
 			stream.writeObject(map2);
 			stream.close();

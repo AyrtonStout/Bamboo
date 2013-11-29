@@ -33,7 +33,7 @@ public class GameData {
 		this.windowHeight = windowHeight;
 		
 		try {
-			stream = new ObjectInputStream( new FileInputStream(new File("test1")));
+			stream = new ObjectInputStream( new FileInputStream(new File("GUI/Maps/test1")));
 			map1 = (Map) stream.readObject();
 			map2 = (Map) stream.readObject();
 		} catch (Exception e) {
