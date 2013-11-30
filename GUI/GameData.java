@@ -61,17 +61,17 @@ public class GameData {
 			Door enteredDoor = currentMap.findDoor(player.getCoordX(), player.getCoordY());
 			currentMap = enteredDoor.getLink().getParentMap();
 			player.setMap(currentMap);
-			if (enteredDoor.getLink().getX() * 40 - (windowWidth / 2) < 0)	{
+			if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
 				player.setBackgroundX(0);
 			}
 			else	{
-				player.setBackgroundX(enteredDoor.getLink().getX() * 40 - (windowWidth / 2));
+				player.setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
 			}
-			if (enteredDoor.getLink().getY() * 40 - (windowHeight / 2) < 0)	{
+			if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
 				player.setBackgroundY(0);
 			}
 			else	{
-				player.setBackgroundY(enteredDoor.getLink().getY() * 40 - (windowHeight / 2));
+				player.setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
 			}
 			player.setCoordX(enteredDoor.getLink().getX());
 			player.setCoordY(enteredDoor.getLink().getY());
