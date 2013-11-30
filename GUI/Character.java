@@ -21,12 +21,14 @@ public class Character {
 	private boolean movingEh = false;                                //Is the character currently performing an action
 	private boolean queuedMove = false;                              //Does the character have an action ready for when the current action completes
 	private boolean doorTransition = false;
-	private int STEP_SIZE = 40;                                      //The number of pixels in a "grid square"
+	private final int STEP_SIZE = 40;                                //The number of pixels in a "grid square"
 	private int remainingSteps = 0;                                  //The number of pixels remaining in a character's move until it completes
-	private int speed = 2;                                           //The number of pixels traveled each time the character is updated
-	private int movementBuffer = 160;                                /*Minimum number of pixels between the character and the side of the screen
+	private final int SPEED = 2;                                     //The number of pixels traveled each time the character is updated
+	private final int MOVEMENT_BUFFER = 160;                         /*Minimum number of pixels between the character and the side of the screen
                                                                       for the screen to begin scrolling */
-
+	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
+	                                                                   Recommended values 1-5 */
+	
 	private Image currentImage;                                      //The image that the game draws when update() is called
 
 	private ImageIcon left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
@@ -96,51 +98,51 @@ public class Character {
 	public void update()        {
 		if (movingEh)        {
 			if (action == ACTION.RIGHT)        {
-				if (charX + speed <= windowWidth - movementBuffer)        {                //Movement until character reaches the screen scroll buffer
-					charX += speed;        
+				if (charX + SPEED <= windowWidth - MOVEMENT_BUFFER)        {                //Movement until character reaches the screen scroll buffer
+					charX += SPEED;        
 				}
 				else if (backgroundX + windowWidth < map.getDrawingX())        {                //Movement of screen while character on buffer
-					backgroundX += speed;
+					backgroundX += SPEED;
 				}
 				else if (charX < windowWidth - 35)        {                                                //Movement of character when there is no more screen left to scroll
-					charX += speed;
+					charX += SPEED;
 				}
 			}
 			else if (action == ACTION.LEFT)        {
-				if (charX - speed >= movementBuffer)        {
-					charX -= speed;
+				if (charX - SPEED >= MOVEMENT_BUFFER)        {
+					charX -= SPEED;
 				}
 				else if (backgroundX > 0)        {
-					backgroundX -= speed;
+					backgroundX -= SPEED;
 				}
 				else if (charX > 4)        {
-					charX -= speed;
+					charX -= SPEED;
 				}        
 			}
 			else if (action == ACTION.UP)        {
-				if (charY - speed >= movementBuffer)        {
-					charY -= speed;
+				if (charY - SPEED >= MOVEMENT_BUFFER)        {
+					charY -= SPEED;
 				}
 				else if (backgroundY > 0)        {
-					backgroundY -= speed;
+					backgroundY -= SPEED;
 				}
 				else if (charY > -10)        {
-					charY -= speed;
+					charY -= SPEED;
 				}        
 			}
 			else if (action == ACTION.DOWN)        {
-				if (charY + speed <= windowHeight - movementBuffer)        {        
-					charY += speed;
+				if (charY + SPEED <= windowHeight - MOVEMENT_BUFFER)        {        
+					charY += SPEED;
 				}
 				else if (backgroundY + windowHeight < map.getDrawingY() + 30)        {                
-					backgroundY += speed;
+					backgroundY += SPEED;
 				}
 				else if (charY < windowHeight - 80)        {                                                
-					charY += speed;
+					charY += SPEED;
 				}
 			}
 
-			remainingSteps -= speed;        
+			remainingSteps -= SPEED;        
 
 			//When current move finishes, keep moving or stop movement
 			if (remainingSteps == 0) {
@@ -201,7 +203,7 @@ public class Character {
 		else if (action != ACTION.STAND)	{
 			currentImage = stopAnimation(action).getImage();
 			facing = action;
-			walkDelay = 5;
+			walkDelay = MOVEMENT_DELAY;
 		}
 	}
 
