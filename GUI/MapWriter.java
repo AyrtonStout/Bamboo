@@ -73,8 +73,8 @@ public class MapWriter {
 		tiles[1][6] = waterTile;
 		tiles[2][6] = waterTile;
 		tiles[3][6] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
-		tiles[0][4] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 0, 4);
-		tiles[0][5] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 0, 5);
+		tiles[0][4] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_LEFT, 0, 4);
+		tiles[0][5] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_LEFT, 0, 5);
 		
 		for (int i = 0; i < tiles.length; i++)	{
 			for (int j = 0; j < 4; j++)	{
@@ -90,7 +90,7 @@ public class MapWriter {
 	 */
 	public static Map test2()	{
 		Tile groundTile = new Tile(TILE.GROUND_CAVE);
-		Tile[][] tiles = new Tile [15][14];
+		Tile[][] tiles = new Tile [15][15];
 		for (int i = 0; i < tiles.length; i++)	{
 			for (int j = 0; j < tiles[i].length; j++)	{
 				tiles[i][j] = groundTile;
@@ -172,8 +172,8 @@ public class MapWriter {
 		}
 		tiles[12][1] = new Tile(TILE.WALL_CAVE, DOOR.WALL_CAVE_DOOR, 12, 1);
 		
-		tiles[21][9] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 21, 9);
-		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 21, 8);
+		tiles[21][9] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 9);
+		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 8);
 				
 		Map map = new Map(tiles);
 		

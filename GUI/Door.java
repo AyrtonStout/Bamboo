@@ -34,8 +34,8 @@ public class Door extends Doodad implements Serializable {
 		if (type == DOOR.WALL_CAVE_DOOR)	{
 			background = new ImageIcon("GUI/Resources/Tile_CaveDoor.png");
 		}
-		else if (type == DOOR.TRANSITION_HORIZONTAL)	{
-			background = new ImageIcon("GUI/Resources/Transition_Horizontal.png");
+		else if (type == DOOR.TRANSITION_RIGHT)	{
+			background = new ImageIcon("GUI/Resources/Transition_Right.png");
 		}
 	}
 	
