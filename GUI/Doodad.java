@@ -14,8 +14,9 @@ public abstract class Doodad implements Serializable {
 	
 	private static final long serialVersionUID = -4580163551311470198L;
 	protected ImageIcon background;
-	protected boolean moveBlock;
-	protected int verticalOffset, horizontalOffset;
+	protected boolean moveBlock = false; 
+	protected boolean dominant = false;               //Whether or not this will appear in the foreground relative to the player
+	protected int verticalOffset = 0, horizontalOffset = 0;
 
 	/**
 	 * @return The image of the doodad
@@ -28,6 +29,12 @@ public abstract class Doodad implements Serializable {
 	 */
 	public boolean moveBlockEh()	{
 		return moveBlock;
+	}
+	/**
+	 * @return Whether or not the Doodad is redrawn into the foreground
+	 */
+	public boolean dominantEh()	{
+		return dominant;
 	}
 	/**
 	 * @return The optimal vertical offset of the doodad's image

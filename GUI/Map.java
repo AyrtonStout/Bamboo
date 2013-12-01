@@ -66,33 +66,38 @@ public class Map implements Serializable {
 		/*
 		 * Redraws the doodads that are below the character so that they appear above it
 		 */
+		Tile drawnTile;
 		//Down Center
-		if (player.getCoordY() + 1 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad() != null)	{
-			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getBackground(), 
-					player.getCoordX()*40 - player.getBackgroundX() + tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX()][player.getCoordY() + 1].getDoodad().getOffsetY(), 
-					null);
+		if (player.getCoordY() + 1 < tiles[0].length)	{
+			drawnTile = tiles[player.getCoordX()][player.getCoordY() + 1];
+			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
+				g.drawImage(drawnTile.getDoodad().getBackground(), player.getCoordX()*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
+						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
+			}
 		}
 		//Down Right
-		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() + 1 < tiles.length && tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad() != null)	{
-			g.drawImage(tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getBackground(), 
-					(player.getCoordX() + 1)*40 - player.getBackgroundX() + tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX() + 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
-					null);
-		}
+		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() + 1 < tiles.length)	{
+			drawnTile = tiles[player.getCoordX() + 1][player.getCoordY() + 1];
+			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
+				g.drawImage(drawnTile.getDoodad().getBackground(),	(player.getCoordX() + 1)*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
+						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
+			}
+		}	
 		//Down Left
-		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() - 1 >= 0 &&tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad() != null)	{
-			g.drawImage(tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getBackground(), 
-					(player.getCoordX() - 1)*40 - player.getBackgroundX() + tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetX(), 
-					(player.getCoordY() +1)*40 -player.getBackgroundY() + tiles[player.getCoordX() - 1][player.getCoordY() + 1].getDoodad().getOffsetY(), 
-					null);
+		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() - 1 > 0)	{
+			drawnTile = tiles[player.getCoordX() - 1][player.getCoordY() + 1];
+			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
+				g.drawImage(drawnTile.getDoodad().getBackground(),	(player.getCoordX() - 1)*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
+						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
+			}
 		}
 		//Double Down
-		if (player.getCoordY() + 2 < tiles[0].length && tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad() != null)	{
-			g.drawImage(tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getBackground(), 
-					player.getCoordX()*40 - player.getBackgroundX() + tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetX(), 
-					(player.getCoordY() +2)*40 -player.getBackgroundY() + tiles[player.getCoordX()][player.getCoordY() + 2].getDoodad().getOffsetY(), 
-					null);
+		if (player.getCoordY() + 2 < tiles[0].length)	{
+			drawnTile = tiles[player.getCoordX()][player.getCoordY() + 2];
+			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
+				g.drawImage(drawnTile.getDoodad().getBackground(), player.getCoordX()*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
+						(player.getCoordY() + 2)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
+			}
 		}
 	}
 	

@@ -20,10 +20,17 @@ public class MapWriter {
 		
 		Map map1 = test1();
 		Map map2 = test2();
+		Map map3 = test3();
 	
 		//Links the doors of the cave and outside world together
 		map1.getDoors().get(0).setLink(map2.getDoors().get(0));
 		map2.getDoors().get(0).setLink(map1.getDoors().get(0));
+		
+		//Links the transition doors going east/west
+		map1.getDoors().get(1).setLink(map3.getDoors().get(0));
+		map1.getDoors().get(2).setLink(map3.getDoors().get(1));
+		map3.getDoors().get(0).setLink(map1.getDoors().get(1));
+		map3.getDoors().get(1).setLink(map1.getDoors().get(2));
 		
 		//In theory, tells the door the map that they belong to
 		//For some reason this doesn't work and has to be redone in the GameData class
@@ -35,11 +42,47 @@ public class MapWriter {
 			stream = new ObjectOutputStream(new FileOutputStream ("GUI/Maps/test1"));
 			stream.writeObject(map1);
 			stream.writeObject(map2);
+			stream.writeObject(map3);
 			stream.close();
 		} catch (Exception e) {
 			System.err.println("Can't write! Pen broke!");
 			e.printStackTrace();
 		}
+	}
+	
+	public static Map test3()	{
+		Tile grassTile = new Tile(TILE.GROUND_GRASS);
+		Tile waterTile = new Tile(TILE.GROUND_WATER);
+		Tile[][] tiles = new Tile [17][27];
+		for (int i = 0; i < tiles.length; i++)	{
+			for (int j = 0; j < tiles[i].length; j++)	{
+				tiles[i][j] = grassTile;
+			}
+		}
+		for (int i = 0; i < 8; i++)	{
+			for (int j = 7; j < tiles[i].length; j++)	{
+				tiles[i][j] = waterTile;
+			}
+		}
+		for (int i = 11; i < tiles.length; i++)	{
+			for (int j = 4; j < 16; j++)	{
+				tiles[i][j] = waterTile;
+			}
+		}
+		tiles[0][6] = waterTile;
+		tiles[1][6] = waterTile;
+		tiles[2][6] = waterTile;
+		tiles[3][6] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
+		tiles[0][4] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 0, 4);
+		tiles[0][5] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 0, 5);
+		
+		for (int i = 0; i < tiles.length; i++)	{
+			for (int j = 0; j < 4; j++)	{
+				tiles[i][j] = waterTile;
+			}
+		}
+		Map map = new Map(tiles);
+		return map;
 	}
 	
 	/**
@@ -93,8 +136,26 @@ public class MapWriter {
 		tiles[8][7] = waterTile;
 		tiles[15][7] = waterTile;
 		tiles[21][7] = waterTile;
+		tiles[20][7] = waterTile;
 		tiles[21][6] = waterTile;
 		tiles[21][5] = waterTile;
+		tiles[21][10] = waterTile;
+		tiles[21][11] = waterTile;
+		tiles[20][10] = waterTile;
+		tiles[20][11] = waterTile;
+		tiles[20][12] = waterTile;
+		tiles[20][13] = waterTile;
+		tiles[20][14] = waterTile;
+		tiles[20][15] = waterTile;
+		tiles[20][16] = waterTile;
+		tiles[21][13] = waterTile;
+		tiles[21][14] = waterTile;
+		tiles[21][15] = waterTile;
+		tiles[21][16] = waterTile;
+		tiles[21][17] = waterTile;
+		tiles[20][17] = waterTile;
+		tiles[21][12] = waterTile;
+		tiles[20][13] = waterTile;
 		tiles[14][12] = waterTile;
 		tiles[13][17] = waterTile;
 		tiles[12][17] = waterTile;
@@ -111,6 +172,9 @@ public class MapWriter {
 		}
 		tiles[12][1] = new Tile(TILE.WALL_CAVE, DOOR.WALL_CAVE_DOOR, 12, 1);
 		
+		tiles[21][9] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 21, 9);
+		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_HORIZONTAL, 21, 8);
+				
 		Map map = new Map(tiles);
 		
 		return map;

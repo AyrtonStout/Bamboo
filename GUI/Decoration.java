@@ -22,8 +22,9 @@ public class Decoration extends Doodad implements Serializable {
 		if (type == DECORATION.TREE_PALM)	{
 			background = new ImageIcon("GUI/Resources/Tree_Palm.png");
 			moveBlock = true;
-			verticalOffset = -30;
+			verticalOffset = -35;
 			horizontalOffset = 6;
+			dominant = true;
 		}
 	}
 }

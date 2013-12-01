@@ -18,6 +18,7 @@ public class GameData {
 	private Map currentMap;
 	private Map map1;
 	private Map map2;
+	private Map map3;
 
 	ObjectInputStream stream;
 	
@@ -36,6 +37,7 @@ public class GameData {
 			stream = new ObjectInputStream( new FileInputStream(new File("GUI/Maps/test1")));
 			map1 = (Map) stream.readObject();
 			map2 = (Map) stream.readObject();
+			map3 = (Map) stream.readObject();
 		} catch (Exception e) {
 			System.err.println("Something went horribly wrong grabbing the map!");
 			e.printStackTrace();
@@ -43,9 +45,13 @@ public class GameData {
 		
 		//TODO Figure out why I have to do this in GameData and not MapWriter
 		map1.getDoors().get(0).setParentMap(map1);
+		map1.getDoors().get(1).setParentMap(map1);
+		map1.getDoors().get(2).setParentMap(map1);
 		map2.getDoors().get(0).setParentMap(map2);
-	
-		currentMap = map1;
+		map3.getDoors().get(0).setParentMap(map3);
+		map3.getDoors().get(1).setParentMap(map3);
+		
+		currentMap = map3;
 		player.setMap(currentMap);
 	}
 

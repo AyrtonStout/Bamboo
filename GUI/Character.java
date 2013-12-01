@@ -20,11 +20,11 @@ public class Character {
 	private ACTION facing;                                           //Direction the character is facing. Also the last performed action
 	private boolean movingEh = false;                                //Is the character currently performing an action
 	private boolean queuedMove = false;                              //Does the character have an action ready for when the current action completes
-	private boolean doorTransition = false;
+	private boolean doorTransition = false;                          //Whether or not the character just exited a door
 	private final int STEP_SIZE = 40;                                //The number of pixels in a "grid square"
 	private int remainingSteps = 0;                                  //The number of pixels remaining in a character's move until it completes
 	private final int SPEED = 2;                                     //The number of pixels traveled each time the character is updated
-	private final int MOVEMENT_BUFFER = 160;                         /*Minimum number of pixels between the character and the side of the screen
+	private final int MOVEMENT_BUFFER = 200;                         /*Minimum number of pixels between the character and the side of the screen
                                                                       for the screen to begin scrolling */
 	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
 	                                                                   Recommended values 1-5 */

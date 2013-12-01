@@ -16,7 +16,7 @@ public class Enums {
 	
 	public enum DECORATION {
 
-		TREE_PALM, TREE_PINE, WATER_ROCKS, GRASS_FLOWERS;
+		TREE_PALM, TREE_PINE, WATER_ROCKS, GRASS_FLOWERS, OPACITY_OVERLAY;
 		
 	}
 
@@ -28,7 +28,7 @@ public class Enums {
 	
 	public enum DOOR {
 		
-		WALL_CAVE_DOOR;
+		WALL_CAVE_DOOR, TRANSITION_HORIZONTAL;
 	}
 	
 

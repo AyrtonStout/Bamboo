@@ -26,8 +26,6 @@ public class Interactable extends Doodad implements Serializable {
 			activeImg = new ImageIcon("GUI/Resources/Tree_Palm.png");
 			background = passiveImg;
 			moveBlock = true;
-			verticalOffset = 0;
-			horizontalOffset = 0;
 		}
 	}
 
