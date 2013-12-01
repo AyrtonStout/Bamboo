@@ -15,8 +15,8 @@ public class Frame {
 	
 	public Frame(){
 		JFrame frame = new JFrame();
-		Board gameBoard = new Board(600, 600);
-		gameBoard.setPreferredSize(new Dimension(600, 600));
+		Board gameBoard = new Board(WINDOW_WIDTH, WINDOW_HEIGHT);
+		gameBoard.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		frame.add(gameBoard);	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
