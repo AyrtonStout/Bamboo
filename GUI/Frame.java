@@ -1,5 +1,7 @@
 package GUI;
 
+import java.awt.Dimension;
+
 import javax.swing.*;
 
 /**
@@ -13,14 +15,22 @@ public class Frame {
 	
 	public Frame(){
 		JFrame frame = new JFrame();
-		frame.add(new Board(WINDOW_WIDTH, WINDOW_HEIGHT));	
+		Board gameBoard = new Board(600, 600);
+		gameBoard.setPreferredSize(new Dimension(600, 600));
+		frame.add(gameBoard);	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(600,600);
+		frame.pack();
 		frame.setVisible(true);
+
+		
 		frame.setLocationRelativeTo(null);
+		System.out.println(frame.getBounds());
+		
 	}
 	public static void main(String[] args){
 		new Frame();
+		
+		
 	}
 }
