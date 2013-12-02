@@ -13,18 +13,20 @@ public class Sign extends Doodad implements Serializable {
 	
 	private ArrayList<String> content = new ArrayList<String>();
 	
-	public Sign(SIGN type, ArrayList<String> dialog)	{
+	public Sign(SIGN type, ArrayList<String> dialogue)	{
 		if (type == SIGN.WOOD)	{
 			background = new ImageIcon("GUI/Resources/Sign_Wood.png");
 			moveBlock = true;
 			verticalOffset = 7;
 			horizontalOffset = 3;
-			content = dialog;
+			content = dialogue;
 		}
 	}
 	
-	public ArrayList<String> read()	{
-		return content;
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getDialogue()	{
+		ArrayList<String> clone = (ArrayList<String>) content.clone();
+		return clone;
 	}
 	
 	

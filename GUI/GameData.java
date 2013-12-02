@@ -90,34 +90,45 @@ public class GameData {
 			player.setCoordY(enteredDoor.getLink().getY());
 		}
 	}
+	
+	
 	@SuppressWarnings("incomplete-switch")
 	public void activate()	{
-		Tile facedTile = null;
-		switch (player.getFacing())	{
-		case LEFT:
-			facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()]; break;
-		case UP:
-			facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; break;
-		case RIGHT:
-			facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; break;
-		case DOWN:
-			facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; break;
-		}
-		if (facedTile.getDoodad() != null)	{
-			if(facedTile.getDoodad().getClass() == Interactable.class)	{
-				((Interactable) facedTile.getDoodad()).interact();
+		if (gameState == 0)	{
+			Tile facedTile = null;
+			switch (player.getFacing())	{
+			case LEFT:
+				facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()]; break;
+			case UP:
+				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; break;
+			case RIGHT:
+				facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; break;
+			case DOWN:
+				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; break;
 			}
-			else if (facedTile.getDoodad().getClass() == Sign.class)	{
-				((Sign) facedTile.getDoodad()).read();
-				gameState = 1;
-				dialogBox.setVisible(true);
-				advanceDialogue();
+			if (facedTile.getDoodad() != null)	{
+				if(facedTile.getDoodad().getClass() == Interactable.class)	{
+					((Interactable) facedTile.getDoodad()).interact();
+				}
+				else if (facedTile.getDoodad().getClass() == Sign.class)	{
+					((Sign) facedTile.getDoodad()).getDialogue();
+					gameState = 1;
+					dialogBox.setVisible(true);
+					dialogBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
+					advanceDialogue();
+				}
 			}
 		}
 	}
 	
 	public void advanceDialogue()	{
-		dialogBox.read();
+		if (dialogBox.hasNextLine())	{
+			dialogBox.read();
+		}
+		else	{
+			gameState = 0;
+			dialogBox.setVisible(false);
+		}
 	}
 
 	/**

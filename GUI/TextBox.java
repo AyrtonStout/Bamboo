@@ -1,12 +1,9 @@
 package GUI;
 
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.font.TextAttribute;
-import java.text.AttributedString;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -16,30 +13,32 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class TextBox extends JPanel {
 	
-	private final int locationY = 450;
-	private final int verticalSize = 150;
-	private boolean visible = false;
-	private AttributedString top = new AttributedString("hats are cool and fun");
-	private String bottom = "hats are cool and fun";
+//	private final int locationY = 450;
+//	private final int verticalSize = 150;
+	private boolean visible = true;
 	private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
 	private ArrayList<String> dialogue = new ArrayList<String>();
 	
-	Font font1 = new Font("Book Antiqua", Font.PLAIN, 30);
+	JLabel label1 = new JLabel();
 	
+	Font font1 = new Font("Book Antiqua", Font.BOLD, 30);
 	
 	public TextBox()	{
+		label1.setFont(font1);
 		this.setPreferredSize(new Dimension(600, 150));
-		top.addAttribute(TextAttribute.FONT, font1);
+		this.add(label1);
+		this.setBackground(Color.WHITE);
+		
+		this.setVisible(false);
 	}
 	
-	@Override
-	public void paintComponent(Graphics g)	{
-		Graphics2D g2d = (Graphics2D) g;
-		
-		g.drawImage(background.getImage(), 0, locationY, null);
-//		g2d.drawString(top.getIterator(), 30, 500);
-		g2d.drawString(bottom,  30,  500);
-	}
+	 @Override
+	 protected void paintComponent(Graphics g) {
+	     super.paintComponent(g); // paint the background image and scale it to fill the entire space
+	     if (visible == true)	{
+	    	 g.drawImage(background.getImage(), 0, 0, null);
+	     }
+	 }
 
 	public boolean visibleEh() {
 		if (visible == true)
@@ -49,13 +48,28 @@ public class TextBox extends JPanel {
 
 	public void setVisible(boolean b) {
 		visible = b;
+		if (b == true)	{
+			this.setOpaque(true);
+			label1.setVisible(true);
+		}
+		else	{
+			this.setOpaque(false);
+			label1.setVisible(false);
+		}
+		
 	}
 
 	public void read() {
-		
-		
+		label1.setText(dialogue.remove(0));		
 	}
-	
-	
-	
+
+	public void setDialogue(ArrayList<String> dialogue) {
+		this.dialogue = dialogue;		
+	}
+	public boolean hasNextLine()	{
+		if (dialogue.size() > 0)
+			return true;
+		else
+			return false;
+	}
 }

@@ -1,14 +1,15 @@
 package GUI;
 
-import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import javax.swing.JPanel;
 
 /**
  * @author mobius
  * Glorified two dimensional array of Tile objects. Has the ability to draw all of the tiles it contains
  */
-public class Map implements Serializable {
+public class Map extends JPanel implements Serializable {
 
 	private static final long serialVersionUID = 861097006138182602L;
 	Tile[][] tiles;
@@ -25,78 +26,6 @@ public class Map implements Serializable {
 						doors.add((Door) tiles[row][column].getDoodad());
 					}
 				}
-			}
-		}
-	}
-	
-	
-	/**
-	 * @param g Graphics component to be drawn on
-	 * @param player Player character
-	 */
-	public void drawImage(Graphics g, Character player)	{
-		
-		/*
-		 * Draws the base texture for all background tiles
-		 */
-		for (int row = 0; row < tiles.length; row++)	{
-			for (int column = 0; column < tiles[row].length; column++)	{
-				if (tiles[row][column] != null)	{
-					g.drawImage(tiles[row][column].getBackground(), row*40 - player.getBackgroundX(), column*40 - player.getBackgroundY(), null);
-				}
-			}
-		}
-		/*
-		 * Draws all of the tiles' doodads
-		 */
-		for (int row = 0; row < tiles.length; row++)	{
-			for (int column = 0; column < tiles[row].length; column++)	{
-				if (tiles[row][column].getDoodad() != null)	{
-					g.drawImage(tiles[row][column].getDoodad().getBackground(), 
-							row*40 - player.getBackgroundX() + tiles[row][column].getDoodad().getOffsetX(), 
-							column*40 - player.getBackgroundY() + tiles[row][column].getDoodad().getOffsetY(), null);
-				}
-			}
-		}
-		/*
-		 * Draws the player character
-		 */
-		g.drawImage(player.getImage(), player.getCharX(), player.getCharY(), null);
-		
-		/*
-		 * Redraws the doodads that are below the character so that they appear above it
-		 */
-		Tile drawnTile;
-		//Down Center
-		if (player.getCoordY() + 1 < tiles[0].length)	{
-			drawnTile = tiles[player.getCoordX()][player.getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(), player.getCoordX()*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
-						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}
-		//Down Right
-		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() + 1 < tiles.length)	{
-			drawnTile = tiles[player.getCoordX() + 1][player.getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(),	(player.getCoordX() + 1)*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
-						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}	
-		//Down Left
-		if (player.getCoordY() + 1 < tiles[0].length && player.getCoordX() - 1 > 0)	{
-			drawnTile = tiles[player.getCoordX() - 1][player.getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(),	(player.getCoordX() - 1)*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
-						(player.getCoordY() + 1)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}
-		//Double Down
-		if (player.getCoordY() + 2 < tiles[0].length)	{
-			drawnTile = tiles[player.getCoordX()][player.getCoordY() + 2];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(), player.getCoordX()*40 - player.getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
-						(player.getCoordY() + 2)*40 - player.getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
 			}
 		}
 	}
@@ -159,4 +88,5 @@ public class Map implements Serializable {
 	public int getDrawingY()	{
 		return tiles[0].length * 40;
 	}
+	
 }
