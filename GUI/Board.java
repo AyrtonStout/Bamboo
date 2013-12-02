@@ -37,8 +37,6 @@ public class Board extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		data.update();
 		repaint();
-		System.out.println("Player X - " + data.getPlayer().getCoordX() + "   Player Y - " + data.getPlayer().getCoordY() + 
-				"    facing - " + data.getPlayer().getFacing());
 	}
 
 	/**
