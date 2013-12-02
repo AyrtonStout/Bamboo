@@ -25,8 +25,7 @@ public class Sign extends Doodad implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getDialogue()	{
-		ArrayList<String> clone = (ArrayList<String>) content.clone();
-		return clone;
+		return (ArrayList<String>)content.clone();
 	}
 	
 	

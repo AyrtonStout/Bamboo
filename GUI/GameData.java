@@ -89,6 +89,10 @@ public class GameData {
 			player.setCoordX(enteredDoor.getLink().getX());
 			player.setCoordY(enteredDoor.getLink().getY());
 		}
+		
+		if (dialogBox.writingEh())	{
+			dialogBox.update();	
+		}
 	}
 	
 	
@@ -115,6 +119,7 @@ public class GameData {
 					gameState = 1;
 					dialogBox.setVisible(true);
 					dialogBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
+					dialogBox.setWriting(true);
 					advanceDialogue();
 				}
 			}
