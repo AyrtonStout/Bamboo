@@ -24,7 +24,7 @@ public class Character {
 	private final int STEP_SIZE = 40;                                //The number of pixels in a "grid square"
 	private int remainingSteps = 0;                                  //The number of pixels remaining in a character's move until it completes
 	private final int SPEED = 2;                                     //The number of pixels traveled each time the character is updated
-	private final int MOVEMENT_BUFFER = 200;                         /*Minimum number of pixels between the character and the side of the screen
+	private final int MOVEMENT_BUFFER = 240;                         /*Minimum number of pixels between the character and the side of the screen
                                                                       for the screen to begin scrolling */
 	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
 	                                                                   Recommended values 1-5 */

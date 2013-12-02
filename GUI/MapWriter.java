@@ -2,11 +2,9 @@ package GUI;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
-import GUI.Enums.DECORATION;
-import GUI.Enums.DOOR;
-import GUI.Enums.INTERACTABLE;
-import GUI.Enums.TILE;
+import GUI.Enums.*;
 
 /**
  * @author mobius
@@ -174,7 +172,11 @@ public class MapWriter {
 		
 		tiles[21][9] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 9);
 		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 8);
-		tiles[18][5] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.SIGN_WOOD);
+		
+		ArrayList<String> sign1 = new ArrayList<String>();
+		sign1.add("I'm a sign, bro");
+		
+		tiles[18][5] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign1);
 				
 		Map map = new Map(tiles);
 		

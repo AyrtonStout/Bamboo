@@ -14,6 +14,7 @@ public class GameData {
 	private int gameState = 0;
 	Map[] worldMaps = new Map[2];
 	int windowWidth, windowHeight;
+	private TextBox dialogBox = new TextBox();
 	
 	private Map currentMap;
 	private Map map1;
@@ -89,7 +90,36 @@ public class GameData {
 			player.setCoordY(enteredDoor.getLink().getY());
 		}
 	}
+	@SuppressWarnings("incomplete-switch")
+	public void activate()	{
+		Tile facedTile = null;
+		switch (player.getFacing())	{
+		case LEFT:
+			facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()]; break;
+		case UP:
+			facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; break;
+		case RIGHT:
+			facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; break;
+		case DOWN:
+			facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; break;
+		}
+		if (facedTile.getDoodad() != null)	{
+			if(facedTile.getDoodad().getClass() == Interactable.class)	{
+				((Interactable) facedTile.getDoodad()).interact();
+			}
+			else if (facedTile.getDoodad().getClass() == Sign.class)	{
+				((Sign) facedTile.getDoodad()).read();
+				gameState = 1;
+				dialogBox.setVisible(true);
+				advanceDialogue();
+			}
+		}
+	}
 	
+	public void advanceDialogue()	{
+		dialogBox.read();
+	}
+
 	/**
 	 * @return Returns the player character
 	 */
@@ -107,5 +137,10 @@ public class GameData {
 	 */
 	public Map getCurrentMap()	{
 		return currentMap;
+	}
+
+
+	public TextBox getTextBox() {
+		return dialogBox;
 	}
 }

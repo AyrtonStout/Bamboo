@@ -22,7 +22,7 @@ public class Enums {
 
 	public enum INTERACTABLE {
 
-		TREASURE_CHEST, SIGN_WOOD;
+		TREASURE_CHEST;
 		
 	}
 	
@@ -31,5 +31,8 @@ public class Enums {
 		WALL_CAVE_DOOR, TRANSITION_LEFT, TRANSITION_RIGHT;
 	}
 	
+	public enum SIGN {
+		WOOD;
+	}
 
 }

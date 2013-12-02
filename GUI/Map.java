@@ -102,32 +102,6 @@ public class Map implements Serializable {
 	}
 	
 	/**
-	 * @param player The player's character that is activating an object
-	 * 
-	 * Checks if the tile the player is facing is interactable
-	 * If it is, the object's interact() method is called
-	 */
-	@SuppressWarnings("incomplete-switch")
-	public void activate(Character player) {
-		Tile facedTile = null;
-		switch (player.getFacing())	{
-		case LEFT:
-			facedTile = tiles[player.getCoordX() - 1][player.getCoordY()]; break;
-		case UP:
-			facedTile = tiles[player.getCoordX()][player.getCoordY() - 1]; break;
-		case RIGHT:
-			facedTile = tiles[player.getCoordX() + 1][player.getCoordY()]; break;
-		case DOWN:
-			facedTile = tiles[player.getCoordX()][player.getCoordY() + 1]; break;
-		}
-		if (facedTile.getDoodad() != null)	{
-			if(facedTile.getDoodad().getClass() == Interactable.class)	{
-				((Interactable) facedTile.getDoodad()).interact();
-			}
-		}
-	}
-	
-	/**
 	 * @return All doors in the map
 	 */
 	public ArrayList<Door> getDoors()	{

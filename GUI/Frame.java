@@ -20,12 +20,12 @@ public class Frame {
 		frame.add(gameBoard);	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
 		frame.pack();
 		frame.setVisible(true);
 
 		
 		frame.setLocationRelativeTo(null);
-		System.out.println(frame.getBounds());
 		
 	}
 	public static void main(String[] args){

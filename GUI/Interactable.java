@@ -26,13 +26,6 @@ public class Interactable extends Doodad implements Serializable {
 			activeImg = new ImageIcon("GUI/Resources/Tree_Palm.png");
 			moveBlock = true;
 		}
-		else if (type == INTERACTABLE.SIGN_WOOD)	{
-			passiveImg = new ImageIcon("GUI/Resources/Sign_Wood.png");
-			activeImg = new ImageIcon("GUI/Resources/Sign_Wood.png");
-			moveBlock = true;
-			verticalOffset = 7;
-			horizontalOffset = 3;
-		}
 		background = passiveImg;
 	}
 

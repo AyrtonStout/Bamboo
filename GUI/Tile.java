@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.Image;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
@@ -53,6 +54,17 @@ public class Tile implements Serializable {
 	public Tile(TILE type1, INTERACTABLE type2)	{
 		createBase(type1);
 		this.doodad = new Interactable(type2);
+		moveBlock = doodad.moveBlockEh();
+	}
+	/**
+	 * @param type1 The type of tile to be created
+	 * @param type2 THe type of interactable Doodad to add to the tile
+	 * 
+	 * Creates a tile with an interactable element (such as a treasure chest) on top of it
+	 */
+	public Tile(TILE type1, SIGN type2, ArrayList<String> dialog)	{
+		createBase(type1);
+		this.doodad = new Sign(type2, dialog);
 		moveBlock = doodad.moveBlockEh();
 	}
 	
