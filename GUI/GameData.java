@@ -51,7 +51,7 @@ public class GameData {
 		map3.getDoors().get(0).setParentMap(map3);
 		map3.getDoors().get(1).setParentMap(map3);
 		
-		currentMap = map3;
+		currentMap = map1;
 		player.setMap(currentMap);
 	}
 
@@ -70,11 +70,17 @@ public class GameData {
 			if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
 				player.setBackgroundX(0);
 			}
+			else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > currentMap.getWidth() * 40 - windowWidth)	{
+				player.setBackgroundX(currentMap.getWidth() * 40 - windowWidth);
+			}
 			else	{
 				player.setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
 			}
 			if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
 				player.setBackgroundY(0);
+			}
+			else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > currentMap.getHeight() * 40 - windowHeight)	{
+				player.setBackgroundY(currentMap.getHeight() * 40 - windowHeight);
 			}
 			else	{
 				player.setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));

@@ -134,10 +134,10 @@ public class Character {
 				if (charY + SPEED <= windowHeight - MOVEMENT_BUFFER)        {        
 					charY += SPEED;
 				}
-				else if (backgroundY + windowHeight < map.getDrawingY() + 30)        {                
+				else if (backgroundY + windowHeight < map.getDrawingY())        {                
 					backgroundY += SPEED;
 				}
-				else if (charY < windowHeight - 80)        {                                                
+				else if (charY < windowHeight - 40)        {                                                
 					charY += SPEED;
 				}
 			}

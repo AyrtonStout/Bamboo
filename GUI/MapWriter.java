@@ -105,7 +105,7 @@ public class MapWriter {
 			tiles[0][i] = new Tile(TILE.GROUND_WATER);
 			tiles[tiles.length-1][i] = new Tile(TILE.GROUND_WATER);
 		}
-		tiles[7][7] = new Tile(TILE.GROUND_CAVE, INTERACTABLE.GROUND_TREASURE_CHEST);
+		tiles[7][7] = new Tile(TILE.GROUND_CAVE, INTERACTABLE.TREASURE_CHEST);
 		tiles[7][3] = new Tile(TILE.GROUND_CAVE, DOOR.WALL_CAVE_DOOR, 7, 3);
 		
 		Map map = new Map(tiles);
@@ -163,7 +163,7 @@ public class MapWriter {
 		tiles[7][9] = treeTile;
 		tiles[10][8] = treeTile;
 		tiles[11][8] = treeTile;
-		tiles[9][12] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.GROUND_TREASURE_CHEST);
+		tiles[9][12] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 		
 		for (int i = 0; i < tiles.length; i++)	{
@@ -174,6 +174,7 @@ public class MapWriter {
 		
 		tiles[21][9] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 9);
 		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 8);
+		tiles[18][5] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.SIGN_WOOD);
 				
 		Map map = new Map(tiles);
 		

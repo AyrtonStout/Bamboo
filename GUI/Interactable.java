@@ -21,12 +21,19 @@ public class Interactable extends Doodad implements Serializable {
 	 * @param type The type of interactable Doodad to be created
 	 */
 	public Interactable(INTERACTABLE type)	{
-		if (type == INTERACTABLE.GROUND_TREASURE_CHEST)		{
+		if (type == INTERACTABLE.TREASURE_CHEST)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed.png");
 			activeImg = new ImageIcon("GUI/Resources/Tree_Palm.png");
-			background = passiveImg;
 			moveBlock = true;
 		}
+		else if (type == INTERACTABLE.SIGN_WOOD)	{
+			passiveImg = new ImageIcon("GUI/Resources/Sign_Wood.png");
+			activeImg = new ImageIcon("GUI/Resources/Sign_Wood.png");
+			moveBlock = true;
+			verticalOffset = 7;
+			horizontalOffset = 3;
+		}
+		background = passiveImg;
 	}
 
 	/**

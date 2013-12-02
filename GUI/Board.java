@@ -18,12 +18,22 @@ public class Board extends JPanel implements ActionListener {
 	private GameData data;
 	private Timer time;
 	private int FPS = 60;
+	private JPanel dialogBox = new JPanel();
 	
 	public Board(int windowWidth, int windowHeight) {
 		data = new GameData(windowWidth, windowHeight);
 		
+		setLayout(new BorderLayout());
+		
+		
 		addKeyListener(new AL());
 		setFocusable(true);
+		
+		dialogBox.setBackground(Color.WHITE);
+		dialogBox.setPreferredSize(new Dimension(windowWidth, 200));
+		dialogBox.setVisible(false);
+		this.add(dialogBox, BorderLayout.SOUTH);
+		
 		time = new Timer((int)(1000 / FPS), this);
 		time.start();
 	}
@@ -36,6 +46,9 @@ public class Board extends JPanel implements ActionListener {
 
 	public void paint(Graphics g) {
 		data.getCurrentMap().drawImage(g, data.getPlayer());
+		if (dialogBox.isVisible())	{
+			super.paintComponents(g);
+		}
 	}
 
 	/**
