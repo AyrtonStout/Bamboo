@@ -23,11 +23,17 @@ public class Interactable extends Doodad implements Serializable {
 	public Interactable(INTERACTABLE type)	{
 		if (type == INTERACTABLE.TREASURE_CHEST)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed.png");
-			activeImg = new ImageIcon("GUI/Resources/Tree_Palm.png");
+			activeImg = new ImageIcon("GUI/Resources/Chest_Open.png");
+			moveBlock = true;
+		}
+		else if (type == INTERACTABLE.TREASURE_CHEST_BIG)		{
+			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed_Big.png");
+			activeImg = new ImageIcon("GUI/Resources/Chest_Open_Big.png");
 			moveBlock = true;
 		}
 		background = passiveImg;
 	}
+	
 
 	/**
 	 * Performs the object's activated action

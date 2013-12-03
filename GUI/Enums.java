@@ -22,7 +22,7 @@ public class Enums {
 
 	public enum INTERACTABLE {
 
-		TREASURE_CHEST;
+		TREASURE_CHEST, TREASURE_CHEST_BIG;
 		
 	}
 	

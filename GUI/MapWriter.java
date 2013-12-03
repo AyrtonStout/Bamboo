@@ -163,6 +163,8 @@ public class MapWriter {
 		tiles[11][8] = treeTile;
 		tiles[9][12] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
+		tiles[12][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
+		tiles[13][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST_BIG);
 		
 		for (int i = 0; i < tiles.length; i++)	{
 			tiles[i][0] = new Tile(TILE.WALL_CAVE);
