@@ -58,38 +58,14 @@ public class GameData {
 
 	
 	/**
+	 * King of all methods
 	 * Updates all the game elements in the current map
 	 */
 	public void update()	{
 		player.update();
-		
-		//TODO Relocate this logic into the Character class and tie it into player.update();
-		if (player.transitionEh())	{
-			Door enteredDoor = currentMap.findDoor(player.getCoordX(), player.getCoordY());
-			currentMap = enteredDoor.getLink().getParentMap();
-			player.setMap(currentMap);
-			if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
-				player.setBackgroundX(0);
-			}
-			else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > currentMap.getWidth() * 40 - windowWidth)	{
-				player.setBackgroundX(currentMap.getWidth() * 40 - windowWidth);
-			}
-			else	{
-				player.setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
-			}
-			if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
-				player.setBackgroundY(0);
-			}
-			else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > currentMap.getHeight() * 40 - windowHeight)	{
-				player.setBackgroundY(currentMap.getHeight() * 40 - windowHeight);
-			}
-			else	{
-				player.setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
-			}
-			player.setCoordX(enteredDoor.getLink().getX());
-			player.setCoordY(enteredDoor.getLink().getY());
+		if (player.doorTransitionEh())	{
+			currentMap = player.getMap();
 		}
-		
 		if (dialogBox.writingEh())	{
 			dialogBox.update();	
 		}
@@ -119,7 +95,6 @@ public class GameData {
 					gameState = 1;
 					dialogBox.setVisible(true);
 					dialogBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
-					dialogBox.setWriting(true);
 					advanceDialogue();
 				}
 			}
@@ -127,12 +102,17 @@ public class GameData {
 	}
 	
 	public void advanceDialogue()	{
-		if (dialogBox.hasNextLine())	{
-			dialogBox.read();
+		if (dialogBox.writingEh() && !dialogBox.writeFasterEh())	{
+			dialogBox.writeFaster();
 		}
-		else	{
-			gameState = 0;
-			dialogBox.setVisible(false);
+		else if (!dialogBox.writingEh())	{
+			if (dialogBox.hasNextLine())	{
+				dialogBox.read();
+			}
+			else	{
+				gameState = 0;
+				dialogBox.setVisible(false);
+			}
 		}
 	}
 

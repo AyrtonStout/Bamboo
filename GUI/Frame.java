@@ -6,7 +6,7 @@ import javax.swing.*;
 
 /**
  * @author mobius
- * @version 0.12
+ * @version 0.15 - Sign Update
  */
 public class Frame {
 
@@ -22,9 +22,7 @@ public class Frame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.pack();
-		frame.setVisible(true);
-
-		
+		frame.setVisible(true);	
 		frame.setLocationRelativeTo(null);
 		
 	}

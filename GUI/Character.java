@@ -189,6 +189,33 @@ public class Character {
 				facing = queuedAction;
 			}	
 		}
+		
+		
+		if (transitionEh())	{
+			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
+			map = enteredDoor.getLink().getParentMap();
+			setMap(map);
+			if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
+				setBackgroundX(0);
+			}
+			else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > map.getWidth() * 40 - windowWidth)	{
+				setBackgroundX(map.getWidth() * 40 - windowWidth);
+			}
+			else	{
+				setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
+			}
+			if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
+				setBackgroundY(0);
+			}
+			else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > map.getHeight() * 40 - windowHeight)	{
+				setBackgroundY(map.getHeight() * 40 - windowHeight);
+			}
+			else	{
+				setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
+			}
+			setCoordX(enteredDoor.getLink().getX());
+			setCoordY(enteredDoor.getLink().getY());
+		}
 	}
 
 	/**
@@ -401,5 +428,8 @@ public class Character {
 	 */
 	public void setBackgroundY(int y)	{
 		backgroundY = y;
+	}
+	public boolean doorTransitionEh()	{
+		return doorTransition;
 	}
 }

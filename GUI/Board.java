@@ -72,6 +72,10 @@ public class Board extends JPanel implements ActionListener {
 	
 	
 	
+	/* 
+	 * Draws all of the game board's elements (which is basically the current map)
+	 * The drawing of other elements happens from in the GameData class
+	 */
 	@Override
 	public void paintComponent(Graphics g)	{
 		for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
@@ -134,9 +138,6 @@ public class Board extends JPanel implements ActionListener {
 				g.drawImage(drawnTile.getDoodad().getBackground(), data.getPlayer().getCoordX()*40 - data.getPlayer().getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
 						(data.getPlayer().getCoordY() + 2)*40 - data.getPlayer().getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
 			}
-		}
-		if (data.getTextBox().visibleEh())	{
-//			this.paintAll(g);
 		}
 	}
 }

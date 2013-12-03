@@ -11,7 +11,7 @@ import GUI.Enums.*;
  * Crude way of writing map files off to objects to load later
  */
 public class MapWriter {
-
+	
 	public static void main(String[] args)	{
 
 
@@ -175,8 +175,15 @@ public class MapWriter {
 		
 		ArrayList<String> sign1 = new ArrayList<String>();
 		sign1.add("I'm a sign, bro");
+		ArrayList<String> sign2 = new ArrayList<String>();
+		sign2.add("I'm a sign too, dude");
+		ArrayList<String> sign3 = new ArrayList<String>();
+		sign3.add("This is actually a mountain range. I promise.");
+		sign3.add("I'm a multi-sentenced sign. :O");
 		
 		tiles[18][5] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign1);
+		tiles[17][5] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign2);
+		tiles[13][2] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign3);
 				
 		Map map = new Map(tiles);
 		
