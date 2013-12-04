@@ -31,6 +31,7 @@ public class TextBox extends JPanel{
 	private boolean writing = false;
 	private boolean writeFaster = false;
 	private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
+	private ImageIcon textArrow = new ImageIcon("GUI/Resources/Text_Arrow.png");
 	private ArrayList<String> dialogue = new ArrayList<String>();
 	private ArrayList<String> currentFullSentence = new ArrayList<String>();
 	private String currentLabelSentence = "", pendingWord;
@@ -39,6 +40,8 @@ public class TextBox extends JPanel{
 	private int currentFrame = 0;
 	private final int FONT_HEIGHT = 28;
 	private final int MAX_LINE_LENGTH = 24;
+	private final int ARROW_FLASH_SPEED = 12;
+	private int currentArrowFlash = 0;
 	private int pendingWordLocation, currentLabel;
 	
 	private JPanel[] panels = new JPanel[] {new JPanel(), new JPanel(), new JPanel()};
@@ -89,15 +92,27 @@ public class TextBox extends JPanel{
 		this.setVisible(false);
 	}
 	
-	 /* 
+	/* 
 	 * Paints the background image (border) for the text box
 	 */
 	@Override
-	 protected void paintComponent(Graphics g) {
-	     if (visible == true)	{
-	    	 g.drawImage(background.getImage(), 0, 0, null);
-	     }
-	 }
+	protected void paintComponent(Graphics g) {
+		if (visible == true)	{
+			g.drawImage(background.getImage(), 0, 0, null);
+			if (!writing && dialogue.size() > 0)	{
+				if (currentArrowFlash > ARROW_FLASH_SPEED)	{
+					g.drawImage(textArrow.getImage(), 550, 130, null);
+					currentArrowFlash++;
+					if (currentArrowFlash > ARROW_FLASH_SPEED * 2)	{
+						currentArrowFlash = 0;
+					}
+				}
+				else	{
+					currentArrowFlash++;
+				}
+			}
+		}
+	}
 
 	/**
 	 * @return Whether or not the text box is currently visible
@@ -137,6 +152,7 @@ public class TextBox extends JPanel{
 		if (pendingWord == "")	{
 			if (currentFullSentence.size() == 0)	{
 				writing = false;
+				currentArrowFlash = 0;
 				currentLabelSentence = "";
 			}
 			else	{
