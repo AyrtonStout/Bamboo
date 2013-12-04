@@ -6,7 +6,7 @@ import javax.swing.*;
 
 /**
  * @author mobius
- * @version 0.15 - Sign Update
+ * @version 0.17 - NPC Update
  */
 public class Frame {
 
@@ -15,8 +15,11 @@ public class Frame {
 	
 	public Frame(){
 		JFrame frame = new JFrame();
-		Board gameBoard = new Board(WINDOW_WIDTH, WINDOW_HEIGHT);
-		gameBoard.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+		GameData data = new GameData(WINDOW_WIDTH, WINDOW_HEIGHT);
+		Board gameBoard = new Board(data);
+		InputManager input = new InputManager(gameBoard.getData());
+
+		frame.add(input);
 		frame.add(gameBoard);	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

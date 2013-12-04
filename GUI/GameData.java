@@ -10,10 +10,10 @@ import java.io.ObjectInputStream;
  */
 public class GameData {
 	
-	Character player;
+	private Character player;
 	private int gameState = 0;
-	Map[] worldMaps = new Map[2];
-	int windowWidth, windowHeight;
+	private Map[] worldMaps = new Map[2];
+	private int windowWidth, windowHeight;
 	private TextBox dialogueBox = new TextBox();
 	
 	private Map currentMap;
@@ -21,7 +21,7 @@ public class GameData {
 	private Map map2;
 	private Map map3;
 
-	ObjectInputStream stream;
+	private ObjectInputStream stream;
 	
 	/**
 	 * @param windowWidth Width of the game window
@@ -159,5 +159,17 @@ public class GameData {
 	 */
 	public TextBox getTextBox() {
 		return dialogueBox;
+	}
+	/**
+	 * @return The width of the game's window
+	 */
+	public int getWindowWidth()	{
+		return windowWidth;
+	}
+	/**
+	 * @return The height of the game's window
+	 */
+	public int getWindowHeight()	{
+		return windowHeight;
 	}
 }
