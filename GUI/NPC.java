@@ -7,6 +7,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import GUI.Enums.ACTION;
 import GUI.Enums.*;
 
 public class NPC implements Serializable {
@@ -69,21 +70,7 @@ public class NPC implements Serializable {
 			throw new IllegalArgumentException(facing + " is an improper argument for a character's facing");
 		}
 		else	{
-			this.facing = facing;
-			switch (facing)	{
-			case LEFT:
-				currentImage = left;
-				break;
-			case DOWN:
-				currentImage = down;
-				break;
-			case RIGHT:
-				currentImage = right;
-				break;
-			case UP:
-				currentImage = up;
-				break;
-			}
+			changeFacing(facing);
 		}
 		if (behavior != ACTION.STAND && behavior != ACTION.ROTATE && behavior != ACTION.RANDOM && behavior != ACTION.WANDER)	{
 			throw new IllegalArgumentException(behavior + " is an improper argument for a character's behavior");
@@ -110,20 +97,16 @@ public class NPC implements Serializable {
 		else if (behavior == ACTION.ROTATE)	{
 			switch (facing)	{
 			case LEFT:
-				facing = ACTION.DOWN;
-				currentImage = down;
+				changeFacing(ACTION.DOWN);
 				break;
 			case DOWN:
-				facing = ACTION.RIGHT;
-				currentImage = right;
+				changeFacing(ACTION.RIGHT);
 				break;
 			case RIGHT:
-				facing = ACTION.UP;
-				currentImage = up;
+				changeFacing(ACTION.UP);
 				break;
 			case UP:
-				facing = ACTION.LEFT;
-				currentImage = left;
+				changeFacing(ACTION.LEFT);
 				break;
 			}
 		}
@@ -131,20 +114,16 @@ public class NPC implements Serializable {
 			int random = rand.nextInt() % 4;
 			switch (random)	{
 			case 0:
-				facing = ACTION.DOWN;
-				currentImage = down;
+				changeFacing(ACTION.DOWN);
 				break;
 			case 1:
-				facing = ACTION.RIGHT;
-				currentImage = right;
+				changeFacing(ACTION.RIGHT);
 				break;
 			case 2:
-				facing = ACTION.UP;
-				currentImage = up;
+				changeFacing(ACTION.UP);
 				break;
 			case 3:
-				facing = ACTION.LEFT;
-				currentImage = left;
+				changeFacing(ACTION.LEFT);
 				break;
 			}
 		}
@@ -153,11 +132,34 @@ public class NPC implements Serializable {
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
+	private void changeFacing(ACTION newFacing)	{
+		switch (newFacing)	{
+		case LEFT:
+			facing = ACTION.LEFT;
+			currentImage = left;
+			break;
+		case DOWN:
+			facing = ACTION.DOWN;
+			currentImage = down;
+			break;
+		case RIGHT:
+			facing = ACTION.RIGHT;
+			currentImage = right;
+			break;
+		case UP:
+			facing = ACTION.UP;
+			currentImage = up;
+			break;
+		}
+	}
+	
 	public String getName()	{
 		return name;
 	}
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getDialogue()	{
-		return dialogue;
+		return (ArrayList<String>) dialogue.clone();
 	}
 	
 	public Image getImage()	{
@@ -178,6 +180,25 @@ public class NPC implements Serializable {
 	}
 	public void setMap(Map map)	{
 		currentMap = map;
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	public void setFacing(ACTION playerFacing) {
+		switch (playerFacing)	{
+		case LEFT:
+			changeFacing(ACTION.RIGHT);
+			break;
+		case UP:
+			changeFacing(ACTION.DOWN);
+			break;
+		case RIGHT:
+			changeFacing(ACTION.LEFT);
+			break;
+		case DOWN:
+			changeFacing(ACTION.UP);
+			break;
+		}
+		
 	}
 
 }

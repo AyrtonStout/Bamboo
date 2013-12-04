@@ -86,64 +86,31 @@ public class Board extends JPanel implements ActionListener {
 				}
 			}
 		}
-		/*
-		 * Draws all of the tiles' doodads
-		 */
+		
+		NPC drawnNPC;
+		
 		for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
 			for (int column = 0; column < data.getCurrentMap().getArray()[row].length; column++)	{
+
+				if (data.getPlayer().getCoordX() == row && data.getPlayer().getCoordY() == column)	{
+					g.drawImage(data.getPlayer().getImage(), data.getPlayer().getCharX(), data.getPlayer().getCharY(), null);
+				}
+
+				for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
+					drawnNPC = data.getCurrentMap().getNPCs().get(i);
+					if (drawnNPC.getCoordX() == row && drawnNPC.getCoordY() == column)	{
+						g.drawImage(drawnNPC.getImage(), drawnNPC.getCharX() - data.getPlayer().getBackgroundX(), 
+								drawnNPC.getCharY() - data.getPlayer().getBackgroundY(), null);
+					}
+				}
 				if (data.getCurrentMap().getArray()[row][column].getDoodad() != null)	{
 					g.drawImage(data.getCurrentMap().getArray()[row][column].getDoodad().getBackground(), 
-							row*40 - data.getPlayer().getBackgroundX() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetX(), 
-							column*40 - data.getPlayer().getBackgroundY() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetY(), null);
+						row*40 - data.getPlayer().getBackgroundX() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetX(), 
+						column*40 - data.getPlayer().getBackgroundY() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetY(), null);
+
 				}
 			}
 		}
-		/*
-		 * Draws all NPCs
-		 */
-		g.drawImage(data.getPlayer().getImage(), data.getPlayer().getCharX(), data.getPlayer().getCharY(), null);
-		NPC drawnNPC;
-		for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
-			drawnNPC = data.getCurrentMap().getNPCs().get(i);
-			g.drawImage(drawnNPC.getImage(), drawnNPC.getCharX() - data.getPlayer().getBackgroundX(), 
-					drawnNPC.getCharY() - data.getPlayer().getBackgroundY(), null);
-		}
-		
-		/*
-		 * Redraws the doodads that are below the character so that they appear above it
-		 */
-		Tile drawnTile;
-		//Down Center
-		if (data.getPlayer().getCoordY() + 1 < data.getCurrentMap().getArray()[0].length)	{
-			drawnTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX()][data.getPlayer().getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(), data.getPlayer().getCoordX()*40 - data.getPlayer().getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
-						(data.getPlayer().getCoordY() + 1)*40 - data.getPlayer().getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}
-		//Down Right
-		if (data.getPlayer().getCoordY() + 1 < data.getCurrentMap().getArray()[0].length && data.getPlayer().getCoordX() + 1 < data.getCurrentMap().getArray().length)	{
-			drawnTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX() + 1][data.getPlayer().getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(),	(data.getPlayer().getCoordX() + 1)*40 - data.getPlayer().getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
-						(data.getPlayer().getCoordY() + 1)*40 - data.getPlayer().getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}	
-		//Down Left
-		if (data.getPlayer().getCoordY() + 1 < data.getCurrentMap().getArray()[0].length && data.getPlayer().getCoordX() - 1 > 0)	{
-			drawnTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX() - 1][data.getPlayer().getCoordY() + 1];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(),	(data.getPlayer().getCoordX() - 1)*40 - data.getPlayer().getBackgroundX() + drawnTile.getDoodad().getOffsetX(), 
-						(data.getPlayer().getCoordY() + 1)*40 - data.getPlayer().getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}
-		//Double Down
-		if (data.getPlayer().getCoordY() + 2 < data.getCurrentMap().getArray()[0].length)	{
-			drawnTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX()][data.getPlayer().getCoordY() + 2];
-			if (drawnTile.getDoodad() != null && drawnTile.getDoodad().dominantEh())	{
-				g.drawImage(drawnTile.getDoodad().getBackground(), data.getPlayer().getCoordX()*40 - data.getPlayer().getBackgroundX() + drawnTile.getDoodad().getOffsetX(),
-						(data.getPlayer().getCoordY() + 2)*40 - data.getPlayer().getBackgroundY() + drawnTile.getDoodad().getOffsetY(), null);
-			}
-		}
+
 	}
 }

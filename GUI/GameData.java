@@ -81,15 +81,21 @@ public class GameData {
 	public void activate()	{
 		if (gameState == 0)	{
 			Tile facedTile = null;
+			int facedX = player.getCoordX();
+			int facedY = player.getCoordY();
 			switch (player.getFacing())	{
 			case LEFT:
-				facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()]; break;
+				facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()];
+				facedX--; break;
 			case UP:
-				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; break;
+				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; 
+				facedY--; break;
 			case RIGHT:
-				facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; break;
+				facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; 
+				facedX++; break;
 			case DOWN:
-				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; break;
+				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; 
+				facedY++; break;
 			}
 			if (facedTile.getDoodad() != null)	{
 				if(facedTile.getDoodad().getClass() == Interactable.class)	{
@@ -100,6 +106,15 @@ public class GameData {
 					gameState = 1;
 					dialogBox.setVisible(true);
 					dialogBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
+					advanceDialogue();
+				}
+			}
+			for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
+				if (currentMap.getNPCs().get(i).getCoordX() == facedX && currentMap.getNPCs().get(i).getCoordY() == facedY)	{
+					dialogBox.setDialogue(currentMap.getNPCs().get(i).getDialogue());
+					currentMap.getNPCs().get(i).setFacing(player.getFacing());
+					gameState = 1;
+					dialogBox.setVisible(true);
 					advanceDialogue();
 				}
 			}
