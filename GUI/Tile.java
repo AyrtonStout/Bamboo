@@ -127,4 +127,11 @@ public class Tile implements Serializable {
 	public Doodad getDoodad()	{
 		return doodad;
 	}
+	/**
+	 * @param b Whether or not the tile should be a moveblock
+	 */
+	public void setMoveBlock(boolean b) {
+		moveBlock = b;
+		
+	}
 }

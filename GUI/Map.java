@@ -14,9 +14,10 @@ public class Map extends JPanel implements Serializable {
 	private static final long serialVersionUID = 861097006138182602L;
 	Tile[][] tiles;
 	ArrayList<Door> doors = new ArrayList<Door>();
+	ArrayList<NPC> NPCs = new ArrayList<NPC>();
 	int windowWidth, windowHeight;
 	
-	public Map(Tile[][] tiles)	{
+	public Map(Tile[][] tiles, ArrayList<NPC> NPCs)	{
 		this.tiles = tiles;
 		
 		for (int row = 0; row < tiles.length; row++)	{
@@ -28,6 +29,8 @@ public class Map extends JPanel implements Serializable {
 				}
 			}
 		}
+		
+		this.NPCs = NPCs;
 	}
 	
 	/**
@@ -41,6 +44,9 @@ public class Map extends JPanel implements Serializable {
 	 */
 	public void addDoor(Door door)	{
 		doors.add(door);
+	}
+	public ArrayList<NPC> getNPCs()	{
+		return NPCs;
 	}
 	/**
 	 * @param x The X coordinate of the searched Door

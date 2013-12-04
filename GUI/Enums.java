@@ -4,7 +4,7 @@ public class Enums {
 	
 	public enum ACTION {
 
-		LEFT, RIGHT, UP, DOWN, STAND;
+		LEFT, RIGHT, UP, DOWN, STAND, WANDER, ROTATE, RANDOM,;
 		
 	}
 	
@@ -29,10 +29,25 @@ public class Enums {
 	public enum DOOR {
 		
 		WALL_CAVE_DOOR, TRANSITION_LEFT, TRANSITION_RIGHT;
+		
 	}
 	
 	public enum SIGN {
+		
 		WOOD;
+		
+	}
+	
+	
+	public enum GENERIC_NPC	{
+		
+		
+	}
+	
+	public enum NAMED_NPC	{
+		
+		TERRA;
+		
 	}
 
 }

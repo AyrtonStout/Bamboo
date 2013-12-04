@@ -99,9 +99,15 @@ public class Board extends JPanel implements ActionListener {
 			}
 		}
 		/*
-		 * Draws the player character
+		 * Draws all NPCs
 		 */
 		g.drawImage(data.getPlayer().getImage(), data.getPlayer().getCharX(), data.getPlayer().getCharY(), null);
+		NPC drawnNPC;
+		for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
+			drawnNPC = data.getCurrentMap().getNPCs().get(i);
+			g.drawImage(drawnNPC.getImage(), drawnNPC.getCharX() - data.getPlayer().getBackgroundX(), 
+					drawnNPC.getCharY() - data.getPlayer().getBackgroundY(), null);
+		}
 		
 		/*
 		 * Redraws the doodads that are below the character so that they appear above it

@@ -35,6 +35,8 @@ public class MapWriter {
 		map1.getDoors().get(0).setParentMap(map1);
 		map1.getDoors().get(0).setParentMap(map2);
 		
+		map1.getNPCs().get(0).setMap(map1);
+		
 		ObjectOutputStream stream;
 		try {
 			stream = new ObjectOutputStream(new FileOutputStream ("GUI/Maps/test1"));
@@ -79,7 +81,10 @@ public class MapWriter {
 				tiles[i][j] = waterTile;
 			}
 		}
-		Map map = new Map(tiles);
+		
+		ArrayList<NPC> NPCs = new ArrayList<NPC>();
+		
+		Map map = new Map(tiles, NPCs);
 		return map;
 	}
 	
@@ -106,7 +111,9 @@ public class MapWriter {
 		tiles[7][7] = new Tile(TILE.GROUND_CAVE, INTERACTABLE.TREASURE_CHEST);
 		tiles[7][3] = new Tile(TILE.GROUND_CAVE, DOOR.WALL_CAVE_DOOR, 7, 3);
 		
-		Map map = new Map(tiles);
+		ArrayList<NPC> NPCs = new ArrayList<NPC>();
+		
+		Map map = new Map(tiles, NPCs);
 		return map;
 	}
 
@@ -187,7 +194,16 @@ public class MapWriter {
 		tiles[17][5] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign2);
 		tiles[13][2] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign3);
 				
-		Map map = new Map(tiles);
+		ArrayList<String> terraTalk = new ArrayList<String>();
+		terraTalk.add("I have teal hair");
+		
+		ArrayList<NPC> NPCs = new ArrayList<NPC>();
+		
+		NPC terra = new NPC(NAMED_NPC.TERRA, ACTION.DOWN, ACTION.STAND, terraTalk, 8, 2);
+		
+		NPCs.add(terra);
+		
+		Map map = new Map(tiles, NPCs);
 		
 		return map;
 	}

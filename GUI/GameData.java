@@ -52,6 +52,8 @@ public class GameData {
 		map3.getDoors().get(0).setParentMap(map3);
 		map3.getDoors().get(1).setParentMap(map3);
 		
+		map1.getNPCs().get(0).setMap(map1);
+		
 		currentMap = map1;
 		player.setMap(currentMap);
 	}
@@ -68,6 +70,9 @@ public class GameData {
 		}
 		if (dialogBox.writingEh())	{
 			dialogBox.update();	
+		}
+		for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
+			currentMap.getNPCs().get(i).update();
 		}
 	}
 	
