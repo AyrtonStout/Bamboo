@@ -78,37 +78,46 @@ public class Board extends JPanel implements ActionListener {
 	 */
 	@Override
 	public void paintComponent(Graphics g)	{
-		for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
-			for (int column = 0; column < data.getCurrentMap().getArray()[row].length; column++)	{
-				if (data.getCurrentMap().getArray()[row][column] != null)	{
-					g.drawImage(data.getCurrentMap().getArray()[row][column].getBackground(), 
-							row*40 - data.getPlayer().getBackgroundX(), column*40 - data.getPlayer().getBackgroundY(), null);
+		Doodad doodad;
+		
+		//Draws all tiles and background doodads
+		for (int column = 0; column < data.getCurrentMap().getArray()[0].length; column++)	{
+			for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
+				g.drawImage(data.getCurrentMap().getArray()[row][column].getBackground(), 
+						row*40 - data.getPlayer().getBackgroundX(), column*40 - data.getPlayer().getBackgroundY(), null);
+				
+				doodad = data.getCurrentMap().getArray()[row][column].getDoodad();
+				if (doodad != null && !doodad.dominantEh())	{
+					g.drawImage(doodad.getBackground(), row*40 - data.getPlayer().getBackgroundX() + doodad.getOffsetX(), 
+						column*40 - data.getPlayer().getBackgroundY() + doodad.getOffsetY(), null);
 				}
 			}
 		}
 		
-		NPC drawnNPC;
+		NPC npc;
 		
-		for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
-			for (int column = 0; column < data.getCurrentMap().getArray()[row].length; column++)	{
-
+		//Draws all characters and dominant doodads (doodads that are meant to be drawn over the player) one row at a time
+		for (int column = 0; column < data.getCurrentMap().getArray()[0].length; column++)	{
+			for (int row = 0; row < data.getCurrentMap().getArray().length; row++)	{
+				
 				if (data.getPlayer().getCoordX() == row && data.getPlayer().getCoordY() == column)	{
 					g.drawImage(data.getPlayer().getImage(), data.getPlayer().getCharX(), data.getPlayer().getCharY(), null);
 				}
-
+				
 				for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
-					drawnNPC = data.getCurrentMap().getNPCs().get(i);
-					if (drawnNPC.getCoordX() == row && drawnNPC.getCoordY() == column)	{
-						g.drawImage(drawnNPC.getImage(), drawnNPC.getCharX() - data.getPlayer().getBackgroundX(), 
-								drawnNPC.getCharY() - data.getPlayer().getBackgroundY(), null);
+					npc = data.getCurrentMap().getNPCs().get(i);
+					if (npc.getCoordX() == row && npc.getCoordY() == column)	{
+						g.drawImage(npc.getImage(), npc.getCharX() - data.getPlayer().getBackgroundX(), 
+								npc.getCharY() - data.getPlayer().getBackgroundY(), null);
 					}
 				}
-				if (data.getCurrentMap().getArray()[row][column].getDoodad() != null)	{
-					g.drawImage(data.getCurrentMap().getArray()[row][column].getDoodad().getBackground(), 
-						row*40 - data.getPlayer().getBackgroundX() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetX(), 
-						column*40 - data.getPlayer().getBackgroundY() + data.getCurrentMap().getArray()[row][column].getDoodad().getOffsetY(), null);
-
+				
+				doodad = data.getCurrentMap().getArray()[row][column].getDoodad();
+				if (doodad != null && doodad.dominantEh())	{
+					g.drawImage(doodad.getBackground(), row*40 - data.getPlayer().getBackgroundX() + doodad.getOffsetX(), 
+						column*40 - data.getPlayer().getBackgroundY() + doodad.getOffsetY(), null);
 				}
+				
 			}
 		}
 

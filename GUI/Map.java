@@ -13,24 +13,35 @@ public class Map extends JPanel implements Serializable {
 
 	private static final long serialVersionUID = 861097006138182602L;
 	Tile[][] tiles;
+	boolean[][] moveBlocks;
 	ArrayList<Door> doors = new ArrayList<Door>();
 	ArrayList<NPC> NPCs = new ArrayList<NPC>();
 	int windowWidth, windowHeight;
 	
 	public Map(Tile[][] tiles, ArrayList<NPC> NPCs)	{
 		this.tiles = tiles;
+		moveBlocks = new boolean[tiles.length][tiles[0].length];
 		
 		for (int row = 0; row < tiles.length; row++)	{
 			for (int column = 0; column < tiles[row].length; column++)	{
 				if (tiles[row][column].getDoodad() != null)	{
 					if (tiles[row][column].getDoodad().getClass() == Door.class)	{
 						doors.add((Door) tiles[row][column].getDoodad());
+						
 					}
+				}
+				if (tiles[row][column].moveBlockEh())	{
+					moveBlocks[row][column] = true;
 				}
 			}
 		}
 		
 		this.NPCs = NPCs;
+		
+		for (int i = 0; i < NPCs.size(); i++)	{
+			moveBlocks[NPCs.get(i).getCoordX()][NPCs.get(i).getCoordY()] = true;
+		}
+		
 	}
 	
 	/**
@@ -93,6 +104,10 @@ public class Map extends JPanel implements Serializable {
 	 */
 	public int getDrawingY()	{
 		return tiles[0].length * 40;
+	}
+	
+	public boolean[][] getMoveblocks()	{
+		return moveBlocks;
 	}
 	
 }

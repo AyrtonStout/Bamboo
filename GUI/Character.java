@@ -263,54 +263,29 @@ public class Character {
 	 * Even if the move is false, the player will turn to face the pressed direction
 	 */
 	private boolean validMoveEh (ACTION action)        {
-		Tile[][] moveCheck = map.getArray();
+		boolean[][] moveCheck = map.getMoveblocks();
 		if (action == ACTION.LEFT)        {
-			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())        {
+			if (coordX == 0 || moveCheck[coordX-1][coordY] == true)        {
 				currentImage = left.getImage();
 				return false;
 			}
-
-			for (int i = 0; i < map.getNPCs().size(); i++)	{
-				if (map.getNPCs().get(i).getCoordX() == coordX - 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
-					currentImage = left.getImage();
-					return false;
-				}
-			}
 		}
 		else if (action == ACTION.UP)        {
-			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())        {
+			if (coordY == 0 || moveCheck[coordX][coordY-1] == true)        {
 				currentImage = up.getImage();
 				return false;
 			}
-			for (int i = 0; i < map.getNPCs().size(); i++)	{
-				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY - 1)	{
-					currentImage = up.getImage();
-					return false;
-				}
-			}
 		}
 		else if (action == ACTION.RIGHT)        {
-			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())        {
+			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY] == true)        {
 				currentImage = right.getImage();
 				return false;
 			}
-			for (int i = 0; i < map.getNPCs().size(); i++)	{
-				if (map.getNPCs().get(i).getCoordX() == coordX + 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
-					currentImage = right.getImage();
-					return false;
-				}
-			}
 		}
 		else if (action == ACTION.DOWN)        {
-			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())        {
+			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1] == true)        {
 				currentImage = down.getImage();
 				return false;
-			}
-			for (int i = 0; i < map.getNPCs().size(); i++)	{
-				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY + 1)	{
-					currentImage = down.getImage();
-					return false;
-				}
 			}
 		}
 		return true;

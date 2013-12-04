@@ -7,7 +7,6 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.ACTION;
 import GUI.Enums.*;
 
 public class NPC implements Serializable {
@@ -131,6 +130,61 @@ public class NPC implements Serializable {
 			
 		}
 	}
+	
+//	private boolean validMoveEh (ACTION action)        {
+//		Tile[][] moveCheck = map.getArray();
+//		if (action == ACTION.LEFT)        {
+//			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())        {
+//				currentImage = left.getImage();
+//				return false;
+//			}
+//
+//			for (int i = 0; i < map.getNPCs().size(); i++)	{
+//				if (map.getNPCs().get(i).getCoordX() == coordX - 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
+//					currentImage = left.getImage();
+//					return false;
+//				}
+//			}
+//		}
+//		else if (action == ACTION.UP)        {
+//			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())        {
+//				currentImage = up.getImage();
+//				return false;
+//			}
+//			for (int i = 0; i < map.getNPCs().size(); i++)	{
+//				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY - 1)	{
+//					currentImage = up.getImage();
+//					return false;
+//				}
+//			}
+//		}
+//		else if (action == ACTION.RIGHT)        {
+//			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())        {
+//				currentImage = right.getImage();
+//				return false;
+//			}
+//			for (int i = 0; i < map.getNPCs().size(); i++)	{
+//				if (map.getNPCs().get(i).getCoordX() == coordX + 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
+//					currentImage = right.getImage();
+//					return false;
+//				}
+//			}
+//		}
+//		else if (action == ACTION.DOWN)        {
+//			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())        {
+//				currentImage = down.getImage();
+//				return false;
+//			}
+//			for (int i = 0; i < map.getNPCs().size(); i++)	{
+//				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY + 1)	{
+//					currentImage = down.getImage();
+//					return false;
+//				}
+//			}
+//		}
+//		return true;
+//	}
+	
 	
 	@SuppressWarnings("incomplete-switch")
 	private void changeFacing(ACTION newFacing)	{

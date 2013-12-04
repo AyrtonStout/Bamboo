@@ -14,7 +14,7 @@ public class GameData {
 	private int gameState = 0;
 	Map[] worldMaps = new Map[2];
 	int windowWidth, windowHeight;
-	private TextBox dialogBox = new TextBox();
+	private TextBox dialogueBox = new TextBox();
 	
 	private Map currentMap;
 	private Map map1;
@@ -68,8 +68,8 @@ public class GameData {
 		if (player.doorTransitionEh())	{
 			currentMap = player.getMap();
 		}
-		if (dialogBox.writingEh())	{
-			dialogBox.update();	
+		if (dialogueBox.writingEh())	{
+			dialogueBox.update();	
 		}
 		for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
 			currentMap.getNPCs().get(i).update();
@@ -104,17 +104,17 @@ public class GameData {
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
 					((Sign) facedTile.getDoodad()).getDialogue();
 					gameState = 1;
-					dialogBox.setVisible(true);
-					dialogBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
+					dialogueBox.setVisible(true);
+					dialogueBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
 					advanceDialogue();
 				}
 			}
 			for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
 				if (currentMap.getNPCs().get(i).getCoordX() == facedX && currentMap.getNPCs().get(i).getCoordY() == facedY)	{
-					dialogBox.setDialogue(currentMap.getNPCs().get(i).getDialogue());
+					dialogueBox.setDialogue(currentMap.getNPCs().get(i).getDialogue());
 					currentMap.getNPCs().get(i).setFacing(player.getFacing());
 					gameState = 1;
-					dialogBox.setVisible(true);
+					dialogueBox.setVisible(true);
 					advanceDialogue();
 				}
 			}
@@ -122,16 +122,16 @@ public class GameData {
 	}
 	
 	public void advanceDialogue()	{
-		if (dialogBox.writingEh() && !dialogBox.writeFasterEh())	{
-			dialogBox.writeFaster();
+		if (dialogueBox.writingEh() && !dialogueBox.writeFasterEh())	{
+			dialogueBox.writeFaster();
 		}
-		else if (!dialogBox.writingEh())	{
-			if (dialogBox.hasNextLine())	{
-				dialogBox.read();
+		else if (!dialogueBox.writingEh())	{
+			if (dialogueBox.hasNextLine())	{
+				dialogueBox.read();
 			}
 			else	{
 				gameState = 0;
-				dialogBox.setVisible(false);
+				dialogueBox.setVisible(false);
 			}
 		}
 	}
@@ -154,9 +154,10 @@ public class GameData {
 	public Map getCurrentMap()	{
 		return currentMap;
 	}
-
-
+	/**
+	 * @return The game's bottom dialog box used for dialogue
+	 */
 	public TextBox getTextBox() {
-		return dialogBox;
+		return dialogueBox;
 	}
 }
