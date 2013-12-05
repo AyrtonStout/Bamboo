@@ -1,47 +1,28 @@
 package GUI;
 
-import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import GUI.Enums.ACTION;
 import GUI.Enums.*;
 
-public class NPC implements Serializable {
+public class NPC extends Character implements Serializable {
 	
 	private static final long serialVersionUID = 5327185907689402233L;
-	private ACTION facing;
 	private ACTION behavior;
 	private ArrayList<String> dialogue;
-	private String name;
-	private int coordX;
-	private int coordY;
-	private int charX;
-	private int charY;
+	private boolean talking = false;
 	
 	@SuppressWarnings("unused")
 	private Map currentMap;
 	
-	private final int OFFSET_X = 4;
-	private final int OFFSET_Y = -10;
-	
-	private ImageIcon currentImage;
-	
-	private ImageIcon left;
-	private ImageIcon up;
-	private ImageIcon right;
-	private ImageIcon down;
-
-	private ImageIcon walkLeft;
-	private ImageIcon walkUp;
-	private ImageIcon walkRight;
-	private ImageIcon walkDown;
-	
 	Random rand = new Random();
 	
-	@SuppressWarnings("incomplete-switch")
+	ImageIcon walkRightz = new ImageIcon("GUI/Resources/Celes - Walk (Right).gif");
+	
 	public NPC(NAMED_NPC type, ACTION facing, ACTION behavior, ArrayList<String> dialogue, int coordX, int coordY)	{
 		
 		if (type == NAMED_NPC.TERRA)	{
@@ -53,10 +34,16 @@ public class NPC implements Serializable {
 			right= new ImageIcon("GUI/Resources/Terra (Right).gif");
 			down= new ImageIcon("GUI/Resources/Terra (Down).gif");
 
-			walkLeft = new ImageIcon("GUI/Resources/Terra - Walk (Left).gif");
-			walkUp = new ImageIcon("GUI/Resources/Terra - Walk (Up).gif");
-			walkRight = new ImageIcon("GUI/Resources/Terra - Walk (Right).gif");
-			walkDown = new ImageIcon("GUI/Resources/Terra - Walk (Down).gif");
+		}
+		
+		else if (type == NAMED_NPC.CELES)	{
+			
+			name = "Celes";
+			
+			left = new ImageIcon("GUI/Resources/Celes (Left).gif");
+			up= new ImageIcon("GUI/Resources/Celes (Up).gif");
+			right= new ImageIcon("GUI/Resources/Celes (Right).gif");
+			down= new ImageIcon("GUI/Resources/Celes (Down).gif");
 			
 		}
 		
@@ -66,11 +53,13 @@ public class NPC implements Serializable {
 		charX = coordX * 40 + OFFSET_X;
 		charY = coordY * 40 + OFFSET_Y;
 		
+		speed = 1;
+
 		if (facing != ACTION.LEFT && facing != ACTION.RIGHT && facing != ACTION.UP && facing != ACTION.DOWN)	{
 			throw new IllegalArgumentException(facing + " is an improper argument for a character's facing");
 		}
 		else	{
-			changeFacing(facing);
+			changeFacing(facing); 
 		}
 		if (behavior != ACTION.STAND && behavior != ACTION.ROTATE && behavior != ACTION.RANDOM && behavior != ACTION.WANDER)	{
 			throw new IllegalArgumentException(behavior + " is an improper argument for a character's behavior");
@@ -84,176 +73,182 @@ public class NPC implements Serializable {
 		else	{
 			this.dialogue = dialogue;
 		}	
-		
-		
 	}
 	
-	@SuppressWarnings("incomplete-switch")
+	
+	
+	/**
+	 * Update's the NPC's next action based on their already specified behavior
+	 * NPC updates are largely ignored if they are initiated in dialogue
+	 */
 	public void update()	{
 		
 		if (behavior == ACTION.STAND)	{
 			
 		}
 		else if (behavior == ACTION.ROTATE)	{
-			switch (facing)	{
-			case LEFT:
-				changeFacing(ACTION.DOWN);
-				break;
-			case DOWN:
-				changeFacing(ACTION.RIGHT);
-				break;
-			case RIGHT:
-				changeFacing(ACTION.UP);
-				break;
-			case UP:
-				changeFacing(ACTION.LEFT);
-				break;
-			}
+			rotatingBehavior();
 		}
 		else if (behavior == ACTION.RANDOM)	{
-			int random = rand.nextInt() % 4;
-			switch (random)	{
-			case 0:
-				changeFacing(ACTION.DOWN);
-				break;
-			case 1:
-				changeFacing(ACTION.RIGHT);
-				break;
-			case 2:
-				changeFacing(ACTION.UP);
-				break;
-			case 3:
-				changeFacing(ACTION.LEFT);
-				break;
-			}
+			randomBehavior();
 		}
 		else if (behavior == ACTION.WANDER)	{
-			
+			wanderingBehavior();
 		}
 	}
-	
-//	private boolean validMoveEh (ACTION action)        {
-//		Tile[][] moveCheck = map.getArray();
-//		if (action == ACTION.LEFT)        {
-//			if (coordX == 0 || moveCheck[coordX-1][coordY].moveBlockEh())        {
-//				currentImage = left.getImage();
-//				return false;
-//			}
-//
-//			for (int i = 0; i < map.getNPCs().size(); i++)	{
-//				if (map.getNPCs().get(i).getCoordX() == coordX - 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
-//					currentImage = left.getImage();
-//					return false;
-//				}
-//			}
-//		}
-//		else if (action == ACTION.UP)        {
-//			if (coordY == 0 || moveCheck[coordX][coordY-1].moveBlockEh())        {
-//				currentImage = up.getImage();
-//				return false;
-//			}
-//			for (int i = 0; i < map.getNPCs().size(); i++)	{
-//				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY - 1)	{
-//					currentImage = up.getImage();
-//					return false;
-//				}
-//			}
-//		}
-//		else if (action == ACTION.RIGHT)        {
-//			if (coordX == map.getWidth() -1 || moveCheck[coordX+1][coordY].moveBlockEh())        {
-//				currentImage = right.getImage();
-//				return false;
-//			}
-//			for (int i = 0; i < map.getNPCs().size(); i++)	{
-//				if (map.getNPCs().get(i).getCoordX() == coordX + 1 && map.getNPCs().get(i).getCoordY() == coordY)	{
-//					currentImage = right.getImage();
-//					return false;
-//				}
-//			}
-//		}
-//		else if (action == ACTION.DOWN)        {
-//			if (coordY == map.getHeight() -1 || moveCheck[coordX][coordY+1].moveBlockEh())        {
-//				currentImage = down.getImage();
-//				return false;
-//			}
-//			for (int i = 0; i < map.getNPCs().size(); i++)	{
-//				if (map.getNPCs().get(i).getCoordX() == coordX && map.getNPCs().get(i).getCoordY() == coordY + 1)	{
-//					currentImage = down.getImage();
-//					return false;
-//				}
-//			}
-//		}
-//		return true;
-//	}
-	
+
+	/* 
+	 * Changes the NPCs pixel representation according to the
+	 * direction that they are moving
+	 */
+	@SuppressWarnings("incomplete-switch")
+	@Override
+	protected void updatePixels(ACTION action) {
+		switch (action)	{
+		case LEFT:
+			charX -= speed; break;
+		case RIGHT:
+			charX += speed; break;
+		case UP:
+			charY -= speed; break;
+		case DOWN:
+			charY += speed; break;
+		}
+	}
 	
 	@SuppressWarnings("incomplete-switch")
-	private void changeFacing(ACTION newFacing)	{
-		switch (newFacing)	{
+	public void invertFacing(ACTION action)	{
+		switch (action)	{
 		case LEFT:
-			facing = ACTION.LEFT;
-			currentImage = left;
+			changeFacing(ACTION.RIGHT); break;
+		case RIGHT:
+			changeFacing(ACTION.LEFT); break;
+		case UP:
+			changeFacing(ACTION.DOWN); break;
+		case DOWN:
+			changeFacing(ACTION.UP); break;
+		}
+	}
+	
+	/**
+	 * Default behavior for a rotating NPC. A rotating NPC will change 
+	 * direction at regular intervals in a counter-clockwise fashion
+	 */
+	@SuppressWarnings("incomplete-switch")
+	private void rotatingBehavior()	{
+		switch (facing)	{
+		case LEFT:
+			changeFacing(ACTION.DOWN);
 			break;
 		case DOWN:
-			facing = ACTION.DOWN;
-			currentImage = down;
+			changeFacing(ACTION.RIGHT);
 			break;
 		case RIGHT:
-			facing = ACTION.RIGHT;
-			currentImage = right;
+			changeFacing(ACTION.UP);
 			break;
 		case UP:
-			facing = ACTION.UP;
-			currentImage = up;
+			changeFacing(ACTION.LEFT);
 			break;
 		}
 	}
 	
+	/**
+	 * Default random behavior will cause an NPC to randomly
+	 * change their facing at random intervals
+	 */
+	private void randomBehavior()	{
+		int random = rand.nextInt() % 4;
+		switch (random)	{
+		case 0:
+			changeFacing(ACTION.DOWN);
+			break;
+		case 1:
+			changeFacing(ACTION.RIGHT);
+			break;
+		case 2:
+			changeFacing(ACTION.UP);
+			break;
+		case 3:
+			changeFacing(ACTION.LEFT);
+			break;
+		}
+	}
+
+	/**
+	 * Default wandering behavior will cause an NPC to pick a direction
+	 * at random and, if it is valid, proceed to walk one step in that 
+	 * direction. 
+	 */
+	private void wanderingBehavior()	{
+		if (moving)	{
+			updatePixels(action);
+			remainingSteps--;
+			if (remainingSteps == 0)	{
+				moving = false;
+				currentImage = stopAnimation(action);
+				updateCoordinate(facing, false);
+			}
+		}
+		else if (!talking)	{
+			int random = rand.nextInt() % 100;
+			if (Math.abs(random) < 2)	{
+				random = rand.nextInt() % 4;
+				switch (random)	{
+				case 0:
+					changeFacing(ACTION.DOWN);
+					break;
+				case 1:
+					changeFacing(ACTION.RIGHT);
+					break;
+				case 2:
+					changeFacing(ACTION.UP);
+					break;
+				case 3:
+					changeFacing(ACTION.LEFT);
+					break;
+				}
+				if (validMoveEh(facing))	{
+					action = facing;
+					currentImage = startAnimation(action);
+					moving = true;
+					remainingSteps = STEP_SIZE;
+					updateCoordinate(facing, true);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @return The name of the NPC
+	 */
 	public String getName()	{
 		return name;
 	}
+	/**
+	 * @return An ArrayList of Strings containing an NPC's dialogue
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getDialogue()	{
 		return (ArrayList<String>) dialogue.clone();
 	}
-	
-	public Image getImage()	{
-		return currentImage.getImage();
+	@Override
+	public void setCoordX(int x) {
+		coordX = x;	
 	}
-	
-	public int getCoordX()	{
-		return coordX;
+	@Override
+	public void setCoordY(int y) {
+		coordY = y;
 	}
-	public int getCoordY()	{
-		return coordY;
+	/**
+	 * @return Whether or not the NPC is talking with someone
+	 */
+	public boolean talkingEh()	{
+		return talking;
 	}
-	public int getCharX()	{
-		return charX;
+	/**
+	 * @param b Set whether or not the NPC is talking with someone
+	 */
+	public void setTalking(boolean b)	{
+		talking = b;
 	}
-	public int getCharY()	{
-		return charY;
-	}
-	public void setMap(Map map)	{
-		currentMap = map;
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	public void setFacing(ACTION playerFacing) {
-		switch (playerFacing)	{
-		case LEFT:
-			changeFacing(ACTION.RIGHT);
-			break;
-		case UP:
-			changeFacing(ACTION.DOWN);
-			break;
-		case RIGHT:
-			changeFacing(ACTION.LEFT);
-			break;
-		case DOWN:
-			changeFacing(ACTION.UP);
-			break;
-		}
-		
-	}
-
 }

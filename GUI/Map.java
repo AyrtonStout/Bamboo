@@ -110,4 +110,15 @@ public class Map extends JPanel implements Serializable {
 		return moveBlocks;
 	}
 	
+	//TODO Figure out why I have to do this and can't in the MapWriter
+	public void initializeMap(Map map)	{
+		for (int i = 0; i < doors.size(); i++)	{
+			doors.get(i).setParentMap(map);
+		}
+		for (int i = 0; i < NPCs.size(); i++)	{
+			NPCs.get(i).setMap(map);
+			NPCs.get(i).initializeImages();
+		}
+	}
+	
 }

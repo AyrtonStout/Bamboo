@@ -3,6 +3,10 @@ package GUI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
+import GUI.Enums.ACTION;
+import GUI.Enums.NAMED_NPC;
 
 /**
  * @author mobius
@@ -12,14 +16,11 @@ public class GameData {
 	
 	private Player player;
 	private int gameState = 0;
-	private Map[] worldMaps = new Map[2];
+	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
 	private TextBox dialogueBox = new TextBox();
 	
 	private Map currentMap;
-	private Map map1;
-	private Map map2;
-	private Map map3;
 
 	private ObjectInputStream stream;
 	
@@ -30,31 +31,24 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
-		player = new Player(windowWidth, windowHeight);
+		player = new Player("Sabin", windowWidth, windowHeight);
+		player.initializeImages();
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
 		try {
 			stream = new ObjectInputStream( new FileInputStream(new File("GUI/Maps/test1")));
-			map1 = (Map) stream.readObject();
-			map2 = (Map) stream.readObject();
-			map3 = (Map) stream.readObject();
+			for (int i = 0; i < 3; i++)	{
+				worldMaps.add((Map) stream.readObject());
+				worldMaps.get(i).initializeMap(worldMaps.get(i));
+			}
 		} catch (Exception e) {
 			System.err.println("Something went horribly wrong grabbing the map!");
 			e.printStackTrace();
 		}
 		
-		//TODO Figure out why I have to do this in GameData and not MapWriter
-		map1.getDoors().get(0).setParentMap(map1);
-		map1.getDoors().get(1).setParentMap(map1);
-		map1.getDoors().get(2).setParentMap(map1);
-		map2.getDoors().get(0).setParentMap(map2);
-		map3.getDoors().get(0).setParentMap(map3);
-		map3.getDoors().get(1).setParentMap(map3);
-		
-		map1.getNPCs().get(0).setMap(map1);
-		
-		currentMap = map1;
+		currentMap = worldMaps.get(0);
+		currentMap.getNPCs().get(1).initializeImages();
 		player.setMap(currentMap);
 	}
 
@@ -109,10 +103,14 @@ public class GameData {
 					advanceDialogue();
 				}
 			}
+			NPC interactedNPC;
 			for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
-				if (currentMap.getNPCs().get(i).getCoordX() == facedX && currentMap.getNPCs().get(i).getCoordY() == facedY)	{
+				interactedNPC = currentMap.getNPCs().get(i);
+				if (interactedNPC.getCoordX() == facedX && interactedNPC.getCoordY() == facedY && !interactedNPC.movingEh())	{
 					dialogueBox.setDialogue(currentMap.getNPCs().get(i).getDialogue());
-					currentMap.getNPCs().get(i).setFacing(player.getFacing());
+					interactedNPC.invertFacing(player.getFacing());
+					interactedNPC.setTalking(true);
+					player.setInteractingNPC(interactedNPC);
 					gameState = 1;
 					dialogueBox.setVisible(true);
 					advanceDialogue();
@@ -131,6 +129,7 @@ public class GameData {
 			}
 			else	{
 				gameState = 0;
+				player.getInteractingNPC().setTalking(false);
 				dialogueBox.setVisible(false);
 			}
 		}

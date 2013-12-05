@@ -46,7 +46,7 @@ public class Enums {
 	
 	public enum NAMED_NPC	{
 		
-		TERRA;
+		TERRA, CELES;
 		
 	}
 

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 public class InputManager extends JPanel {
 
+	private static final long serialVersionUID = -1120571601725209112L;
 	GameData data;
 
 	public InputManager(GameData data)	{
@@ -14,7 +15,6 @@ public class InputManager extends JPanel {
 		this.addKeyListener(new AL());
 		this.setFocusable(true);
 		this.setOpaque(false);
-//		this.setVisible(false);
 	}
 
 	/**

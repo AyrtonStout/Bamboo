@@ -196,12 +196,16 @@ public class MapWriter {
 				
 		ArrayList<String> terraTalk = new ArrayList<String>();
 		terraTalk.add("I have teal hair");
+		ArrayList<String> celesTalk = new ArrayList<String>();
+		celesTalk.add("I wander about aimlessly");
 		
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
 		
 		NPC terra = new NPC(NAMED_NPC.TERRA, ACTION.DOWN, ACTION.STAND, terraTalk, 8, 2);
+		NPC celes = new NPC(NAMED_NPC.CELES, ACTION.DOWN, ACTION.WANDER, celesTalk, 8, 3);
 		
 		NPCs.add(terra);
+		NPCs.add(celes);
 		
 		Map map = new Map(tiles, NPCs);
 		

@@ -4,7 +4,7 @@ import javax.swing.*;
 
 /**
  * @author mobius
- * @version 0.17 - NPC Update
+ * @version 0.20 - NPC Update
  */
 public class Frame {
 
