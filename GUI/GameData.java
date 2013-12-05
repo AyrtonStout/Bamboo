@@ -10,7 +10,7 @@ import java.io.ObjectInputStream;
  */
 public class GameData {
 	
-	private Character player;
+	private Player player;
 	private int gameState = 0;
 	private Map[] worldMaps = new Map[2];
 	private int windowWidth, windowHeight;
@@ -30,7 +30,7 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
-		player = new Character(windowWidth, windowHeight);
+		player = new Player(windowWidth, windowHeight);
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
@@ -139,7 +139,7 @@ public class GameData {
 	/**
 	 * @return Returns the player character
 	 */
-	public Character getPlayer()	{
+	public Player getPlayer()	{
 		return player;
 	}
 	/**

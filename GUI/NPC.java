@@ -21,6 +21,7 @@ public class NPC implements Serializable {
 	private int charX;
 	private int charY;
 	
+	@SuppressWarnings("unused")
 	private Map currentMap;
 	
 	private final int OFFSET_X = 4;

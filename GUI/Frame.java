@@ -1,7 +1,5 @@
 package GUI;
 
-import java.awt.Dimension;
-
 import javax.swing.*;
 
 /**
@@ -17,7 +15,7 @@ public class Frame {
 		JFrame frame = new JFrame();
 		GameData data = new GameData(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Board gameBoard = new Board(data);
-		InputManager input = new InputManager(gameBoard.getData());
+		InputManager input = new InputManager(data);
 
 		frame.add(input);
 		frame.add(gameBoard);	
