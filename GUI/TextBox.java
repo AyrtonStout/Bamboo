@@ -30,6 +30,7 @@ public class TextBox extends JPanel{
 	private boolean visible = true;
 	private boolean writing = false;
 	private boolean writeFaster = false;
+	private boolean instantWrite = false;
 	private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
 	private ImageIcon textArrow = new ImageIcon("GUI/Resources/Text_Arrow.png");
 	private ArrayList<String> dialogue = new ArrayList<String>();
@@ -149,30 +150,59 @@ public class TextBox extends JPanel{
 	 * Increase frame skip to slow down text scrolling
 	 */
 	public void update()	{
-		if (pendingWord == "")	{
-			if (currentFullSentence.size() == 0)	{
-				writing = false;
-				currentArrowFlash = 0;
-				currentLabelSentence = "";
-			}
-			else	{
-				pendingWord = currentFullSentence.remove(0);
-				pendingWord += " ";
-				pendingWordLocation = 0;
-
-				if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH)	{
-					currentLabel++;
+		/*
+		 * Controls writing for signs
+		 */
+		if (instantWrite)	{
+			while (writing)	{
+				if (currentFullSentence.size() == 0)	{
+					writing = false;
+					currentArrowFlash = 0;
 					currentLabelSentence = "";
+				}
+				else	{
+					pendingWord = currentFullSentence.remove(0);
+					pendingWord += " ";
+
+					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH)	{
+						currentLabel++;
+						currentLabelSentence = "";
+					}
+					
+					labels[currentLabel].setText(currentLabelSentence += pendingWord);
+					pendingWord = "";
 				}
 			}
 		}
-		if (writing)	{
-			if (currentFrame == FRAME_SKIP || writeFaster)	{
-				writeLine(currentLabel);
-				currentFrame = 0;
+		/*
+		 * Controls writing for NPCs
+		 */
+		else	{ 
+			if (pendingWord == "")	{
+				if (currentFullSentence.size() == 0)	{
+					writing = false;
+					currentArrowFlash = 0;
+					currentLabelSentence = "";
+				}
+				else	{
+					pendingWord = currentFullSentence.remove(0);
+					pendingWord += " ";
+					pendingWordLocation = 0;
+
+					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH)	{
+						currentLabel++;
+						currentLabelSentence = "";
+					}
+				}
 			}
-			else	{
-				currentFrame++;
+			if (writing)	{
+				if (currentFrame == FRAME_SKIP || writeFaster)	{
+					writeLine(currentLabel);
+					currentFrame = 0;
+				}
+				else	{
+					currentFrame++;
+				}
 			}
 		}
 	}
@@ -213,12 +243,15 @@ public class TextBox extends JPanel{
 	}
 
 	/**
-	 * Pulls all of the dialogue from a Sign into the text box to be iterated over later
+	 * Pulls all of the dialogue from a Sign into the text box. If supplied "true", the TextBox
+	 * will write everything all at once. If "false", it will iterate one character at a time
 	 * 
 	 * @param dialogue The full information contained on a Sign
+	 * @param instantWrite Whether or not the text will come one letter at a time or all at once
 	 */
-	public void setDialogue(ArrayList<String> dialogue) {
+	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
 		this.dialogue = dialogue;
+		this.instantWrite = instantWrite;
 	}
 	/**
 	 * @param b Whether or not the sign should be writing

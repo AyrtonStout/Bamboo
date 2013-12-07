@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Point;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -84,6 +85,19 @@ public class MapWriter {
 		
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
 		
+		ArrayList<String> lockeTalk = new ArrayList<String>();
+		lockeTalk.add("Two peanuts were walking down the road...");
+		lockeTalk.add("...One was assaulted.");
+		
+		ArrayList<String> cyanTalk = new ArrayList<String>();
+		cyanTalk.add("I feel dizzy... oh so dizzy....");
+		
+		NPC locke = new NPC(NAMED_NPC.LOCKE, ACTION.DOWN, ACTION.RANDOM, lockeTalk, 8, 4);
+		NPC cyan = new NPC(NAMED_NPC.CYAN, ACTION.DOWN, ACTION.ROTATE, cyanTalk, 8, 10);
+		
+		NPCs.add(locke);
+		NPCs.add(cyan);
+		
 		Map map = new Map(tiles, NPCs);
 		return map;
 	}
@@ -93,6 +107,7 @@ public class MapWriter {
 	 */
 	public static Map test2()	{
 		Tile groundTile = new Tile(TILE.GROUND_CAVE);
+		Tile treeTile = new Tile(TILE.GROUND_CAVE, DECORATION.TREE_PALM);
 		Tile[][] tiles = new Tile [15][15];
 		for (int i = 0; i < tiles.length; i++)	{
 			for (int j = 0; j < tiles[i].length; j++)	{
@@ -111,7 +126,51 @@ public class MapWriter {
 		tiles[7][7] = new Tile(TILE.GROUND_CAVE, INTERACTABLE.TREASURE_CHEST);
 		tiles[7][3] = new Tile(TILE.GROUND_CAVE, DOOR.WALL_CAVE_DOOR, 7, 3);
 		
+		tiles[4][9] = treeTile;
+		tiles[10][9] = treeTile;
+		tiles[4][12] = treeTile;
+		tiles[10][12] = treeTile;
+		
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
+		
+		ArrayList<String> ghostTalk = new ArrayList<String>();
+		ghostTalk.add("Get out of my way you ass.");
+		ArrayList<String> ghostTalk2 = new ArrayList<String>();
+		ghostTalk2.add("Why can't I escape all of these trees anymore!");
+		ghostTalk2.add("And that treasure chest even used to turn into a tree.");
+		ghostTalk2.add("Why doesn't anybody believe me? You do don't you?");
+		ghostTalk2.add("All I wanted was a Pepsi. Just one Pepsi...");
+		
+		NPC ghost = new NPC(NAMED_NPC.GHOST, ACTION.RIGHT, ACTION.PATROL, ghostTalk, 1, 2);
+		NPC ghost2 = new NPC(NAMED_NPC.GHOST, ACTION.LEFT, ACTION.WANDER, ghostTalk2, 7, 10);
+		ghost.setSpeed(2);
+		
+		ArrayList<Point> ghostPatrol = new ArrayList<Point>();
+		ghostPatrol.add(new Point(13, 2));
+		ghostPatrol.add(new Point(13, 13));
+		ghostPatrol.add(new Point(1, 13));
+		ghostPatrol.add(new Point(1, 2));
+		ghost.setPatrolPath(ghostPatrol);
+		
+		boolean[][] wanderLimit = new boolean[15][15];
+		for (int i = 0; i < wanderLimit.length; i++)	{
+			for (int j = 0; j < wanderLimit[0].length; j++)	{
+				wanderLimit[i][j] = true;
+			}
+		}
+		for (int i = 4; i <= 10; i++)	{
+			for (int j = 9; j <= 12; j++)	{
+				wanderLimit[i][j] = false;
+			}
+		}
+		
+		ghost2.setWanderLimit(wanderLimit);
+		
+		NPCs.add(ghost);
+		NPCs.add(ghost2);
+		
+		
+		
 		
 		Map map = new Map(tiles, NPCs);
 		return map;
@@ -183,9 +242,9 @@ public class MapWriter {
 		tiles[21][8] = new Tile(TILE.GROUND_GRASS, DOOR.TRANSITION_RIGHT, 21, 8);
 		
 		ArrayList<String> sign1 = new ArrayList<String>();
-		sign1.add("I'm a sign, bro");
+		sign1.add("I'm a sign, bro.");
 		ArrayList<String> sign2 = new ArrayList<String>();
-		sign2.add("I'm a sign too, dude");
+		sign2.add("I'm a sign too, dude.");
 		ArrayList<String> sign3 = new ArrayList<String>();
 		sign3.add("This is actually a mountain range. I promise.");
 		sign3.add("I'm a multi-sentenced sign. :O");
@@ -195,9 +254,9 @@ public class MapWriter {
 		tiles[13][2] = new Tile(TILE.GROUND_GRASS, SIGN.WOOD, sign3);
 				
 		ArrayList<String> terraTalk = new ArrayList<String>();
-		terraTalk.add("I have teal hair");
+		terraTalk.add("I have teal hair.");
 		ArrayList<String> celesTalk = new ArrayList<String>();
-		celesTalk.add("I wander about aimlessly");
+		celesTalk.add("I wander about aimlessly.");
 		
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
 		

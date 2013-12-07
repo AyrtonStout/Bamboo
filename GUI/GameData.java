@@ -66,71 +66,8 @@ public class GameData {
 		for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
 			currentMap.getNPCs().get(i).update();
 		}
-	}
-	
-	
-	@SuppressWarnings("incomplete-switch")
-	public void activate()	{
-		if (gameState == 0)	{
-			Tile facedTile = null;
-			int facedX = player.getCoordX();
-			int facedY = player.getCoordY();
-			switch (player.getFacing())	{
-			case LEFT:
-				facedTile = currentMap.getArray()[player.getCoordX() - 1][player.getCoordY()];
-				facedX--; break;
-			case UP:
-				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() - 1]; 
-				facedY--; break;
-			case RIGHT:
-				facedTile = currentMap.getArray()[player.getCoordX() + 1][player.getCoordY()]; 
-				facedX++; break;
-			case DOWN:
-				facedTile = currentMap.getArray()[player.getCoordX()][player.getCoordY() + 1]; 
-				facedY++; break;
-			}
-			if (facedTile.getDoodad() != null)	{
-				if(facedTile.getDoodad().getClass() == Interactable.class)	{
-					((Interactable) facedTile.getDoodad()).interact();
-				}
-				else if (facedTile.getDoodad().getClass() == Sign.class)	{
-					((Sign) facedTile.getDoodad()).getDialogue();
-					gameState = 1;
-					dialogueBox.setVisible(true);
-					dialogueBox.setDialogue(((Sign) facedTile.getDoodad()).getDialogue());
-					advanceDialogue();
-				}
-			}
-			NPC interactedNPC;
-			for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
-				interactedNPC = currentMap.getNPCs().get(i);
-				if (interactedNPC.getCoordX() == facedX && interactedNPC.getCoordY() == facedY && !interactedNPC.movingEh())	{
-					dialogueBox.setDialogue(currentMap.getNPCs().get(i).getDialogue());
-					interactedNPC.invertFacing(player.getFacing());
-					interactedNPC.setTalking(true);
-					player.setInteractingNPC(interactedNPC);
-					gameState = 1;
-					dialogueBox.setVisible(true);
-					advanceDialogue();
-				}
-			}
-		}
-	}
-	
-	public void advanceDialogue()	{
-		if (dialogueBox.writingEh() && !dialogueBox.writeFasterEh())	{
-			dialogueBox.writeFaster();
-		}
-		else if (!dialogueBox.writingEh())	{
-			if (dialogueBox.hasNextLine())	{
-				dialogueBox.read();
-			}
-			else	{
-				gameState = 0;
-				player.getInteractingNPC().setTalking(false);
-				dialogueBox.setVisible(false);
-			}
-		}
+		
+//		System.out.println("X - " + currentMap.getNPCs().get(0).getCoordX() + "  Y - " + currentMap.getNPCs().get(0).getCoordY());
 	}
 
 	/**
@@ -168,5 +105,11 @@ public class GameData {
 	 */
 	public int getWindowHeight()	{
 		return windowHeight;
+	}
+	/**
+	 * @param i The new state of the game
+	 */
+	public void setGameState(int i) {
+		gameState = i;
 	}
 }

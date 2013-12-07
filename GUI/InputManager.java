@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -31,11 +32,14 @@ public class InputManager extends JPanel {
 					data.getPlayer().move(e);
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_Z)	{
-					data.activate();
+					activate();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_G)	{
+					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
 				}
 			}
 			else if (data.getGameState() == 1)	{
-				data.advanceDialogue();
+				advanceDialogue();
 			}
 		}
 		/* 
@@ -44,6 +48,73 @@ public class InputManager extends JPanel {
 		public void keyReleased(KeyEvent e) {
 			data.getPlayer().cancelMove();
 			//TODO Fix bug where releasing a key other than the arrow keys will cause the player to quit moving
+		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	public void activate()	{
+		if (data.getGameState() == 0)	{
+			Tile facedTile = null;
+			int facedX = data.getPlayer().getCoordX();
+			int facedY = data.getPlayer().getCoordY();
+			switch (data.getPlayer().getFacing())	{
+			case LEFT:
+				facedTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX() - 1][data.getPlayer().getCoordY()];
+				facedX--; break;
+			case UP:
+				facedTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX()][data.getPlayer().getCoordY() - 1]; 
+				facedY--; break;
+			case RIGHT:
+				facedTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX() + 1][data.getPlayer().getCoordY()]; 
+				facedX++; break;
+			case DOWN:
+				facedTile = data.getCurrentMap().getArray()[data.getPlayer().getCoordX()][data.getPlayer().getCoordY() + 1]; 
+				facedY++; break;
+			}
+			if (facedTile.getDoodad() != null)	{
+				if(facedTile.getDoodad().getClass() == Interactable.class)	{
+					((Interactable) facedTile.getDoodad()).interact();
+				}
+				else if (facedTile.getDoodad().getClass() == Sign.class)	{
+					((Sign) facedTile.getDoodad()).getDialogue();
+					data.setGameState(1);
+					data.getTextBox().setVisible(true);
+					data.getTextBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
+					advanceDialogue();
+				}
+			}
+			NPC interactedNPC;
+			for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
+				interactedNPC = data.getCurrentMap().getNPCs().get(i);
+				if (interactedNPC.getCoordX() == facedX && interactedNPC.getCoordY() == facedY && !interactedNPC.movingEh())	{
+					data.getTextBox().setDialogue(data.getCurrentMap().getNPCs().get(i).getDialogue(), false);
+					interactedNPC.invertFacing(data.getPlayer().getFacing());
+					interactedNPC.setTalking(true);
+					data.getPlayer().setInteractingNPC(interactedNPC);
+					data.setGameState(1);
+					data.getTextBox().setVisible(true);
+					advanceDialogue();
+				}
+			}
+		}
+	}
+	
+	public void advanceDialogue()	{
+		if (data.getTextBox().writingEh() && !data.getTextBox().writeFasterEh())	{
+			data.getTextBox().writeFaster();
+		}
+		else if (!data.getTextBox().writingEh())	{
+			if (data.getTextBox().hasNextLine())	{
+				data.getTextBox().read();
+			}
+			else	{
+				data.setGameState(0);
+				if (data.getPlayer().getInteractingNPC() != null)	{
+					data.getPlayer().getInteractingNPC().setTalking(false);
+					data.getPlayer().setInteractingNPC(null);
+				}
+				data.getTextBox().setVisible(false);
+			}
 		}
 	}
 

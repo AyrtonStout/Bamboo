@@ -1,10 +1,9 @@
 package GUI;
 
+import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
-
-import javax.swing.ImageIcon;
 
 import GUI.Enums.ACTION;
 import GUI.Enums.*;
@@ -15,21 +14,30 @@ public class NPC extends Character implements Serializable {
 	private ACTION behavior;
 	private ArrayList<String> dialogue;
 	private boolean talking = false;
+	private boolean pointWalking = false;
+	private Point endPoint;
+	private int random;
 	
-	Random rand = new Random();
+	private ArrayList<Point> patrolPath = new ArrayList<Point>();
+	private int currentPatrolPoint = 0;
+	
+	private boolean[][] wanderLimit;
+	
+	private Random rand = new Random();
 	
 	public NPC(NAMED_NPC type, ACTION facing, ACTION behavior, ArrayList<String> dialogue, int coordX, int coordY)	{
 		
-		if (type == NAMED_NPC.TERRA)	{
-			
-			name = "Terra";
-			
-		}
-		
-		else if (type == NAMED_NPC.CELES)	{
-			
-			name = "Celes";
-				
+		switch (type)	{
+		case TERRA:
+			name = "Terra"; break;
+		case CELES:
+			name = "Celes"; break;
+		case LOCKE:
+			name = "Locke"; break;
+		case CYAN:
+			name = "Cyan"; break;
+		case GHOST:
+			name = "Ghost"; break;
 		}
 		
 		this.coordX = coordX;
@@ -69,17 +77,25 @@ public class NPC extends Character implements Serializable {
 	 */
 	public void update()	{
 		
-		if (behavior == ACTION.STAND)	{
-			
-		}
-		else if (behavior == ACTION.ROTATE)	{
-			rotatingBehavior();
-		}
-		else if (behavior == ACTION.RANDOM)	{
-			randomBehavior();
-		}
-		else if (behavior == ACTION.WANDER)	{
-			wanderingBehavior();
+		if (!talking)	{
+			if (pointWalking)	{
+				pointWalkBehavior();
+			}
+			else if (behavior == ACTION.STAND)	{
+
+			}
+			else if (behavior == ACTION.ROTATE)	{
+				rotatingBehavior();
+			}
+			else if (behavior == ACTION.RANDOM)	{
+				randomBehavior();
+			}
+			else if (behavior == ACTION.WANDER)	{
+				wanderingBehavior();
+			}
+			else if (behavior == ACTION.PATROL)	{
+				patrolBehavior();
+			}
 		}
 	}
 
@@ -116,25 +132,100 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 	
+	public void walkToPoint(Point destination)	{
+		
+		ACTION attemptedMove;
+		
+		if (coordX != destination.x && coordY != destination.y)	{
+			System.out.println("X-  " + coordX + "  Y-  " + coordY);
+			System.out.println("pX- " + destination.x + "  pY- " + destination.y);
+			throw new IllegalArgumentException("Illegal coordinate. Only move in one direction at a time");
+		}
+		if (coordX < destination.x)	{
+			attemptedMove = ACTION.RIGHT;
+		}
+		else if (coordX > destination.x)	{
+			attemptedMove = ACTION.LEFT;
+		}
+		else if (coordY < destination.y)	{
+			attemptedMove = ACTION.DOWN;
+		}
+		else if (coordY > destination.y)	{
+			attemptedMove = ACTION.UP;
+		}
+		else {
+			return;				//In case someone issues a move to nowhere
+		}
+//		if (validPathEh(new Point(coordX, coordY), destination, attemptedMove))	{
+			changeFacing(attemptedMove);
+			action = attemptedMove;
+			moving = true;
+			pointWalking = true;
+			endPoint = destination;
+			currentImage = startAnimation(attemptedMove);
+			remainingSteps = STEP_SIZE;
+			this.updateCoordinate(action, true);
+//		}
+//		else	{
+//			System.out.println("X-  " + coordX + "  Y-  " + coordY);
+//			System.out.println("pX- " + destination.x + "  pY- " + destination.y);
+//			throw new IllegalArgumentException("No path to endpoint exists");
+//		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private boolean validPathEh(Point start, Point end, ACTION direction)	{
+		switch (direction)	{
+		case LEFT:
+			for (int i = start.x - 1; i >= end.x; i--)	{
+				if (map.getMoveblocks()[i][coordY] == true)
+					return false;
+			}
+			return true;
+		case UP:
+			for (int i = start.y - 1; i >= end.y; i--)	{
+				if (map.getMoveblocks()[coordX][i] == true)
+					return false;
+			}
+			return true;
+		case RIGHT:
+			for (int i = start.x + 1; i <= end.x; i++)	{
+				if (map.getMoveblocks()[i][coordY] == true)
+					return false;
+			}
+			return true;
+		case DOWN:
+			for (int i = start.y + 1; i <= end.y; i++)	{
+				if (map.getMoveblocks()[coordX][i] == true)
+					return false;
+			}
+			return true;
+		}
+		return false;
+		
+	}
+	
 	/**
 	 * Default behavior for a rotating NPC. A rotating NPC will change 
-	 * direction at regular intervals in a counter-clockwise fashion
+	 * direction at regular intervals in a clockwise fashion
 	 */
 	@SuppressWarnings("incomplete-switch")
 	private void rotatingBehavior()	{
-		switch (facing)	{
-		case LEFT:
-			changeFacing(ACTION.DOWN);
-			break;
-		case DOWN:
-			changeFacing(ACTION.RIGHT);
-			break;
-		case RIGHT:
-			changeFacing(ACTION.UP);
-			break;
-		case UP:
-			changeFacing(ACTION.LEFT);
-			break;
+		if (remainingSteps > 0)	{
+			remainingSteps--;
+		}
+		else	{
+			switch (facing)	{
+			case LEFT:
+				changeFacing(ACTION.UP); break;
+			case UP:
+				changeFacing(ACTION.RIGHT); break;
+			case RIGHT:
+				changeFacing(ACTION.DOWN); break;
+			case DOWN:
+				changeFacing(ACTION.LEFT); break;
+			}
+			remainingSteps = STEP_SIZE;
 		}
 	}
 	
@@ -143,27 +234,26 @@ public class NPC extends Character implements Serializable {
 	 * change their facing at random intervals
 	 */
 	private void randomBehavior()	{
-		int random = rand.nextInt() % 4;
-		switch (random)	{
-		case 0:
-			changeFacing(ACTION.DOWN);
-			break;
-		case 1:
-			changeFacing(ACTION.RIGHT);
-			break;
-		case 2:
-			changeFacing(ACTION.UP);
-			break;
-		case 3:
-			changeFacing(ACTION.LEFT);
-			break;
+		random = rand.nextInt(50);
+		if (random == 0)	{
+			random = rand.nextInt(4);
+			switch (random)	{
+			case 0:
+				changeFacing(ACTION.DOWN); break;
+			case 1:
+				changeFacing(ACTION.RIGHT); break;
+			case 2:
+				changeFacing(ACTION.UP); break;
+			case 3:
+				changeFacing(ACTION.LEFT); break;
+			}
 		}
 	}
 
 	/**
 	 * Default wandering behavior will cause an NPC to pick a direction
 	 * at random and, if it is valid, proceed to walk one step in that 
-	 * direction. 
+	 * direction. NPC may also turn to a new direction but not walk
 	 */
 	private void wanderingBehavior()	{
 		if (moving)	{
@@ -178,27 +268,23 @@ public class NPC extends Character implements Serializable {
 		else if (remainingSteps > 0)	{
 			remainingSteps -= speed;
 		}
-		else if (!talking)	{
-			int random = rand.nextInt(100);
+		else {
+			random = rand.nextInt(100);
 			if (Math.abs(random) < 2)	{
 				random = rand.nextInt(4);{
 					switch (random)	{
 					case 0:
-						changeFacing(ACTION.DOWN);
-						break;
+						changeFacing(ACTION.DOWN); break;
 					case 1:
-						changeFacing(ACTION.RIGHT);
-						break;
+						changeFacing(ACTION.RIGHT); break;
 					case 2:
-						changeFacing(ACTION.UP);
-						break;
+						changeFacing(ACTION.UP); break;
 					case 3:
-						changeFacing(ACTION.LEFT);
-						break;
+						changeFacing(ACTION.LEFT); break;
 					}
 					random = rand.nextInt(3);
 					remainingSteps = STEP_SIZE * 2;
-					if (random != 0 && validMoveEh(facing))	{
+					if (random != 0 && validMoveEh(facing) && validWanderEh(facing))	{
 						remainingSteps -= STEP_SIZE;
 						action = facing;
 						currentImage = startAnimation(action);
@@ -209,7 +295,63 @@ public class NPC extends Character implements Serializable {
 			}
 		}
 	}
+	
+	private void patrolBehavior()	{
+		walkToPoint(patrolPath.get(currentPatrolPoint));
+		currentPatrolPoint++;
+		if (currentPatrolPoint == patrolPath.size())	{
+			currentPatrolPoint = 0;
+		}
+	}
 
+	private void pointWalkBehavior()	{
+		if (moving)	{
+			if (remainingSteps > 0)	{
+				updatePixels(action);
+				remainingSteps -= speed;
+			}
+			else {
+				updateCoordinate(action, false);
+				if (coordX != endPoint.x || coordY != endPoint.y)	{							
+					remainingSteps = STEP_SIZE;
+					updateCoordinate(action, true);
+				}
+				else	{
+					currentImage = stopAnimation(action);
+					pointWalking = false;
+					moving = false;
+				}
+			}
+		}
+	}
+	
+	private boolean validWanderEh(ACTION wanderDirection)	{
+		if (wanderLimit == null)	{
+			wanderLimit = map.getMoveblocks().clone();
+		}
+		if (wanderDirection == ACTION.LEFT)        {
+			if (coordX == 0 || wanderLimit[coordX-1][coordY] == true)        {
+				return false;
+			}
+		}
+		else if (wanderDirection == ACTION.UP)        {
+			if (coordY == 0 || wanderLimit[coordX][coordY-1] == true)        {
+				return false;
+			}
+		}
+		else if (wanderDirection == ACTION.RIGHT)        {
+			if (coordX == map.getWidth() - 1 || wanderLimit[coordX+1][coordY] == true)        {
+				return false;
+			}
+		}
+		else if (wanderDirection == ACTION.DOWN)        {
+			if (coordY == map.getHeight() - 1 || wanderLimit[coordX][coordY+1] == true)        {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * @return The name of the NPC
 	 */
@@ -242,5 +384,25 @@ public class NPC extends Character implements Serializable {
 	 */
 	public void setTalking(boolean b)	{
 		talking = b;
+	}
+	/**
+	 * @return An ArrayList of points that this NPC will patrol between
+	 */
+	public ArrayList<Point> getPatrolPath()	{
+		return patrolPath;
+	}
+	/**
+	 * The NPC will follow the points in order. Points must only change one coordinate (X or Y) at a time
+	 * 
+	 * @param patrolPath The ArrayList of points that this NPC will patrol between
+	 */
+	public void setPatrolPath(ArrayList<Point> patrolPath)	{
+		this.patrolPath = patrolPath;
+	}
+	public void setSpeed(int speed)	{
+		this.speed = speed;
+	}
+	public void setWanderLimit(boolean[][] wanderLimit) {
+		this.wanderLimit = wanderLimit;
 	}
 }
