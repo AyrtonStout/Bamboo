@@ -144,6 +144,10 @@ public class Player extends Character implements Serializable {
 			setCoordX(enteredDoor.getLink().getX());
 			setCoordY(enteredDoor.getLink().getY());
 			map.moveBlocks[coordX][coordY] = true;
+			moving = false;
+			queuedMove = false;
+			action = ACTION.STAND;
+			queuedAction = ACTION.STAND;
 		}
 	}
 

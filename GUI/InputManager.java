@@ -39,15 +39,19 @@ public class InputManager extends JPanel {
 				}
 			}
 			else if (data.getGameState() == 1)	{
-				advanceDialogue();
+				if (e.getKeyCode() == KeyEvent.VK_Z)	{
+					advanceDialogue();
+				}
 			}
 		}
 		/* 
 		 * Cancels the character's queued action causing it to stand still after its current action completes
 		 */
 		public void keyReleased(KeyEvent e) {
-			data.getPlayer().cancelMove();
-			//TODO Fix bug where releasing a key other than the arrow keys will cause the player to quit moving
+			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || 
+					e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)	{
+				data.getPlayer().cancelMove();
+			}
 		}
 	}
 	

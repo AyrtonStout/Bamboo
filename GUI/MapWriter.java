@@ -86,7 +86,7 @@ public class MapWriter {
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
 		
 		ArrayList<String> lockeTalk = new ArrayList<String>();
-		lockeTalk.add("Two peanuts were walking down the road...");
+		lockeTalk.add("Two peanuts were walking down an alley...");
 		lockeTalk.add("...One was assaulted.");
 		
 		ArrayList<String> cyanTalk = new ArrayList<String>();
@@ -255,6 +255,7 @@ public class MapWriter {
 				
 		ArrayList<String> terraTalk = new ArrayList<String>();
 		terraTalk.add("I have teal hair.");
+		terraTalk.add("Push G and I will probably walk to the left");
 		ArrayList<String> celesTalk = new ArrayList<String>();
 		celesTalk.add("I wander about aimlessly.");
 		

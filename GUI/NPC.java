@@ -156,53 +156,17 @@ public class NPC extends Character implements Serializable {
 		else {
 			return;				//In case someone issues a move to nowhere
 		}
-//		if (validPathEh(new Point(coordX, coordY), destination, attemptedMove))	{
-			changeFacing(attemptedMove);
-			action = attemptedMove;
+		changeFacing(attemptedMove);
+		action = attemptedMove;
+		pointWalking = true;
+		endPoint = destination;
+
+		if (validMoveEh(action))	{
 			moving = true;
-			pointWalking = true;
-			endPoint = destination;
-			currentImage = startAnimation(attemptedMove);
 			remainingSteps = STEP_SIZE;
 			this.updateCoordinate(action, true);
-//		}
-//		else	{
-//			System.out.println("X-  " + coordX + "  Y-  " + coordY);
-//			System.out.println("pX- " + destination.x + "  pY- " + destination.y);
-//			throw new IllegalArgumentException("No path to endpoint exists");
-//		}
-	}
-	
-	@SuppressWarnings("incomplete-switch")
-	private boolean validPathEh(Point start, Point end, ACTION direction)	{
-		switch (direction)	{
-		case LEFT:
-			for (int i = start.x - 1; i >= end.x; i--)	{
-				if (map.getMoveblocks()[i][coordY] == true)
-					return false;
-			}
-			return true;
-		case UP:
-			for (int i = start.y - 1; i >= end.y; i--)	{
-				if (map.getMoveblocks()[coordX][i] == true)
-					return false;
-			}
-			return true;
-		case RIGHT:
-			for (int i = start.x + 1; i <= end.x; i++)	{
-				if (map.getMoveblocks()[i][coordY] == true)
-					return false;
-			}
-			return true;
-		case DOWN:
-			for (int i = start.y + 1; i <= end.y; i++)	{
-				if (map.getMoveblocks()[coordX][i] == true)
-					return false;
-			}
-			return true;
+			currentImage = startAnimation(attemptedMove);
 		}
-		return false;
-		
 	}
 	
 	/**
@@ -312,15 +276,28 @@ public class NPC extends Character implements Serializable {
 			}
 			else {
 				updateCoordinate(action, false);
-				if (coordX != endPoint.x || coordY != endPoint.y)	{							
-					remainingSteps = STEP_SIZE;
-					updateCoordinate(action, true);
+				if (coordX != endPoint.x || coordY != endPoint.y)	{
+					if (validMoveEh(action))	{
+						remainingSteps = STEP_SIZE;
+						updateCoordinate(action, true);
+					}
+					else	{
+						moving = false;
+					}
 				}
 				else	{
 					currentImage = stopAnimation(action);
 					pointWalking = false;
 					moving = false;
 				}
+			}
+		}
+		else	{
+			if (validMoveEh(action))	{
+				moving = true;
+				remainingSteps = STEP_SIZE;
+				updateCoordinate(action, true);
+				currentImage = startAnimation(action);
 			}
 		}
 	}
