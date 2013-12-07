@@ -4,7 +4,7 @@ public class Enums {
 	
 	public enum ACTION {
 
-		LEFT, RIGHT, UP, DOWN, STAND, WANDER, ROTATE, RANDOM,;
+		LEFT, RIGHT, UP, DOWN, STAND, WANDER, ROTATE, RANDOM, PATROL,;
 		
 	}
 	

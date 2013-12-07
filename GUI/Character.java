@@ -199,10 +199,17 @@ public abstract class Character implements Serializable {
 	 * split the gifs into separate image files and animate them myself in code) 
 	 */
 	public void initializeImages()	{
-		walkLeft = new ImageIcon("GUI/Resources/" + name + " - Walk (Left).gif");
-		walkUp = new ImageIcon("GUI/Resources/" + name + " - Walk (Up).gif");
-		walkRight = new ImageIcon("GUI/Resources/" + name + " - Walk (Right).gif");
-		walkDown = new ImageIcon("GUI/Resources/" + name + " - Walk (Down).gif");
+		
+		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
+		up= new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
+		right= new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
+		down= new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
+
+		
+		walkLeft = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Left).gif");
+		walkUp = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Up).gif");
+		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
+		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
 		
 		changeFacing(facing);
 		
@@ -256,7 +263,6 @@ public abstract class Character implements Serializable {
 	 */
 	public void setMap(Map map)        {
 		this.map = map;
-		map.moveBlocks[coordX][coordY] = true;
 	}
 	/**
 	 * @return The currently used map

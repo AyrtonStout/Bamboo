@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import GUI.Enums.ACTION;
-import GUI.Enums.NAMED_NPC;
-
 /**
  * @author mobius
  * Holds the game data and updates the state of all objects every frame
@@ -42,14 +39,15 @@ public class GameData {
 				worldMaps.add((Map) stream.readObject());
 				worldMaps.get(i).initializeMap(worldMaps.get(i));
 			}
+			stream.close();
 		} catch (Exception e) {
 			System.err.println("Something went horribly wrong grabbing the map!");
 			e.printStackTrace();
 		}
 		
 		currentMap = worldMaps.get(0);
-		currentMap.getNPCs().get(1).initializeImages();
 		player.setMap(currentMap);
+		currentMap.getMoveblocks()[player.getCoordX()][player.getCoordY()] = true;
 	}
 
 	

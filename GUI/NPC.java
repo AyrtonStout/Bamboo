@@ -16,12 +16,7 @@ public class NPC extends Character implements Serializable {
 	private ArrayList<String> dialogue;
 	private boolean talking = false;
 	
-	@SuppressWarnings("unused")
-	private Map currentMap;
-	
 	Random rand = new Random();
-	
-	ImageIcon walkRightz = new ImageIcon("GUI/Resources/Celes - Walk (Right).gif");
 	
 	public NPC(NAMED_NPC type, ACTION facing, ACTION behavior, ArrayList<String> dialogue, int coordX, int coordY)	{
 		
@@ -29,22 +24,12 @@ public class NPC extends Character implements Serializable {
 			
 			name = "Terra";
 			
-			left = new ImageIcon("GUI/Resources/Terra (Left).gif");
-			up= new ImageIcon("GUI/Resources/Terra (Up).gif");
-			right= new ImageIcon("GUI/Resources/Terra (Right).gif");
-			down= new ImageIcon("GUI/Resources/Terra (Down).gif");
-
 		}
 		
 		else if (type == NAMED_NPC.CELES)	{
 			
 			name = "Celes";
-			
-			left = new ImageIcon("GUI/Resources/Celes (Left).gif");
-			up= new ImageIcon("GUI/Resources/Celes (Up).gif");
-			right= new ImageIcon("GUI/Resources/Celes (Right).gif");
-			down= new ImageIcon("GUI/Resources/Celes (Down).gif");
-			
+				
 		}
 		
 		this.coordX = coordX;
@@ -61,7 +46,8 @@ public class NPC extends Character implements Serializable {
 		else	{
 			changeFacing(facing); 
 		}
-		if (behavior != ACTION.STAND && behavior != ACTION.ROTATE && behavior != ACTION.RANDOM && behavior != ACTION.WANDER)	{
+		if (behavior != ACTION.STAND && behavior != ACTION.ROTATE && behavior != ACTION.RANDOM && behavior != ACTION.WANDER
+				&& behavior != ACTION.PATROL)	{
 			throw new IllegalArgumentException(behavior + " is an improper argument for a character's behavior");
 		}
 		else	{
@@ -182,42 +168,48 @@ public class NPC extends Character implements Serializable {
 	private void wanderingBehavior()	{
 		if (moving)	{
 			updatePixels(action);
-			remainingSteps--;
+			remainingSteps -= speed;
 			if (remainingSteps == 0)	{
 				moving = false;
 				currentImage = stopAnimation(action);
 				updateCoordinate(facing, false);
 			}
 		}
+		else if (remainingSteps > 0)	{
+			remainingSteps -= speed;
+		}
 		else if (!talking)	{
-			int random = rand.nextInt() % 100;
+			int random = rand.nextInt(100);
 			if (Math.abs(random) < 2)	{
-				random = rand.nextInt() % 4;
-				switch (random)	{
-				case 0:
-					changeFacing(ACTION.DOWN);
-					break;
-				case 1:
-					changeFacing(ACTION.RIGHT);
-					break;
-				case 2:
-					changeFacing(ACTION.UP);
-					break;
-				case 3:
-					changeFacing(ACTION.LEFT);
-					break;
-				}
-				if (validMoveEh(facing))	{
-					action = facing;
-					currentImage = startAnimation(action);
-					moving = true;
-					remainingSteps = STEP_SIZE;
-					updateCoordinate(facing, true);
+				random = rand.nextInt(4);{
+					switch (random)	{
+					case 0:
+						changeFacing(ACTION.DOWN);
+						break;
+					case 1:
+						changeFacing(ACTION.RIGHT);
+						break;
+					case 2:
+						changeFacing(ACTION.UP);
+						break;
+					case 3:
+						changeFacing(ACTION.LEFT);
+						break;
+					}
+					random = rand.nextInt(3);
+					remainingSteps = STEP_SIZE * 2;
+					if (random != 0 && validMoveEh(facing))	{
+						remainingSteps -= STEP_SIZE;
+						action = facing;
+						currentImage = startAnimation(action);
+						moving = true;
+						updateCoordinate(facing, true);
+					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * @return The name of the NPC
 	 */
