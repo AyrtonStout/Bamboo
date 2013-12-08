@@ -97,10 +97,7 @@ public class Player extends Character implements Serializable {
 		case KeyEvent.VK_DOWN:
 			keyDown = false; break;
 		}
-		preserveMove();
-	}
-	
-	private void preserveMove()	{
+		
 		if (keyLeft == true)
 			queuedAction = ACTION.LEFT;
 		else if (keyUp == true)
@@ -178,7 +175,7 @@ public class Player extends Character implements Serializable {
 			}	
 		}
 		
-		
+		//Changing maps
 		if (transitionEh())	{
 			map.moveBlocks[coordX][coordY] = false;
 			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
@@ -238,6 +235,7 @@ public class Player extends Character implements Serializable {
 	 */
 	public boolean transitionEh()	{
 		
+		//Walk doors
 		if (!doorTransition)	{
 			if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
 				if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
@@ -251,6 +249,7 @@ public class Player extends Character implements Serializable {
 				}
 			}
 		}
+		//Transition doors
 		else if (doorTransition && !moving)	{
 			if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh())	{
 				if (((Door) map.getArray()[coordX][coordY].getDoodad()).getDirection() == queuedAction)	{
@@ -258,6 +257,7 @@ public class Player extends Character implements Serializable {
 				}
 			}
 		}
+		//No doors
 		return false;
 	}
 

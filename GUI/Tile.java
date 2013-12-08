@@ -24,7 +24,7 @@ public class Tile implements Serializable {
 	private ImageIcon background;
 	private boolean moveBlock;
 	private Doodad doodad;
-//	private int spawnChance
+
 	
 	/**
 	 * @param type The type of tile to be created

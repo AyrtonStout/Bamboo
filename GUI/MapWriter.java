@@ -6,6 +6,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import GUI.Enums.*;
+import Quests.TAction;
+import Quests.TEvent;
+import Quests.Trigger;
+import Quests.Enums.*;
 
 /**
  * @author mobius
@@ -170,8 +174,6 @@ public class MapWriter {
 		NPCs.add(ghost2);
 		
 		
-		
-		
 		Map map = new Map(tiles, NPCs);
 		return map;
 	}
@@ -267,7 +269,18 @@ public class MapWriter {
 		NPCs.add(terra);
 		NPCs.add(celes);
 		
-		Map map = new Map(tiles, NPCs);
+		ArrayList<String> spawnTalk = new ArrayList<String>();
+		spawnTalk.add("Whoa! Where the hell did I come from!");
+		
+		NPC spawn = new NPC(NAMED_NPC.GHOST, ACTION.DOWN, ACTION.WANDER, spawnTalk, 2, 2);
+		
+		ArrayList<Trigger> triggers = new ArrayList<Trigger>();
+		
+		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawn));
+		
+		triggers.add(spawnNPC);
+		
+		Map map = new Map(tiles, NPCs, triggers);
 		
 		return map;
 	}

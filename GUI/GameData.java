@@ -37,7 +37,7 @@ public class GameData {
 			stream = new ObjectInputStream( new FileInputStream(new File("GUI/Maps/test1")));
 			for (int i = 0; i < 3; i++)	{
 				worldMaps.add((Map) stream.readObject());
-				worldMaps.get(i).initializeMap(worldMaps.get(i));
+				worldMaps.get(i).initializeMap(worldMaps.get(i), player);
 			}
 			stream.close();
 		} catch (Exception e) {
@@ -63,9 +63,8 @@ public class GameData {
 		if (dialogueBox.writingEh())	{
 			dialogueBox.update();	
 		}
-		for (int i = 0; i < currentMap.getNPCs().size(); i++)	{
-			currentMap.getNPCs().get(i).update();
-		}
+		currentMap.updateAll();
+		
 		
 //		System.out.println("X - " + currentMap.getNPCs().get(0).getCoordX() + "  Y - " + currentMap.getNPCs().get(0).getCoordY());
 	}

@@ -5,9 +5,12 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import Quests.Trigger;
+
 /**
  * @author mobius
- * Glorified two dimensional array of Tile objects. Has the ability to draw all of the tiles it contains
+ * A single world location. Contains a two dimensional array of tiles and an ArrayList of all the doors,
+ * NPCs, and triggers in the zone.
  */
 public class Map extends JPanel implements Serializable {
 
@@ -16,9 +19,18 @@ public class Map extends JPanel implements Serializable {
 	boolean[][] moveBlocks;
 	ArrayList<Door> doors = new ArrayList<Door>();
 	ArrayList<NPC> NPCs = new ArrayList<NPC>();
+	ArrayList<Trigger> triggers = new ArrayList<Trigger>();
 	int windowWidth, windowHeight;
 	
 	public Map(Tile[][] tiles, ArrayList<NPC> NPCs)	{
+		mutualConstructor(tiles, NPCs);
+	}
+	public Map(Tile[][] tiles, ArrayList<NPC> NPCs, ArrayList<Trigger> triggers)	{
+		mutualConstructor(tiles, NPCs);
+		this.triggers = triggers;
+	}
+	
+	private void mutualConstructor(Tile[][] tiles, ArrayList<NPC> NPCs)	{
 		this.tiles = tiles;
 		moveBlocks = new boolean[tiles.length][tiles[0].length];
 		
@@ -41,24 +53,17 @@ public class Map extends JPanel implements Serializable {
 		for (int i = 0; i < NPCs.size(); i++)	{
 			moveBlocks[NPCs.get(i).getCoordX()][NPCs.get(i).getCoordY()] = true;
 		}
-		
 	}
 	
-	/**
-	 * @return All doors in the map
-	 */
-	public ArrayList<Door> getDoors()	{
-		return doors;
+	public void updateAll()	{
+		for (int i = 0; i < NPCs.size(); i++)	{
+			NPCs.get(i).update();
+		}
+		for (int i = 0; i < triggers.size(); i++)	{
+			triggers.get(i).fire();
+		}
 	}
-	/**
-	 * @param door Adds a Door to the map's ArrayList of Doors
-	 */
-	public void addDoor(Door door)	{
-		doors.add(door);
-	}
-	public ArrayList<NPC> getNPCs()	{
-		return NPCs;
-	}
+	
 	/**
 	 * @param x The X coordinate of the searched Door
 	 * @param y The Y coordinate of the searched Door
@@ -74,6 +79,14 @@ public class Map extends JPanel implements Serializable {
 		}
 		return null;
 	}
+	
+	public void addNPC(NPC addedNPC)	{
+		addedNPC.initializeImages();
+		addedNPC.setMap(this);
+		NPCs.add(addedNPC);
+		this.moveBlocks[addedNPC.getCoordX()][addedNPC.getCoordY()] = true;
+	}
+	
 	
 	/**
 	 * @return Array representation of the map
@@ -105,19 +118,54 @@ public class Map extends JPanel implements Serializable {
 	public int getDrawingY()	{
 		return tiles[0].length * 40;
 	}
-	
+	/**
+	 * @return The tiles the map has that are flagged as moveblocks
+	 */
 	public boolean[][] getMoveblocks()	{
 		return moveBlocks;
 	}
+	/**
+	 * @return All doors in the map
+	 */
+	public ArrayList<Door> getDoors()	{
+		return doors;
+	}
+	/**
+	 * @param door Adds a Door to the map's ArrayList of Doors
+	 */
+	public void addDoor(Door door)	{
+		doors.add(door);
+	}
+	/**
+	 * @return An ArrayList of all of the map's NPCs
+	 */
+	public ArrayList<NPC> getNPCs()	{
+		return NPCs;
+	}
+	/**
+	 * @param triggers Set all of the map's possible triggered events
+	 */
+	public void setTriggers(ArrayList<Trigger> triggers)	{
+		this.triggers = triggers;
+	}
+	/**
+	 * @return An ArrayList of all of a map's possible triggered events
+	 */
+	public ArrayList<Trigger> getTriggers()	{
+		return triggers;
+	}
 	
 	//TODO Figure out why I have to do this and can't in the MapWriter
-	public void initializeMap(Map map)	{
+	public void initializeMap(Map map, Player player)	{
 		for (int i = 0; i < doors.size(); i++)	{
 			doors.get(i).setParentMap(map);
 		}
 		for (int i = 0; i < NPCs.size(); i++)	{
 			NPCs.get(i).setMap(map);
 			NPCs.get(i).initializeImages();
+		}
+		for (int i = 0; i < triggers.size(); i++)	{
+			triggers.get(i).initialize(map, player);
 		}
 	}
 	
