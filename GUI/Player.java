@@ -81,8 +81,10 @@ public class Player extends Character implements Serializable {
 	
 	/**
 	 * Cancels the queued move the character was going to make after its current move expired
-	 * This results from the arrow keys being released
-	 * @param e 
+	 * The move that is cancelled depends on the key that is released. If another key is still
+	 * held down (denoted by the keyLeft, keyUp, etc booleans) that movement will take over instead
+	 * 
+	 * @param e The move to be cancelled
 	 */
 	public void cancelMove(KeyEvent e) {
 		switch (e.getKeyCode())	{
@@ -139,6 +141,7 @@ public class Player extends Character implements Serializable {
 					facing = action;
 					remainingSteps = STEP_SIZE;
 					currentImage = startAnimation(action);
+					updateCoordinate(action, true);
 				}
 				else	{
 					currentImage = stopAnimation(action);
@@ -177,6 +180,7 @@ public class Player extends Character implements Serializable {
 		
 		
 		if (transitionEh())	{
+			map.moveBlocks[coordX][coordY] = false;
 			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
 			map = enteredDoor.getLink().getParentMap();
 			setMap(map);
@@ -226,13 +230,30 @@ public class Player extends Character implements Serializable {
 	}
 	
 	/**
+	 * Will return true if the character is walking into a door classified as a walkTransition.
+	 * Will return true if the character is already on a door classified as a directionTransition
+	 * and pushes the key that corresponds to the transition.
+	 * 
 	 * @return Whether or not the player has ended on a tile that warrants a map or area transition
 	 */
 	public boolean transitionEh()	{
+		
 		if (!doorTransition)	{
 			if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
 				if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
-					doorTransition = true;
+					if (((Door) map.getArray()[coordX][coordY].getDoodad()).walkTransitionEh())	{
+						doorTransition = true;
+						return true;
+					}
+					else if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh())	{
+						doorTransition = true;
+					}
+				}
+			}
+		}
+		else if (doorTransition && !moving)	{
+			if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh())	{
+				if (((Door) map.getArray()[coordX][coordY].getDoodad()).getDirection() == queuedAction)	{
 					return true;
 				}
 			}

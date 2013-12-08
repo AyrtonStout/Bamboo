@@ -20,6 +20,9 @@ public class Door extends Doodad implements Serializable {
 	
 	private int x;
 	private int y;
+	private boolean walkTransition = false;
+	private boolean directionTransition = false;
+	private ACTION transitionDirection;
 	private Door link;
 	private Map parentMap;
 	
@@ -33,12 +36,19 @@ public class Door extends Doodad implements Serializable {
 		this.y = y;
 		if (type == DOOR.WALL_CAVE_DOOR)	{
 			background = new ImageIcon("GUI/Resources/Tile_CaveDoor.png");
+			walkTransition = true;
 		}
 		else if (type == DOOR.TRANSITION_RIGHT)	{
 			background = new ImageIcon("GUI/Resources/Transition_Right.png");
+			walkTransition = true;
+			directionTransition = true;
+			transitionDirection = ACTION.RIGHT;
 		}
 		else if (type == DOOR.TRANSITION_LEFT)	{
 			background = new ImageIcon("GUI/Resources/Transition_Left.png");
+			walkTransition = true;
+			directionTransition = true;
+			transitionDirection = ACTION.LEFT;
 		}
 	}
 	
@@ -82,5 +92,14 @@ public class Door extends Doodad implements Serializable {
 	public int getY()	{
 		return y;
 	}
-	
+	public boolean walkTransitionEh()	{
+		return walkTransition;
+	}
+	public boolean directionTransitionEh()	{
+		return directionTransition;
+	}
+
+	public ACTION getDirection() {
+		return transitionDirection;
+	}
 }
