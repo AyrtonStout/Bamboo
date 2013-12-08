@@ -255,7 +255,7 @@ public class MapWriter {
 				
 		ArrayList<String> terraTalk = new ArrayList<String>();
 		terraTalk.add("I have teal hair.");
-		terraTalk.add("Push G and I will probably walk to the left");
+		terraTalk.add("Push G and I will probably walk to the left.");
 		ArrayList<String> celesTalk = new ArrayList<String>();
 		celesTalk.add("I wander about aimlessly.");
 		

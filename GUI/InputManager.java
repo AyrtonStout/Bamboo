@@ -50,7 +50,7 @@ public class InputManager extends JPanel {
 		public void keyReleased(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || 
 					e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)	{
-				data.getPlayer().cancelMove();
+				data.getPlayer().cancelMove(e);
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package GUI;
 
 import java.awt.Image;
-import java.awt.event.KeyEvent;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -36,29 +35,6 @@ public abstract class Character implements Serializable {
 	
 	protected final int OFFSET_X = 4;
 	protected final int OFFSET_Y = -10;
-
-
-	/**
-	 * @param e KeyEvent passed in from the Board. Can only be an arrow key input
-	 * 
-	 * The KeyEvent causes the character to queue up a move to make when its current move
-	 * has expired. This method does not start the action
-	 */
-	public void move(KeyEvent e) {
-		queuedMove = true;
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)        {
-			queuedAction = ACTION.RIGHT;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_LEFT)        {
-			queuedAction = ACTION.LEFT;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_UP)        {
-			queuedAction = ACTION.UP;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_DOWN)        {
-			queuedAction = ACTION.DOWN;        
-		}
-	}
 
 
 	/**

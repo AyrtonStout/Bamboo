@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.event.KeyEvent;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -22,7 +23,12 @@ public class Player extends Character implements Serializable {
                                                                       for the screen to begin scrolling */
 	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
 	                                                                   Recommended values 1-5 */
-	private NPC interactingNPC = null;
+	private NPC interactingNPC = null;                                //The NPC the player is (likely) talking to
+	
+	private boolean keyLeft = false;
+	private boolean keyUp = false;
+	private boolean keyRight = false;
+	private boolean keyDown = false;
 
 	public Player(String name, int windowWidth, int windowHeight) {
 		
@@ -48,12 +54,63 @@ public class Player extends Character implements Serializable {
 	}
 
 	/**
+	 * @param e KeyEvent passed in from the Board. Can only be an arrow key input
+	 * 
+	 * The KeyEvent causes the character to queue up a move to make when its current move
+	 * has expired. This method does not start the action
+	 */
+	public void move(KeyEvent e) {
+		queuedMove = true;
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)        {
+			keyRight = true;
+			queuedAction = ACTION.RIGHT;        
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_LEFT)        {
+			keyLeft = true;
+			queuedAction = ACTION.LEFT;        
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_UP)        {
+			keyUp = true;
+			queuedAction = ACTION.UP;        
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_DOWN)        {
+			keyDown = true;
+			queuedAction = ACTION.DOWN;        
+		}
+	}
+	
+	/**
 	 * Cancels the queued move the character was going to make after its current move expired
 	 * This results from the arrow keys being released
+	 * @param e 
 	 */
-	public void cancelMove() {
-		queuedAction = ACTION.STAND;
-		queuedMove = false;
+	public void cancelMove(KeyEvent e) {
+		switch (e.getKeyCode())	{
+		case KeyEvent.VK_LEFT:
+			keyLeft = false; break;
+		case KeyEvent.VK_UP:
+			keyUp = false; break;
+		case KeyEvent.VK_RIGHT:
+			keyRight = false; break;
+		case KeyEvent.VK_DOWN:
+			keyDown = false; break;
+		}
+		preserveMove();
+	}
+	
+	private void preserveMove()	{
+		if (keyLeft == true)
+			queuedAction = ACTION.LEFT;
+		else if (keyUp == true)
+			queuedAction = ACTION.UP;
+		else if (keyRight == true)
+			queuedAction = ACTION.RIGHT;
+		else if (keyDown == true)
+			queuedAction = ACTION.DOWN;
+		else	{
+			queuedAction = ACTION.STAND;
+			queuedMove = false;
+		}
 	}
 
 	/**
