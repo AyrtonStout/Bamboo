@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import Systems.Time;
+
 /**
  * @author mobius
  * Holds the game data and updates the state of all objects every frame
@@ -16,7 +18,8 @@ public class GameData {
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
 	private TextBox dialogueBox = new TextBox();
-	private Menu menuBox = new Menu();
+	private Menu menuBox = new Menu(this);
+	private Time time = new Time();
 	
 	private Map currentMap;
 
@@ -64,6 +67,8 @@ public class GameData {
 		if (dialogueBox.writingEh())	{
 			dialogueBox.update();	
 		}
+		time.update();
+		menuBox.update();
 		currentMap.updateAll();
 		
 		
@@ -117,5 +122,8 @@ public class GameData {
 	 */
 	public void setGameState(int i) {
 		gameState = i;
+	}
+	public Time getTime()	{
+		return time;
 	}
 }

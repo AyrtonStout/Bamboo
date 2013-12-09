@@ -17,7 +17,7 @@ public class Trigger implements Serializable {
 	private boolean repeatedTrigger = false;
 	
 	private ArrayList<TEvent> events = new ArrayList<TEvent>();
-	private ArrayList<TCondition> conditions = new ArrayList<TCondition>();
+//	private ArrayList<TCondition> conditions = new ArrayList<TCondition>();
 	private ArrayList<TAction> actions = new ArrayList<TAction>();
 	
 	public Trigger(TEvent e, TAction a)	{

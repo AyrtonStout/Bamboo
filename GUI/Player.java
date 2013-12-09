@@ -138,7 +138,6 @@ public class Player extends Character implements Serializable {
 					facing = action;
 					remainingSteps = STEP_SIZE;
 					currentImage = startAnimation(action);
-					updateCoordinate(action, true);
 				}
 				else	{
 					currentImage = stopAnimation(action);
@@ -179,26 +178,9 @@ public class Player extends Character implements Serializable {
 		if (transitionEh())	{
 			map.moveBlocks[coordX][coordY] = false;
 			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
-			map = enteredDoor.getLink().getParentMap();
-			setMap(map);
-			if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
-				setBackgroundX(0);
-			}
-			else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > map.getWidth() * 40 - windowWidth)	{
-				setBackgroundX(map.getWidth() * 40 - windowWidth);
-			}
-			else	{
-				setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
-			}
-			if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
-				setBackgroundY(0);
-			}
-			else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > map.getHeight() * 40 - windowHeight)	{
-				setBackgroundY(map.getHeight() * 40 - windowHeight);
-			}
-			else	{
-				setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
-			}
+			setMap(enteredDoor.getLink().getParentMap());
+			centerBackground(enteredDoor);
+			
 			setCoordX(enteredDoor.getLink().getX());
 			setCoordY(enteredDoor.getLink().getY());
 			map.moveBlocks[coordX][coordY] = true;
@@ -206,6 +188,11 @@ public class Player extends Character implements Serializable {
 			queuedMove = false;
 			action = ACTION.STAND;
 			queuedAction = ACTION.STAND;
+		}
+		
+		//This has to happen after door checks or it leaves phantom moveblocks after transitions
+		if (moving)	{
+			updateCoordinate(action, true);
 		}
 	}
 
@@ -307,6 +294,27 @@ public class Player extends Character implements Serializable {
 			else if (charY < windowHeight - 40)        {                                                
 				charY += speed;
 			}
+		}
+	}
+	
+	private void centerBackground(Door enteredDoor)	{
+		if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
+			setBackgroundX(0);
+		}
+		else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > map.getWidth() * 40 - windowWidth)	{
+			setBackgroundX(map.getWidth() * 40 - windowWidth);
+		}
+		else	{
+			setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
+		}
+		if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
+			setBackgroundY(0);
+		}
+		else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > map.getHeight() * 40 - windowHeight)	{
+			setBackgroundY(map.getHeight() * 40 - windowHeight);
+		}
+		else	{
+			setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
 		}
 	}
 	

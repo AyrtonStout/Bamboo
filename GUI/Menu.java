@@ -15,10 +15,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class Menu extends JPanel {
 
+	private static final long serialVersionUID = 7128111428003212233L;
 	private boolean visible;
 	private ImageIcon background;
 	private ImageIcon cursor;
@@ -34,7 +34,11 @@ public class Menu extends JPanel {
 	private Font gameFont;
 	private InputStream stream;
 	
-	public Menu()	{
+	private GameData data;
+	
+	public Menu(GameData data)	{
+		
+		this.data = data;
 		
 		try {
 			stream = new BufferedInputStream(
@@ -58,7 +62,7 @@ public class Menu extends JPanel {
 			panels[i].add(Box.createHorizontalStrut(30));
 			panels[i].setPreferredSize(new Dimension(600, 50));
 		}
-		panels[labels.length-1].add(Box.createHorizontalStrut(20));
+		panels[labels.length-1].add(Box.createHorizontalStrut(10));
 		this.add(Box.createVerticalStrut(15));
 		
 		for (int i = 0; i < labels.length; i++)	{
@@ -99,6 +103,10 @@ public class Menu extends JPanel {
 			g.drawImage(background.getImage(), 0, 0, null);
 			g.drawImage(cursor.getImage(), 10, 23 + (47 * cursorPosition), null);
 		}
+	}
+	
+	public void update()	{
+		labels[labels.length -1].setText(data.getTime().toString());
 	}
 	
 	/* 
