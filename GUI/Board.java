@@ -26,6 +26,7 @@ public class Board extends JPanel implements ActionListener {
 		this.setLayout(new BorderLayout());
 
 		this.add(data.getTextBox(), BorderLayout.SOUTH);
+		this.add(data.getMenu(), BorderLayout.EAST);
 		
 		time = new Timer((int)(1000 / FPS), this);
 		time.start();

@@ -34,6 +34,10 @@ public class InputManager extends JPanel {
 				else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 					activate();
 				}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)	{
+					data.setGameState(2);
+					data.getMenu().setVisible(true);
+				}
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
 					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
 				}
@@ -41,6 +45,18 @@ public class InputManager extends JPanel {
 			else if (data.getGameState() == 1)	{
 				if (e.getKeyCode() == KeyEvent.VK_Z)	{
 					advanceDialogue();
+				}
+			}
+			else if (data.getGameState() == 2)	{
+				if (e.getKeyCode() == KeyEvent.VK_UP)	{
+					data.getMenu().raiseCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+					data.getMenu().dropCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)	{
+					data.setGameState(0);
+					data.getMenu().setVisible(false);
 				}
 			}
 		}

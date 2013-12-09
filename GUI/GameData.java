@@ -16,6 +16,7 @@ public class GameData {
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
 	private TextBox dialogueBox = new TextBox();
+	private Menu menuBox = new Menu();
 	
 	private Map currentMap;
 
@@ -91,7 +92,13 @@ public class GameData {
 	 * @return The game's bottom dialog box used for dialogue
 	 */
 	public TextBox getTextBox() {
-		return dialogueBox;
+		return dialogueBox;	
+	}
+	/**
+	 * @return The general right-hand side game menu
+	 */
+	public Menu getMenu()	{
+		return menuBox;
 	}
 	/**
 	 * @return The width of the game's window
