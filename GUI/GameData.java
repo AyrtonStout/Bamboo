@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import GUI.Enums.GAME_STATE;
 import Systems.Time;
 
 /**
@@ -14,10 +15,11 @@ import Systems.Time;
 public class GameData {
 	
 	private Player player;
-	private int gameState = 0;
+	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
 	private TextBox dialogueBox = new TextBox();
+	private Board gameBoard;
 	private Menu menuBox = new Menu(this);
 	private Time time = new Time();
 	
@@ -70,9 +72,6 @@ public class GameData {
 		time.update();
 		menuBox.update();
 		currentMap.updateAll();
-		
-		
-//		System.out.println("X - " + currentMap.getNPCs().get(0).getCoordX() + "  Y - " + currentMap.getNPCs().get(0).getCoordY());
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class GameData {
 	/**
 	 * @return The game's current state
 	 */
-	public int getGameState()	{
+	public GAME_STATE getGameState()	{
 		return gameState;
 	}
 	/**
@@ -120,10 +119,18 @@ public class GameData {
 	/**
 	 * @param i The new state of the game
 	 */
-	public void setGameState(int i) {
-		gameState = i;
+	public void setGameState(GAME_STATE state) {
+		gameState = state;
 	}
 	public Time getTime()	{
 		return time;
+	}
+
+
+	public void setGameBoard(Board gameBoard) {
+		this.gameBoard = gameBoard;	
+	}
+	public Board getGameBoard()	{
+		return gameBoard;
 	}
 }

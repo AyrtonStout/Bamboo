@@ -8,7 +8,7 @@ public class Time {
 	private int hours;
 	private int minutes;
 	
-	private final int TIMESCALE = 90;
+	private final int TIMESCALE = 120;
 	private int count;
 	
 	public Time()	{

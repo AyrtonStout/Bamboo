@@ -1,4 +1,4 @@
-package GUI;
+package Systems;
 
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
@@ -6,10 +6,18 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
+import GUI.GameData;
+import GUI.Interactable;
+import GUI.NPC;
+import GUI.Sign;
+import GUI.Tile;
+import GUI.Enums.GAME_STATE;
+
 public class InputManager extends JPanel {
 
 	private static final long serialVersionUID = -1120571601725209112L;
 	GameData data;
+	private Inventory inventory = new Inventory();
 
 	public InputManager(GameData data)	{
 		this.data = data;
@@ -26,7 +34,7 @@ public class InputManager extends JPanel {
 	 */
 	private class AL extends KeyAdapter{
 		public void keyPressed(KeyEvent e) {
-			if (data.getGameState() == 0)	{
+			if (data.getGameState() == GAME_STATE.WALK)	{
 				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || 
 						e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)	{
 					data.getPlayer().move(e);
@@ -34,29 +42,58 @@ public class InputManager extends JPanel {
 				else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 					activate();
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)	{
-					data.setGameState(2);
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_ENTER)	{
+					data.setGameState(GAME_STATE.MENU);
 					data.getMenu().setVisible(true);
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
 					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
 				}
 			}
-			else if (data.getGameState() == 1)	{
+			
+			
+			else if (data.getGameState() == GAME_STATE.TALK)	{
 				if (e.getKeyCode() == KeyEvent.VK_Z)	{
 					advanceDialogue();
 				}
 			}
-			else if (data.getGameState() == 2)	{
+			
+			
+			else if (data.getGameState() == GAME_STATE.MENU)	{
 				if (e.getKeyCode() == KeyEvent.VK_UP)	{
 					data.getMenu().raiseCursor();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
 					data.getMenu().dropCursor();
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)	{
-					data.setGameState(0);
+				else if (e.getKeyCode() == KeyEvent.VK_Z || e.getKeyCode() == KeyEvent.VK_ENTER)	{
+					if (data.getMenu().getCursorPosition() == 1)	{
+						data.setGameState(GAME_STATE.INVENTORY_OUTER);
+						data.getMenu().setVisible(false);
+						data.getMenu().shrink();
+						data.getGameBoard().add(inventory);	
+						data.getTextBox().setVisible(true);
+					}
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.setGameState(GAME_STATE.WALK);
 					data.getMenu().setVisible(false);
+				}
+			}
+			
+			else if (data.getGameState() == GAME_STATE.INVENTORY_OUTER)	{
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.getGameBoard().remove(inventory);
+					data.getMenu().restore();
+					data.setGameState(GAME_STATE.MENU);
+					data.getMenu().setVisible(true);
+					data.getTextBox().setVisible(false);
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_UP)	{
+					inventory.raiseLeftCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+					inventory.dropLeftCursor();
 				}
 			}
 		}
@@ -73,7 +110,7 @@ public class InputManager extends JPanel {
 	
 	@SuppressWarnings("incomplete-switch")
 	public void activate()	{
-		if (data.getGameState() == 0)	{
+		if (data.getGameState() == GAME_STATE.WALK)	{
 			Tile facedTile = null;
 			int facedX = data.getPlayer().getCoordX();
 			int facedY = data.getPlayer().getCoordY();
@@ -97,7 +134,7 @@ public class InputManager extends JPanel {
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
 					((Sign) facedTile.getDoodad()).getDialogue();
-					data.setGameState(1);
+					data.setGameState(GAME_STATE.TALK);
 					data.getTextBox().setVisible(true);
 					data.getTextBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
 					advanceDialogue();
@@ -111,7 +148,7 @@ public class InputManager extends JPanel {
 					interactedNPC.invertFacing(data.getPlayer().getFacing());
 					interactedNPC.setTalking(true);
 					data.getPlayer().setInteractingNPC(interactedNPC);
-					data.setGameState(1);
+					data.setGameState(GAME_STATE.TALK);
 					data.getTextBox().setVisible(true);
 					advanceDialogue();
 				}
@@ -128,7 +165,7 @@ public class InputManager extends JPanel {
 				data.getTextBox().read();
 			}
 			else	{
-				data.setGameState(0);
+				data.setGameState(GAME_STATE.WALK);
 				if (data.getPlayer().getInteractingNPC() != null)	{
 					data.getPlayer().getInteractingNPC().setTalking(false);
 					data.getPlayer().setInteractingNPC(null);

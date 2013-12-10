@@ -20,8 +20,9 @@ public class Menu extends JPanel {
 
 	private static final long serialVersionUID = 7128111428003212233L;
 	private boolean visible;
-	private ImageIcon background;
-	private ImageIcon cursor;
+	private boolean shrunken = false;
+	private ImageIcon background = new ImageIcon("GUI/Resources/Menu_Background.png");
+	private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 	private int cursorPosition;
 	
 	private final int FONT_HEIGHT = 28;
@@ -42,7 +43,7 @@ public class Menu extends JPanel {
 		
 		try {
 			stream = new BufferedInputStream(
-                    new FileInputStream("GUI/Resources/Game_Font.ttf"));
+                    new FileInputStream("GUI/Resources/Font_Main.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			gameFont = baseFont.deriveFont(Font.PLAIN, 19);
 			
@@ -50,9 +51,6 @@ public class Menu extends JPanel {
 			System.err.println("Use your words!! Font not found");
 			e.printStackTrace();
 		}
-		
-		background = new ImageIcon("GUI/Resources/Menu_Background.png");
-		cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 		
 
 		for (int i = 0; i < panels.length; i++)	{
@@ -70,7 +68,7 @@ public class Menu extends JPanel {
 			labels[i].setMinimumSize(new Dimension(180, FONT_HEIGHT));
 			labels[i].setMaximumSize(new Dimension(180, FONT_HEIGHT));			
 			labels[i].setFont(gameFont);
-			labels[i].setAlignmentX(LEFT_ALIGNMENT);
+//			labels[i].setAlignmentX(LEFT_ALIGNMENT);
 			
 			panels[i].add(labels[i]);
 		}
@@ -130,6 +128,23 @@ public class Menu extends JPanel {
 		
 	}
 	
+	public void shrink()	{
+		for (int i = 0; i < panels.length; i++)	{
+			panels[i].setPreferredSize(new Dimension(0, 50));
+		}
+		this.setPreferredSize(new Dimension(0, 450));
+		shrunken = true;
+	}
+	public void restore()	{
+		if (shrunken)	{
+			for (int i = 0; i < panels.length; i++)	{
+				panels[i].setPreferredSize(new Dimension(180, 50));
+			}
+			this.setPreferredSize(new Dimension(180, 450));
+			shrunken = false;
+		}
+	}
+	
 	public void dropCursor()	{
 		if (cursorPosition < labels.length - 2)
 			cursorPosition++;
@@ -140,5 +155,8 @@ public class Menu extends JPanel {
 	}
 	public void resetCursor()	{
 		cursorPosition = 0;
+	}
+	public int getCursorPosition()	{
+		return cursorPosition;
 	}
 }

@@ -90,11 +90,11 @@ public class Tile implements Serializable {
 	 */
 	private void createBase(TILE type)	{
 		if (type == TILE.GROUND_GRASS)	{
-			background = new ImageIcon("GUI/Resources/Tile_Grass.png");
+			background = new ImageIcon("GUI/Resources/Unused/grass3_1_2.png");
 			moveBlock = false;
 		}
 		else if (type == TILE.GROUND_WATER)	{
-			background = new ImageIcon("GUI/Resources/Tile_Water.png");
+			background = new ImageIcon("GUI/Resources/Unused/water1.png");
 			moveBlock = true;
 		}
 		else if (type == TILE.WALL_CAVE)	{

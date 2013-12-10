@@ -59,7 +59,7 @@ public class TextBox extends JPanel{
 	public TextBox()	{
 		try {
 			stream = new BufferedInputStream(
-                    new FileInputStream("GUI/Resources/Game_Font.ttf"));
+                    new FileInputStream("GUI/Resources/Font_Main.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			gameFont = baseFont.deriveFont(Font.PLAIN, 22);
 			
@@ -140,6 +140,7 @@ public class TextBox extends JPanel{
 			this.setOpaque(false);
 			for (int i = 0; i < labels.length; i++)	{
 				labels[i].setVisible(false);
+				labels[i].setText("");
 			}
 		}
 		

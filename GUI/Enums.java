@@ -49,5 +49,11 @@ public class Enums {
 		TERRA, CELES, LOCKE, CYAN, GHOST;
 		
 	}
+	
+	public enum GAME_STATE	{
+		
+		WALK, TALK, MENU, INVENTORY_OUTER, INVENTORY_INNER;
+		
+	}
 
 }

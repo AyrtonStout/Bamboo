@@ -2,6 +2,8 @@ package GUI;
 
 import javax.swing.*;
 
+import Systems.InputManager;
+
 /**
  * @author mobius
  * @version 0.20 - NPC Update
@@ -15,6 +17,7 @@ public class Frame {
 		JFrame frame = new JFrame();
 		GameData data = new GameData(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Board gameBoard = new Board(data);
+		data.setGameBoard(gameBoard);
 		InputManager input = new InputManager(data);
 
 		frame.add(input);
