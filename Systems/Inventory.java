@@ -26,6 +26,7 @@ public class Inventory extends JPanel {
 	private Font gameFont;
 	private Font headerFont;
 	ItemCategories categories;
+	PartyHeader header;
 
 	public Inventory()	{
 		
@@ -42,15 +43,11 @@ public class Inventory extends JPanel {
 		}
 
 		categories = new ItemCategories();
+		header = new PartyHeader();
 		
 		this.setPreferredSize(new Dimension(500, 450));
 		this.setLayout(new BorderLayout());
 		this.setBackground(Color.WHITE);
-		
-		//TOP
-		JPanel topPanel = new JPanel();
-		topPanel.setPreferredSize(new Dimension(395, 100));
-		topPanel.setBackground(Color.RED);
 		
 		//BOTTOM
 		JPanel bottomPanel = new JPanel();
@@ -60,7 +57,7 @@ public class Inventory extends JPanel {
 		//Combine
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BorderLayout());
-		rightPanel.add(topPanel, BorderLayout.NORTH);
+		rightPanel.add(header, BorderLayout.NORTH);
 		rightPanel.add(bottomPanel, BorderLayout.SOUTH);
 		
 		this.add(categories, BorderLayout.WEST);
@@ -80,6 +77,8 @@ public class Inventory extends JPanel {
 	public int getCursorLeftPosition()	{
 		return categories.getCursorPosition();
 	}
+	
+	
 	
 	private class ItemCategories extends JPanel	{
 
@@ -159,6 +158,38 @@ public class Inventory extends JPanel {
 		}
 		public int getCursorPosition()	{
 			return cursorPosition;
+		}
+	}
+	
+	
+	private class PartyHeader extends JPanel	{
+		
+		JPanel inner = new JPanel();
+		
+		public PartyHeader()	{
+			
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			this.setPreferredSize(new Dimension(395, 100));
+			this.setMaximumSize(new Dimension(395, 100));
+			this.setMinimumSize(new Dimension(395, 100));
+			this.setBackground(Color.YELLOW);
+			this.add(Box.createVerticalStrut(25));
+			
+			inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
+			inner.setPreferredSize(new Dimension(395, 50));
+			inner.setMaximumSize(new Dimension(395, 50));
+			inner.setMinimumSize(new Dimension(395, 50));
+			inner.setBackground(Color.RED);
+			
+			String[] party = new String[]{"Sabin", "Terra", "Celes", "Locke", "Cyan"};
+			
+			for (int i = 0; i < party.length; i++)	{
+			inner.add(Box.createHorizontalStrut(20));
+			inner.add(new JLabel(new ImageIcon("GUI/Resources/Characters/" + party[i] + " (Down).gif")));
+			}
+			
+			this.add(inner);
+			this.add(Box.createVerticalStrut(30));
 		}
 	}
 	
