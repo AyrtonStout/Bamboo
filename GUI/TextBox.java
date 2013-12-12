@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import Systems.Item;
+
 /**
  * @author mobius
  * Creates a text box to use for status messages or dialogue from characters or signs. When a text box has been
@@ -253,6 +255,15 @@ public class TextBox extends JPanel{
 	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
 		this.dialogue = dialogue;
 		this.instantWrite = instantWrite;
+	}
+	/**
+	 * Uses the text box to show what item has just been looted.
+	 * 
+	 * @param item The item that was just received.
+	 */
+	public void receiveItem(Item item)	{
+		this.dialogue.add("You looted " + item.getName() + "!");
+		this.instantWrite = false;
 	}
 	/**
 	 * @param b Whether or not the sign should be writing

@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import GUI.Enums.GAME_STATE;
+import Systems.Inventory;
 import Systems.Time;
 
 /**
@@ -21,7 +22,10 @@ public class GameData {
 	private TextBox dialogueBox = new TextBox();
 	private Board gameBoard;
 	private Menu menuBox = new Menu(this);
+	private Inventory inventory = new Inventory();
+	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
 	private Time time = new Time();
+	private boolean paused = false;
 	
 	private Map currentMap;
 
@@ -62,16 +66,18 @@ public class GameData {
 	 * Updates all the game elements in the current map
 	 */
 	public void update()	{
-		player.update();
-		if (player.doorTransitionEh())	{
-			currentMap = player.getMap();
+		if (!paused)	{
+			player.update();
+			if (player.doorTransitionEh())	{
+				currentMap = player.getMap();
+			}
+			if (dialogueBox.writingEh())	{
+				dialogueBox.update();	
+			}
+			time.update();
+			menuBox.update();
+			currentMap.updateAll();
 		}
-		if (dialogueBox.writingEh())	{
-			dialogueBox.update();	
-		}
-		time.update();
-		menuBox.update();
-		currentMap.updateAll();
 	}
 
 	/**
@@ -132,5 +138,14 @@ public class GameData {
 	}
 	public Board getGameBoard()	{
 		return gameBoard;
+	}
+	public void setPaused(boolean b)	{
+		paused = b;
+	}
+	public InventoryPanel getInventoryPanel()	{
+		return inventoryPanel;
+	}
+	public Inventory getInventory()	{
+		return inventory;
 	}
 }

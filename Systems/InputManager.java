@@ -16,8 +16,7 @@ import GUI.Enums.GAME_STATE;
 public class InputManager extends JPanel {
 
 	private static final long serialVersionUID = -1120571601725209112L;
-	GameData data;
-	private Inventory inventory = new Inventory();
+	private GameData data;
 
 	public InputManager(GameData data)	{
 		this.data = data;
@@ -34,6 +33,10 @@ public class InputManager extends JPanel {
 	 */
 	private class AL extends KeyAdapter{
 		public void keyPressed(KeyEvent e) {
+			
+			/*
+			 * Main game screen
+			 */
 			if (data.getGameState() == GAME_STATE.WALK)	{
 				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || 
 						e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)	{
@@ -51,7 +54,9 @@ public class InputManager extends JPanel {
 				}
 			}
 			
-			
+			/*
+			 * With a text box active
+			 */
 			else if (data.getGameState() == GAME_STATE.TALK)	{
 				if (e.getKeyCode() == KeyEvent.VK_Z)	{
 					advanceDialogue();
@@ -59,6 +64,9 @@ public class InputManager extends JPanel {
 			}
 			
 			
+			/*
+			 * With the small in-game menu open
+			 */
 			else if (data.getGameState() == GAME_STATE.MENU)	{
 				if (e.getKeyCode() == KeyEvent.VK_UP)	{
 					data.getMenu().raiseCursor();
@@ -71,32 +79,79 @@ public class InputManager extends JPanel {
 						data.setGameState(GAME_STATE.INVENTORY_OUTER);
 						data.getMenu().setVisible(false);
 						data.getMenu().shrink();
-						data.getGameBoard().add(inventory);	
+						data.getGameBoard().add(data.getInventoryPanel());
+						data.getInventoryPanel().initializeList();
 						data.getTextBox().setVisible(true);
+						data.setPaused(true);
 					}
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
 					data.setGameState(GAME_STATE.WALK);
 					data.getMenu().setVisible(false);
+					data.getMenu().resetCursor();
 				}
 			}
 			
+			
+			/*
+			 * Inventory screen active
+			 */
 			else if (data.getGameState() == GAME_STATE.INVENTORY_OUTER)	{
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
-					data.getGameBoard().remove(inventory);
+				if (e.getKeyCode() == KeyEvent.VK_UP)	{
+					data.getInventoryPanel().raiseCategoryCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+					data.getInventoryPanel().dropCategoryCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+					data.getInventoryPanel().moveHeaderCursorLeft();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+					data.getInventoryPanel().moveHeaderCursorRight();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_Z)	{
+					if (data.getInventory().getCategory(data.getInventoryPanel().getCategoryCursorPosition()).size() > 0)	{
+						data.setGameState(GAME_STATE.INVENTORY_INNER);
+						data.getInventoryPanel().setInnerActive(true);
+					}
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.getGameBoard().remove(data.getInventoryPanel());
 					data.getMenu().restore();
 					data.setGameState(GAME_STATE.MENU);
 					data.getMenu().setVisible(true);
 					data.getTextBox().setVisible(false);
+					data.getInventoryPanel().resetCategoryCursor();
+					data.getInventoryPanel().resetHeaderCursor();
+					data.setPaused(false);
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_UP)	{
-					inventory.raiseLeftCursor();
+			}
+			
+			else if (data.getGameState() == GAME_STATE.INVENTORY_INNER)	{
+				if (e.getKeyCode() == KeyEvent.VK_UP)	{
+					data.getInventoryPanel().raiseItemCursor();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-					inventory.dropLeftCursor();
+					data.getInventoryPanel().dropItemCursor();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+					data.getInventoryPanel().moveHeaderCursorLeft();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+					data.getInventoryPanel().moveHeaderCursorRight();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.setGameState(GAME_STATE.INVENTORY_OUTER);
+					data.getInventoryPanel().setInnerActive(false);
+					data.getInventoryPanel().resetItemCursor();
 				}
 			}
 		}
+		
+		
+		
+		
+		
 		/* 
 		 * Cancels the character's queued action causing it to stand still after its current action completes
 		 */
@@ -108,6 +163,11 @@ public class InputManager extends JPanel {
 		}
 	}
 	
+	
+	
+	/**
+	 * Performs an action on the tile in front of the player
+	 */
 	@SuppressWarnings("incomplete-switch")
 	public void activate()	{
 		if (data.getGameState() == GAME_STATE.WALK)	{
@@ -131,6 +191,12 @@ public class InputManager extends JPanel {
 			if (facedTile.getDoodad() != null)	{
 				if(facedTile.getDoodad().getClass() == Interactable.class)	{
 					((Interactable) facedTile.getDoodad()).interact();
+					data.getInventory().addItem(((Interactable) facedTile.getDoodad()).lootChest());
+					data.getTextBox().receiveItem(((Interactable) facedTile.getDoodad()).lootChest());
+					data.setGameState(GAME_STATE.TALK);
+					data.getTextBox().setVisible(true);
+					advanceDialogue();
+
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
 					((Sign) facedTile.getDoodad()).getDialogue();
@@ -156,6 +222,9 @@ public class InputManager extends JPanel {
 		}
 	}
 	
+	/**
+	 * Moves the text box's dialogue forward one line
+	 */
 	public void advanceDialogue()	{
 		if (data.getTextBox().writingEh() && !data.getTextBox().writeFasterEh())	{
 			data.getTextBox().writeFaster();

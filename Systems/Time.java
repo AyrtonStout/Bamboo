@@ -2,6 +2,11 @@ package Systems;
 
 import Systems.Enums.TIME;
 
+/**
+ * @author mobius
+ * In game clock. Timescale controls the speed of the passage of time. At 60, one real world second equals one in game minute.
+ * At a timescale of 120, two real world seconds equals one in game minute.
+ */
 public class Time {
 
 	private int days;
