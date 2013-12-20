@@ -25,7 +25,7 @@ public class Board extends JPanel implements ActionListener {
 		this.setPreferredSize(new Dimension(data.getWindowWidth(), data.getWindowHeight()));
 		this.setLayout(new BorderLayout());
 
-		this.add(data.getTextBox(), BorderLayout.SOUTH);
+		this.add(data.getDialogueBox(), BorderLayout.SOUTH);
 		this.add(data.getMenu(), BorderLayout.EAST);
 		
 		time = new Timer((int)(1000 / FPS), this);

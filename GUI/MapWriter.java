@@ -10,6 +10,9 @@ import Quests.TAction;
 import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
+import Systems.Enums.SWORD;
+import Systems.Enums.DAGGER;
+import Systems.Weapon;
 
 /**
  * @author mobius
@@ -127,7 +130,10 @@ public class MapWriter {
 			tiles[0][i] = new Tile(TILE.GROUND_WATER);
 			tiles[tiles.length-1][i] = new Tile(TILE.GROUND_WATER);
 		}
-		tiles[7][7] = new Tile(TILE.GROUND_CAVE, INTERACTABLE.TREASURE_CHEST);
+		Chest magicSwordChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_BIG);
+		magicSwordChest.setLoot(new Weapon(SWORD.MAGIC));
+		
+		tiles[7][7] = new Tile(TILE.GROUND_CAVE, magicSwordChest);
 		tiles[7][3] = new Tile(TILE.GROUND_CAVE, DOOR.WALL_CAVE_DOOR, 7, 3);
 		
 		tiles[4][9] = treeTile;
@@ -229,15 +235,15 @@ public class MapWriter {
 		tiles[7][9] = treeTile;
 		tiles[10][8] = treeTile;
 		tiles[11][8] = treeTile;
-		tiles[9][12] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
+		
+		Chest ironSwordChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		ironSwordChest.setLoot(new Weapon(SWORD.IRON));
+		Chest ironDaggerChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		ironDaggerChest.setLoot(new Weapon(DAGGER.IRON));
+		
+		tiles[9][12] = new Tile(TILE.GROUND_GRASS, ironSwordChest);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
-		tiles[7][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST_BIG);
-		tiles[8][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
-		tiles[9][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
-		tiles[10][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
-		tiles[11][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
-		tiles[12][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST);
-		tiles[13][15] = new Tile(TILE.GROUND_GRASS, INTERACTABLE.TREASURE_CHEST_BIG);
+		tiles[11][15] = new Tile(TILE.GROUND_GRASS, ironDaggerChest);
 		
 		for (int i = 0; i < tiles.length; i++)	{
 			tiles[i][0] = new Tile(TILE.WALL_CAVE);

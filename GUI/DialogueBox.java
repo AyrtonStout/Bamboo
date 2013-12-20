@@ -27,12 +27,13 @@ import Systems.Item;
  * Read() is called.
  */
 @SuppressWarnings("serial")
-public class TextBox extends JPanel{
+public class DialogueBox extends JPanel{
 	
 	private boolean visible = true;
 	private boolean writing = false;
 	private boolean writeFaster = false;
 	private boolean instantWrite = false;
+	private boolean shrunken = false;
 	private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
 	private ImageIcon textArrow = new ImageIcon("GUI/Resources/Text_Arrow.png");
 	private ArrayList<String> dialogue = new ArrayList<String>();
@@ -58,7 +59,7 @@ public class TextBox extends JPanel{
 	/**
 	 * Formats the text box with panels and labels. Loads the font from file and assigns it to the labels
 	 */
-	public TextBox()	{
+	public DialogueBox()	{
 		try {
 			stream = new BufferedInputStream(
                     new FileInputStream("GUI/Resources/Font_Main.ttf"));
@@ -262,8 +263,25 @@ public class TextBox extends JPanel{
 	 * @param item The item that was just received.
 	 */
 	public void receiveItem(Item item)	{
-		this.dialogue.add("You looted " + item.getName() + "!");
+		this.dialogue.add("You looted " + vowelEh(item.getName()) + item.getName() + "!");
 		this.instantWrite = false;
+	}
+	/**
+	 * Used to have intelligent sounding dialogue when using the articles "a" and "an". 
+	 * 
+	 * @param str The word to be checked for a vowel.
+	 * @return The string "a" or "an".
+	 */
+	private String vowelEh(String str)	{
+		
+		if (str.charAt(0) == 'a' || str.charAt(0) == 'e' || str.charAt(0) == 'i' || str.charAt(0) == 'o' || str.charAt(0) == 'u' ||
+				str.charAt(0) == 'A' || str.charAt(0) == 'E' || str.charAt(0) == 'I' || str.charAt(0) == 'O' || str.charAt(0) == 'U')	{
+			return "an ";
+		}
+		else	{
+			return "a ";
+		}
+		
 	}
 	/**
 	 * @param b Whether or not the sign should be writing
@@ -294,4 +312,22 @@ public class TextBox extends JPanel{
 	public boolean writeFasterEh() {
 		return writeFaster;
 	}
+	
+	public void shrink()	{
+		for (int i = 0; i < panels.length; i++)	{
+			panels[i].setPreferredSize(new Dimension(0, 50));
+		}
+		this.setPreferredSize(new Dimension(600, 0));
+		shrunken = true;
+	}
+	public void restore()	{
+		if (shrunken)	{
+			for (int i = 0; i < panels.length; i++)	{
+				panels[i].setPreferredSize(new Dimension(600, 50));
+			}
+			this.setPreferredSize(new Dimension(600, 150));
+			shrunken = false;
+		}
+	}
+	
 }

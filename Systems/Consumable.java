@@ -1,7 +1,5 @@
 package Systems;
 
-import java.awt.Image;
-
 import javax.swing.ImageIcon;
 
 import Systems.Enums.CONSUMABLE_TYPE;
@@ -24,8 +22,8 @@ public class Consumable implements Item {
 	}
 
 	@Override
-	public Image getImage() {
-		return icon.getImage();
+	public ImageIcon getIcon() {
+		return icon;
 	}
 
 	@Override

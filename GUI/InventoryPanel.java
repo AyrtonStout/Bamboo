@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -15,8 +16,11 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import Systems.Inventory;
+import Systems.Item;
 
 /**
  * @author mobius
@@ -34,6 +38,7 @@ public class InventoryPanel extends JPanel {
 	private ItemCategories categories;
 	private PartyHeader header;
 	private ScrollBox list;
+	private StatsBox statsBox;
 	private boolean innerBoxActive = false;
 
 	private Inventory inventory;
@@ -57,8 +62,9 @@ public class InventoryPanel extends JPanel {
 		categories = new ItemCategories();
 		header = new PartyHeader();
 		list = new ScrollBox();
+		statsBox = new StatsBox();
 
-		this.setPreferredSize(new Dimension(500, 450));
+		this.setPreferredSize(new Dimension(500, 600));
 		this.setLayout(new BorderLayout());
 
 		//Combine
@@ -69,6 +75,7 @@ public class InventoryPanel extends JPanel {
 
 		this.add(categories, BorderLayout.WEST);
 		this.add(rightPanel, BorderLayout.CENTER);	
+		this.add(statsBox, BorderLayout.SOUTH);
 	
 		list.updateList(0);
 	}
@@ -80,6 +87,7 @@ public class InventoryPanel extends JPanel {
 	 */
 	public void setInnerActive(boolean b)	{
 		innerBoxActive = b;
+		statsBox.update();
 	}
 	/**
 	 * Allows the inventory list to show up when it is first loaded
@@ -145,12 +153,14 @@ public class InventoryPanel extends JPanel {
 	 */
 	public void dropItemCursor()	{
 		list.dropItemCursor();
+		statsBox.update();
 	}
 	/**
 	 * Moves the item list cursor up by one
 	 */
 	public void raiseItemCursor()	{
 		list.raiseItemCursor();
+		statsBox.update();
 	}
 	/**
 	 * Resets the item list cursor to the top
@@ -180,6 +190,7 @@ public class InventoryPanel extends JPanel {
 		private JLabel indicatorLabel = new JLabel("Inventory");
 		private ImageIcon cursor = new ImageIcon("GUI/Resources/Icon_Orange_Diamond.png");
 		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_CategoryBackground.png");
+		private ImageIcon titleBackground = new ImageIcon("GUI/Resources/Inventory_TitleBackground.png");
 		private boolean visible = true;
 		private int cursorPosition = 0;
 
@@ -232,6 +243,7 @@ public class InventoryPanel extends JPanel {
 			if (visible)	{
 				g.drawImage(background.getImage(), 0, 75, null);
 				g.drawImage(cursor.getImage(), 3, 97 + (42 * cursorPosition), null);
+				g.drawImage(titleBackground.getImage(), 0, 0, null);
 			}
 		}
 
@@ -332,6 +344,7 @@ public class InventoryPanel extends JPanel {
 
 //		private ImageIcon scrollBar = new ImageIcon("GUI/Resources/Tree_Palm.png");
 		private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
+		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_ListBackground.png");
 		private int itemCursorPosition = 0;
 		private int scrollOffset = 0;
 
@@ -355,6 +368,7 @@ public class InventoryPanel extends JPanel {
 		@Override
 		protected void paintComponent(Graphics g)	{
 //			g.drawImage(scrollBar.getImage(), 350, 40, null);
+			g.drawImage(background.getImage(), 0, 0, null);
 			if (innerBoxActive)	{
 				g.drawImage(cursor.getImage(), 10, 20 + (itemCursorPosition * 50), null);
 			}
@@ -364,7 +378,7 @@ public class InventoryPanel extends JPanel {
 			
 			for (int i = 0; i < 7; i++)	{
 				if (i < inventory.getCategory(outerCursorPosition).size())	{
-				itemList[i].setName(inventory.getCategory(outerCursorPosition).get(i + scrollOffset).getName());
+				itemList[i].setItem(inventory.getCategory(outerCursorPosition).get(i + scrollOffset));
 				itemList[i].setVisible(true);
 				}
 				else	{
@@ -407,7 +421,7 @@ public class InventoryPanel extends JPanel {
 		private class ItemPanel extends JPanel	{
 
 			private static final long serialVersionUID = 4342436547521865798L;
-			private ImageIcon background = new ImageIcon("GUI/Resources/Tile_Grass.png");
+			private ImageIcon itemIcon = new ImageIcon("GUI/Resources/sword_ico.png");
 			private JLabel itemName = new JLabel();
 			private boolean visible = true;
 
@@ -428,12 +442,13 @@ public class InventoryPanel extends JPanel {
 			@Override
 			protected void paintComponent(Graphics g)	{
 				if (visible)	{
-					g.drawImage(background.getImage(), 50, 0, null);
+					g.drawImage(itemIcon.getImage(), 50, 0, null);
 				}
 			}
 
-			public void setName(String str)	{
-				itemName.setText(str);
+			public void setItem(Item item)	{
+				itemName.setText(item.getName());
+				itemIcon = item.getIcon();
 			}
 
 			public void setVisible(boolean b)	{
@@ -443,5 +458,94 @@ public class InventoryPanel extends JPanel {
 				}
 			}
 		}
+	}		
+	private class StatsBox extends JPanel	{
+
+		private static final long serialVersionUID = -5497664525623334310L;
+		
+		private JLabel itemName = new JLabel("", SwingConstants.LEFT);
+		private JTextArea leftText = new JTextArea();
+		private JTextArea middleText = new JTextArea();
+		private JTextArea rightText = new JTextArea();
+		private JLabel itemDescription = new JLabel("", SwingConstants.LEFT);
+		private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
+		
+		private Font defaultFont = leftText.getFont();
+		private Font itemNameFont = defaultFont.deriveFont(Font.ITALIC, 24);
+		private Font statFont = defaultFont.deriveFont(Font.PLAIN, 17);
+		private Font descrptionFont = defaultFont.deriveFont(Font.PLAIN, 18);
+		
+		private JTextArea[] textAreas = new JTextArea[] {leftText, middleText, rightText};
+
+		public StatsBox()	{
+			this.setPreferredSize(new Dimension(600, 150));
+			this.setBackground(Color.BLUE);
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			this.setAlignmentX(LEFT_ALIGNMENT);
+			this.setOpaque(false);
+
+			JPanel namePanel = new JPanel();
+			namePanel.setPreferredSize(new Dimension(600, 20));
+			namePanel.setMaximumSize(new Dimension(600, 20));
+			namePanel.setMinimumSize(new Dimension(600, 20));
+			namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+			namePanel.add(Box.createHorizontalStrut(8));
+			itemName.setFont(itemNameFont);
+			namePanel.add(itemName);
+			namePanel.setOpaque(false);
+			namePanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel textFields = new JPanel();
+			textFields.setLayout(new BoxLayout(textFields, BoxLayout.X_AXIS));
+			textFields.setPreferredSize(new Dimension(600, 100));
+			textFields.setMaximumSize(new Dimension(600, 100));
+			textFields.setMinimumSize(new Dimension(600, 100));
+			textFields.setOpaque(false);
+			textFields.setAlignmentX(LEFT_ALIGNMENT);
+			
+			textFields.add(Box.createHorizontalStrut(10));
+			for (int i = 0; i < textAreas.length; i++)	{
+				textAreas[i].setEditable(false);
+				textAreas[i].setPreferredSize(new Dimension(198, 100));
+				textAreas[i].setFont(statFont);
+				textFields.add(textAreas[i]);
+			}	
+			textFields.add(Box.createHorizontalStrut(10));
+			
+			JPanel descriptionPanel = new JPanel();
+			descriptionPanel.setPreferredSize(new Dimension(600, 20));
+			descriptionPanel.setMaximumSize(new Dimension(600, 20));
+			descriptionPanel.setMinimumSize(new Dimension(600, 20));
+			descriptionPanel.setLayout(new BoxLayout(descriptionPanel, BoxLayout.X_AXIS));
+			descriptionPanel.add(Box.createHorizontalStrut(8));
+			itemDescription.setFont(descrptionFont);
+			descriptionPanel.add(itemDescription);
+			descriptionPanel.setOpaque(false);
+			descriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			
+			
+			this.add(Box.createVerticalStrut(7));
+			this.add(namePanel);
+//			this.add(Box.createVerticalStrut(5));
+			this.add(textFields);
+			this.add(descriptionPanel);
+
+		}
+		
+		@Override
+		public void paintComponent(Graphics g)	{
+			g.drawImage(background.getImage(), 0, 0, null);
+		}
+		
+		public void update()	{
+			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition());
+			itemName.setText(queriedItem.getName());
+			leftText.setText(queriedItem.getMainText().getText());
+			middleText.setText(queriedItem.getStatText().getText());
+			rightText.setText(queriedItem.getBuffText().getText());
+			itemDescription.setText(queriedItem.getDescription());
+		}
+
 	}
 }

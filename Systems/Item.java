@@ -1,6 +1,7 @@
 package Systems;
 
-import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JTextArea;
 
 /**
  * @author mobius
@@ -11,10 +12,25 @@ public interface Item {
 	/**
 	 * @return The icon representation of the Item. Used in the inventory screen
 	 */
-	public Image getImage();
+	public ImageIcon getIcon();
 	/**
 	 * @return Name of the Item
 	 */
 	public String getName();
-	
+	/**
+	 * @return A one line explanation of the item
+	 */
+	public String getDescription();
+	/**
+	 * @return The components to the item that are always present
+	 */
+	public JTextArea getMainText();
+	/**
+	 * @return The possible stat buffs that the item gives
+	 */
+	public JTextArea getStatText();
+	/**
+	 * @return The enchantment or other augments the item has
+	 */
+	public JTextArea getBuffText();
 }

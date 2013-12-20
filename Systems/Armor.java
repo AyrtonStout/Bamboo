@@ -1,7 +1,5 @@
 package Systems;
 
-import java.awt.Image;
-
 import javax.swing.ImageIcon;
 
 import Systems.Enums.ARMOR_TYPE;
@@ -29,8 +27,8 @@ public class Armor implements Item {
 	}
 
 	@Override
-	public Image getImage() {
-		return icon.getImage();
+	public ImageIcon getIcon() {
+		return icon;
 	}
 
 	@Override

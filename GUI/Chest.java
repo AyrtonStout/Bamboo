@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 import GUI.Enums.*;
+import Systems.Enums.SWORD;
 import Systems.Enums.WEAPON_TYPE;
 import Systems.Item;
 import Systems.Weapon;
@@ -13,40 +14,37 @@ import Systems.Weapon;
  * A visual that is overlaid on top of an existing tile. Decorations may change the behavior of the tile
  * and create some effect when activated
  */
-public class Interactable extends Doodad implements Serializable {
+public class Chest extends Doodad implements Serializable {
 
 	private static final long serialVersionUID = 8958966546162100963L;
 	private boolean activated = false;
 	private ImageIcon passiveImg;
 	private ImageIcon activeImg;
-	private INTERACTABLE type;
-	private Weapon reward = new Weapon("Sword of Swords", WEAPON_TYPE.SWORD);
-	private Weapon reward2 = new Weapon("Dagger of Maces", WEAPON_TYPE.SWORD);
+	private TREASURE_CHEST type;
+	private Item reward;
 	
 	/**
 	 * @param type The type of interactable Doodad to be created
 	 */
-	public Interactable(INTERACTABLE type)	{
+	public Chest(TREASURE_CHEST type)	{
 		this.type = type;
-		if (type == INTERACTABLE.TREASURE_CHEST)		{
+		if (type == TREASURE_CHEST.TREASURE_CHEST_SMALL)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed.png");
 			activeImg = new ImageIcon("GUI/Resources/Chest_Open.png");
-			moveBlock = true;
 		}
-		else if (type == INTERACTABLE.TREASURE_CHEST_BIG)		{
+		else if (type == TREASURE_CHEST.TREASURE_CHEST_BIG)		{
 			passiveImg = new ImageIcon("GUI/Resources/Chest_Closed_Big.png");
 			activeImg = new ImageIcon("GUI/Resources/Chest_Open_Big.png");
-			moveBlock = true;
 		}
-		background = passiveImg;
+		moveBlock = true;
+		super.background = passiveImg;
 	}
-	
 
 	/**
 	 * Performs the object's activated action
 	 */
 	public void interact()	{
-		background = activeImg;
+		super.background = activeImg;
 		activated = true;
 	}
 	/**
@@ -62,13 +60,10 @@ public class Interactable extends Doodad implements Serializable {
 	public boolean activeEh()	{
 		return activated;
 	}
-	public Item lootChest()	{
-		if (type == INTERACTABLE.TREASURE_CHEST)	{
-			return reward;
-		}
-		else	{
-			return reward2;
-		}
+	public void setLoot(Item item)	{
+		reward = item;
 	}
-	
+	public Item lootChest()	{
+		return reward;
+	}
 }

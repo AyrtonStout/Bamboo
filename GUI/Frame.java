@@ -19,12 +19,18 @@ public class Frame {
 		Board gameBoard = new Board(data);
 		data.setGameBoard(gameBoard);
 		InputManager input = new InputManager(data);
-
+		
+//		GlassPane glassPane = new GlassPane(data);
+//		frame.getRootPane().setGlassPane(glassPane);
+//		frame.getRootPane().getGlassPane().setVisible(true);
+//		data.setGlassPane(glassPane);
+		
 		frame.add(input);
 		frame.add(gameBoard);	
 		frame.setTitle("Project Bamboo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
+		
 		frame.pack();
 		frame.setVisible(true);	
 		frame.setLocationRelativeTo(null);

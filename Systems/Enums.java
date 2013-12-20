@@ -32,4 +32,16 @@ public class Enums {
 		
 	}
 	
+	public enum SWORD	{
+		
+		IRON, MAGIC, 
+		
+	}
+	
+	public enum DAGGER	{
+		
+		IRON;
+				
+	}
+	
 }

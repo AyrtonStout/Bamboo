@@ -20,9 +20,9 @@ public class Enums {
 		
 	}
 
-	public enum INTERACTABLE {
+	public enum TREASURE_CHEST {
 
-		TREASURE_CHEST, TREASURE_CHEST_BIG;
+		TREASURE_CHEST_SMALL, TREASURE_CHEST_BIG;
 		
 	}
 	

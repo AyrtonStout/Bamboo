@@ -1,5 +1,6 @@
 package Systems;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -7,7 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 import GUI.GameData;
-import GUI.Interactable;
+import GUI.Chest;
 import GUI.NPC;
 import GUI.Sign;
 import GUI.Tile;
@@ -52,6 +53,12 @@ public class InputManager extends JPanel {
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
 					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
 				}
+				else if (e.getKeyCode() == KeyEvent.VK_K)	{
+					data.getGlassPane().setX(200);
+					data.getGlassPane().setY(100);
+					data.getGlassPane().setWidth(50);
+					data.getGlassPane().setHeight(50);
+				}
 			}
 			
 			/*
@@ -79,9 +86,10 @@ public class InputManager extends JPanel {
 						data.setGameState(GAME_STATE.INVENTORY_OUTER);
 						data.getMenu().setVisible(false);
 						data.getMenu().shrink();
+						data.getDialogueBox().shrink();
 						data.getGameBoard().add(data.getInventoryPanel());
 						data.getInventoryPanel().initializeList();
-						data.getTextBox().setVisible(true);
+//						data.getDialogueBox().setVisible(true);
 						data.setPaused(true);
 					}
 				}
@@ -118,9 +126,10 @@ public class InputManager extends JPanel {
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
 					data.getGameBoard().remove(data.getInventoryPanel());
 					data.getMenu().restore();
+					data.getDialogueBox().restore();
 					data.setGameState(GAME_STATE.MENU);
 					data.getMenu().setVisible(true);
-					data.getTextBox().setVisible(false);
+					data.getDialogueBox().setVisible(false);
 					data.getInventoryPanel().resetCategoryCursor();
 					data.getInventoryPanel().resetHeaderCursor();
 					data.setPaused(false);
@@ -189,20 +198,20 @@ public class InputManager extends JPanel {
 				facedY++; break;
 			}
 			if (facedTile.getDoodad() != null)	{
-				if(facedTile.getDoodad().getClass() == Interactable.class)	{
-					((Interactable) facedTile.getDoodad()).interact();
-					data.getInventory().addItem(((Interactable) facedTile.getDoodad()).lootChest());
-					data.getTextBox().receiveItem(((Interactable) facedTile.getDoodad()).lootChest());
+				if(facedTile.getDoodad().getClass() == Chest.class)	{
+					((Chest) facedTile.getDoodad()).interact();
+					data.getInventory().addItem(((Chest) facedTile.getDoodad()).lootChest());
+					data.getDialogueBox().receiveItem(((Chest) facedTile.getDoodad()).lootChest());
 					data.setGameState(GAME_STATE.TALK);
-					data.getTextBox().setVisible(true);
+					data.getDialogueBox().setVisible(true);
 					advanceDialogue();
 
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
 					((Sign) facedTile.getDoodad()).getDialogue();
 					data.setGameState(GAME_STATE.TALK);
-					data.getTextBox().setVisible(true);
-					data.getTextBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
+					data.getDialogueBox().setVisible(true);
+					data.getDialogueBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
 					advanceDialogue();
 				}
 			}
@@ -210,12 +219,12 @@ public class InputManager extends JPanel {
 			for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
 				interactedNPC = data.getCurrentMap().getNPCs().get(i);
 				if (interactedNPC.getCoordX() == facedX && interactedNPC.getCoordY() == facedY && !interactedNPC.movingEh())	{
-					data.getTextBox().setDialogue(data.getCurrentMap().getNPCs().get(i).getDialogue(), false);
+					data.getDialogueBox().setDialogue(data.getCurrentMap().getNPCs().get(i).getDialogue(), false);
 					interactedNPC.invertFacing(data.getPlayer().getFacing());
 					interactedNPC.setTalking(true);
 					data.getPlayer().setInteractingNPC(interactedNPC);
 					data.setGameState(GAME_STATE.TALK);
-					data.getTextBox().setVisible(true);
+					data.getDialogueBox().setVisible(true);
 					advanceDialogue();
 				}
 			}
@@ -226,12 +235,12 @@ public class InputManager extends JPanel {
 	 * Moves the text box's dialogue forward one line
 	 */
 	public void advanceDialogue()	{
-		if (data.getTextBox().writingEh() && !data.getTextBox().writeFasterEh())	{
-			data.getTextBox().writeFaster();
+		if (data.getDialogueBox().writingEh() && !data.getDialogueBox().writeFasterEh())	{
+			data.getDialogueBox().writeFaster();
 		}
-		else if (!data.getTextBox().writingEh())	{
-			if (data.getTextBox().hasNextLine())	{
-				data.getTextBox().read();
+		else if (!data.getDialogueBox().writingEh())	{
+			if (data.getDialogueBox().hasNextLine())	{
+				data.getDialogueBox().read();
 			}
 			else	{
 				data.setGameState(GAME_STATE.WALK);
@@ -239,7 +248,7 @@ public class InputManager extends JPanel {
 					data.getPlayer().getInteractingNPC().setTalking(false);
 					data.getPlayer().setInteractingNPC(null);
 				}
-				data.getTextBox().setVisible(false);
+				data.getDialogueBox().setVisible(false);
 			}
 		}
 	}

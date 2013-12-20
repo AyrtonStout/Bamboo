@@ -51,9 +51,9 @@ public class Tile implements Serializable {
 	 * 
 	 * Creates a tile with an interactable element (such as a treasure chest) on top of it
 	 */
-	public Tile(TILE type1, INTERACTABLE type2)	{
+	public Tile(TILE type1, Chest type2)	{
 		createBase(type1);
-		this.doodad = new Interactable(type2);
+		this.doodad = type2;
 		moveBlock = doodad.moveBlockEh();
 	}
 	/**

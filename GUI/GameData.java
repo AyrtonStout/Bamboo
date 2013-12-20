@@ -19,8 +19,9 @@ public class GameData {
 	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
-	private TextBox dialogueBox = new TextBox();
+	private DialogueBox dialogueBox = new DialogueBox();
 	private Board gameBoard;
+	private GlassPane glassPane;
 	private Menu menuBox = new Menu(this);
 	private Inventory inventory = new Inventory();
 	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
@@ -101,7 +102,7 @@ public class GameData {
 	/**
 	 * @return The game's bottom dialog box used for dialogue
 	 */
-	public TextBox getTextBox() {
+	public DialogueBox getDialogueBox() {
 		return dialogueBox;	
 	}
 	/**
@@ -147,5 +148,11 @@ public class GameData {
 	}
 	public Inventory getInventory()	{
 		return inventory;
+	}
+	public void setGlassPane(GlassPane pane)	{
+		glassPane = pane;
+	}
+	public GlassPane getGlassPane()	{
+		return glassPane;
 	}
 }
