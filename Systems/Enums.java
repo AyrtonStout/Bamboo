@@ -34,14 +34,26 @@ public class Enums {
 	
 	public enum SWORD	{
 		
-		IRON, MAGIC, 
+		IRON;
 		
 	}
 	
 	public enum DAGGER	{
 		
-		IRON;
+		IRON, GOLD;
 				
+	}
+	
+	public enum MACE	{
+		
+		WOOD;
+		
+	}
+	
+	public enum AXE		{
+		
+		IRON;
+		
 	}
 	
 }

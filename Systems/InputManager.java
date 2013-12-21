@@ -1,6 +1,5 @@
 package Systems;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -52,12 +51,6 @@ public class InputManager extends JPanel {
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
 					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_K)	{
-					data.getGlassPane().setX(200);
-					data.getGlassPane().setY(100);
-					data.getGlassPane().setWidth(50);
-					data.getGlassPane().setHeight(50);
 				}
 			}
 			

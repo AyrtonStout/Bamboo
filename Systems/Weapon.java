@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 
+import Systems.Enums.AXE;
+import Systems.Enums.MACE;
 import Systems.Enums.WEAPON_TYPE;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
@@ -59,7 +61,7 @@ public class Weapon implements Item, Serializable {
 	 */
 	public Weapon(SWORD sword)	{
 		type = WEAPON_TYPE.SWORD;
-		icon = new ImageIcon("GUI/Resources/sword_ico.png");
+		icon = new ImageIcon("GUI/Resources/Icons/Sword_Iron.png");
 		if (sword == SWORD.IRON)	{
 			name = "Iron Sword";
 			attack = new Stat(10);
@@ -68,8 +70,25 @@ public class Weapon implements Item, Serializable {
 			
 			description = "A sturdy sword made from piecing together several iron daggers";
 		}
-		if (sword == SWORD.MAGIC)	{
-			name = "Magic Sword";
+	}
+	
+	public Weapon(DAGGER dagger)	{
+		type = WEAPON_TYPE.DAGGER;
+		icon = new ImageIcon("GUI/Resources/Icons/Dagger_Gold.png");
+		if (dagger == DAGGER.GOLD)	{
+			name = "Golden Dagger";
+			attack = new Stat(12);
+			attackSpeed = 1.8;
+			special = new Stat(15);		
+			description = "Balanced for throwing but that's not really a good idea";
+		}
+	}
+	
+	public Weapon(MACE mace)	{
+		type = WEAPON_TYPE.MACE;
+		icon = new ImageIcon("GUI/Resources/Icons/Mace_Wood.png");
+		if (mace == MACE.WOOD)	{
+			name = "Club";
 			attack = new Stat(35);
 			attackSpeed = 2.2;
 			special = new Stat(50);
@@ -80,19 +99,19 @@ public class Weapon implements Item, Serializable {
 			spirit = new Stat(2);
 			stamina = new Stat(7);
 			
-			description = "A hax0r blade";
+			description = "Let's go clubbing";
 		}
 	}
 	
-	public Weapon(DAGGER dagger)	{
-		type = WEAPON_TYPE.DAGGER;
-		icon = new ImageIcon("GUI/Resources/sword_ico.png");
-		if (dagger == DAGGER.IRON)	{
-			name = "Iron Dagger";
-			attack = new Stat(6);
-			attackSpeed = 1.8;
-			special = new Stat(5);		
-			description = "Balanced for throwing but that's not really a good idea";
+	public Weapon(AXE axe)	{
+		type = WEAPON_TYPE.AXE;
+		icon = new ImageIcon("GUI/Resources/Icons/Axe_Iron.png");
+		if (axe == AXE.IRON)	{
+			name = "Iron Axe";
+			attack = new Stat(10);
+			attackSpeed = 1.0;
+			special = new Stat(10);
+			description = "There's a little bit of blue in there";
 		}
 	}
 	
@@ -155,7 +174,6 @@ public class Weapon implements Item, Serializable {
 					expertise, armorPen};
 			for (int i = 0; i < secondaryStats.length; i++)	{
 				if (secondaryStats[i] != null && secondaryStats[i].getBase() > 0)	{
-					System.out.println(secondaryStats[i].getActual() + " " + secondaryNames[i]);
 					middle.append((secondaryStats[i].toString()) + " " + secondaryNames[i] + "\n");
 				}
 			}
