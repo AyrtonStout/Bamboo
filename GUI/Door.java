@@ -92,13 +92,31 @@ public class Door extends Doodad implements Serializable {
 	public int getY()	{
 		return y;
 	}
+	/**
+	 * If this method returns true, it means that the door will warp the character as soon as they step into it
+	 * 
+	 * @return Whether or not this door warps people who walk onto it
+	 */
 	public boolean walkTransitionEh()	{
 		return walkTransition;
 	}
+	/**
+	 * If this method returns true, it means that the door will warp the character if they push a pre-set direction
+	 * while standing on top of the door. This is useful for doors that are implied rather than shown (on the sides of 
+	 * buildings or for zone transitions). The required direction can be called by the getDirection() method.
+	 * 
+	 * @return Whether or not this door has a directional method of changing maps
+	 */
 	public boolean directionTransitionEh()	{
 		return directionTransition;
 	}
 
+	/**
+	 * The direction requirement the character must press in order to invoke the walkTransition method of changing maps while
+	 * they are standing on top of a door with a "true" walkTransition boolean.
+	 * 
+	 * @return The direction pressed in order to change maps
+	 */
 	public ACTION getDirection() {
 		return transitionDirection;
 	}

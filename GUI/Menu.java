@@ -16,6 +16,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * @author mobius
+ * Side menu accessed from the world map screen. Has options to enter many other menus (like inventory or party screens)
+ * as well as check the game time or save the game.
+ */
 public class Menu extends JPanel {
 
 	private static final long serialVersionUID = 7128111428003212233L;
@@ -80,9 +85,7 @@ public class Menu extends JPanel {
 		
 
 		this.add(panels[labels.length-1]);
-		
-//		this.add(Box.createVerticalStrut(10));
-		
+	
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -103,6 +106,9 @@ public class Menu extends JPanel {
 		}
 	}
 	
+	/**
+	 * Updates the menu to display the current time
+	 */
 	public void update()	{
 		labels[labels.length -1].setText(data.getTime().toString());
 	}
@@ -125,9 +131,12 @@ public class Menu extends JPanel {
 				labels[i].setVisible(false);
 			}
 		}
-		
 	}
 	
+	/**
+	 * Sets the size of the menu and all of its components to 0. Allows other components to use up the entire screen
+	 * without removing the panel from the game entirely
+	 */
 	public void shrink()	{
 		for (int i = 0; i < panels.length; i++)	{
 			panels[i].setPreferredSize(new Dimension(0, 50));
@@ -135,6 +144,9 @@ public class Menu extends JPanel {
 		this.setPreferredSize(new Dimension(0, 450));
 		shrunken = true;
 	}
+	/**
+	 * Undoes the shrink() method and returns the menu to its former glory
+	 */
 	public void restore()	{
 		if (shrunken)	{
 			for (int i = 0; i < panels.length; i++)	{
@@ -145,17 +157,29 @@ public class Menu extends JPanel {
 		}
 	}
 	
+	/**
+	 * Moves the menu's cursor down by one
+	 */
 	public void dropCursor()	{
 		if (cursorPosition < labels.length - 2)
 			cursorPosition++;
 	}
+	/**
+	 * Moves the menu's cursor up by one
+	 */
 	public void raiseCursor()	{
 		if (cursorPosition > 0)
 			cursorPosition--;
 	}
+	/**
+	 * Resets the cursor to the top of the menu
+	 */
 	public void resetCursor()	{
 		cursorPosition = 0;
 	}
+	/**
+	 * @return The position of the menu's cursor. Top option is 0. Bottom option is 7.
+	 */
 	public int getCursorPosition()	{
 		return cursorPosition;
 	}

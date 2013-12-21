@@ -4,10 +4,7 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 import GUI.Enums.*;
-import Systems.Enums.SWORD;
-import Systems.Enums.WEAPON_TYPE;
 import Systems.Item;
-import Systems.Weapon;
 
 /**
  * @author mobius
@@ -60,10 +57,27 @@ public class Chest extends Doodad implements Serializable {
 	public boolean activeEh()	{
 		return activated;
 	}
+	/**
+	 * Sets the loot that the chest will contain when it is opened
+	 * 
+	 * @param item The chests's rewarded item
+	 */
 	public void setLoot(Item item)	{
 		reward = item;
 	}
+	/**
+	 * Returns the item that is contained within the chest. This does not remove the chest's item or flag the chest
+	 * as being unable to be looted. It is essentially just a loot getter method.
+	 * 
+	 * @return The item the chest contains
+	 */
 	public Item lootChest()	{
 		return reward;
+	}
+	/**
+	 * @return The type of treasure chest it is. Wooden small/iron big etc.
+	 */
+	public TREASURE_CHEST getType()	{
+		return type;
 	}
 }

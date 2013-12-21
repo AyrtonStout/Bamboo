@@ -6,7 +6,7 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.20 - NPC Update
+ * @version 0.22 - Inventory Update
  */
 public class Frame {
 
@@ -19,11 +19,6 @@ public class Frame {
 		Board gameBoard = new Board(data);
 		data.setGameBoard(gameBoard);
 		InputManager input = new InputManager(data);
-		
-//		GlassPane glassPane = new GlassPane(data);
-//		frame.getRootPane().setGlassPane(glassPane);
-//		frame.getRootPane().getGlassPane().setVisible(true);
-//		data.setGlassPane(glassPane);
 		
 		frame.add(input);
 		frame.add(gameBoard);	

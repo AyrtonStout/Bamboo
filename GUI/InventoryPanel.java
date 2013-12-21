@@ -271,7 +271,8 @@ public class InventoryPanel extends JPanel {
 
 	/**
 	 * @author mobius
-	 *
+	 * The top right panel inside the inventory screen. Contains sprite representations of the characters and the selected
+	 * character can be changed by using the left and right arrow keys	 *
 	 */
 	private class PartyHeader extends JPanel	{
 
@@ -336,7 +337,8 @@ public class InventoryPanel extends JPanel {
 
 	/**
 	 * @author mobius
-	 *
+	 * The middle right part of the panel that contains the items. When the scrollbox is the active window, using the up
+	 * and down arrow keys will scroll through them.
 	 */
 	private class ScrollBox extends JPanel	{
 
@@ -416,7 +418,8 @@ public class InventoryPanel extends JPanel {
 
 		/**
 		 * @author mobius
-		 *
+		 * A subpanel inside of the scrollbox that represents an item. Contains the icon, name, and if the item is stackable,
+		 * the quantity of the item.
 		 */
 		private class ItemPanel extends JPanel	{
 
@@ -459,6 +462,11 @@ public class InventoryPanel extends JPanel {
 			}
 		}
 	}		
+	
+	/**
+	 * @author mobius
+	 * The text screen area that displays the stats and description of an item selected within the scroll box
+	 */
 	private class StatsBox extends JPanel	{
 
 		private static final long serialVersionUID = -5497664525623334310L;
@@ -471,9 +479,9 @@ public class InventoryPanel extends JPanel {
 		private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
 		
 		private Font defaultFont = leftText.getFont();
-		private Font itemNameFont = defaultFont.deriveFont(Font.ITALIC, 24);
-		private Font statFont = defaultFont.deriveFont(Font.PLAIN, 17);
-		private Font descrptionFont = defaultFont.deriveFont(Font.PLAIN, 18);
+		private Font itemNameFont = defaultFont.deriveFont(Font.ITALIC, 22);
+		private Font statFont = defaultFont.deriveFont(Font.BOLD, 15);
+		private Font descrptionFont = defaultFont.deriveFont(Font.PLAIN, 17);
 		
 		private JTextArea[] textAreas = new JTextArea[] {leftText, middleText, rightText};
 
@@ -485,9 +493,9 @@ public class InventoryPanel extends JPanel {
 			this.setOpaque(false);
 
 			JPanel namePanel = new JPanel();
-			namePanel.setPreferredSize(new Dimension(600, 20));
-			namePanel.setMaximumSize(new Dimension(600, 20));
-			namePanel.setMinimumSize(new Dimension(600, 20));
+			namePanel.setPreferredSize(new Dimension(600, 26));
+			namePanel.setMaximumSize(new Dimension(600, 26));
+			namePanel.setMinimumSize(new Dimension(600, 26));
 			namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 			namePanel.add(Box.createHorizontalStrut(8));
 			itemName.setFont(itemNameFont);
@@ -497,9 +505,9 @@ public class InventoryPanel extends JPanel {
 			
 			JPanel textFields = new JPanel();
 			textFields.setLayout(new BoxLayout(textFields, BoxLayout.X_AXIS));
-			textFields.setPreferredSize(new Dimension(600, 100));
-			textFields.setMaximumSize(new Dimension(600, 100));
-			textFields.setMinimumSize(new Dimension(600, 100));
+			textFields.setPreferredSize(new Dimension(600, 94));
+			textFields.setMaximumSize(new Dimension(600, 94));
+			textFields.setMinimumSize(new Dimension(600, 94));
 			textFields.setOpaque(false);
 			textFields.setAlignmentX(LEFT_ALIGNMENT);
 			
@@ -525,7 +533,7 @@ public class InventoryPanel extends JPanel {
 			
 			
 			
-			this.add(Box.createVerticalStrut(7));
+			this.add(Box.createVerticalStrut(6));
 			this.add(namePanel);
 //			this.add(Box.createVerticalStrut(5));
 			this.add(textFields);
@@ -538,8 +546,11 @@ public class InventoryPanel extends JPanel {
 			g.drawImage(background.getImage(), 0, 0, null);
 		}
 		
+		/**
+		 * Updates the text box to display the contents of the currently selected item
+		 */
 		public void update()	{
-			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition());
+			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition() + list.scrollOffset);
 			itemName.setText(queriedItem.getName());
 			leftText.setText(queriedItem.getMainText().getText());
 			middleText.setText(queriedItem.getStatText().getText());

@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 
 import Quests.Trigger;
 
-import Systems.Weapon;
 /**
  * @author mobius
  * A single world location. Contains a two dimensional array of tiles and an ArrayList of all the doors,

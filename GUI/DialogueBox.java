@@ -305,14 +305,23 @@ public class DialogueBox extends JPanel{
 			return false;
 	}
 
+	/**
+	 * Makes the text appear at a more rapid rate (though is not instant)
+	 */
 	public void writeFaster() {
 		writeFaster = true;		
 	}
 
+	/**
+	 * @return Whether or not the text box is already writing at the fastest possible speed
+	 */
 	public boolean writeFasterEh() {
 		return writeFaster;
 	}
 	
+	/**
+	 * Shrinks the text box down to allow other components to occupy the screen area
+	 */
 	public void shrink()	{
 		for (int i = 0; i < panels.length; i++)	{
 			panels[i].setPreferredSize(new Dimension(0, 50));
@@ -320,6 +329,9 @@ public class DialogueBox extends JPanel{
 		this.setPreferredSize(new Dimension(600, 0));
 		shrunken = true;
 	}
+	/**
+	 * Returns the text box to its full size after being shrink()'d
+	 */
 	public void restore()	{
 		if (shrunken)	{
 			for (int i = 0; i < panels.length; i++)	{

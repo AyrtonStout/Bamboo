@@ -10,6 +10,7 @@ import Quests.TAction;
 import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
+import Systems.Enums.MACE;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
 import Systems.Weapon;
@@ -131,7 +132,7 @@ public class MapWriter {
 			tiles[tiles.length-1][i] = new Tile(TILE.GROUND_WATER);
 		}
 		Chest magicSwordChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_BIG);
-		magicSwordChest.setLoot(new Weapon(SWORD.MAGIC));
+		magicSwordChest.setLoot(new Weapon(MACE.WOOD));
 		
 		tiles[7][7] = new Tile(TILE.GROUND_CAVE, magicSwordChest);
 		tiles[7][3] = new Tile(TILE.GROUND_CAVE, DOOR.WALL_CAVE_DOOR, 7, 3);
@@ -239,7 +240,7 @@ public class MapWriter {
 		Chest ironSwordChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
 		ironSwordChest.setLoot(new Weapon(SWORD.IRON));
 		Chest ironDaggerChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
-		ironDaggerChest.setLoot(new Weapon(DAGGER.IRON));
+		ironDaggerChest.setLoot(new Weapon(DAGGER.GOLD));
 		
 		tiles[9][12] = new Tile(TILE.GROUND_GRASS, ironSwordChest);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);

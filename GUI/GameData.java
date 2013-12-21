@@ -21,7 +21,6 @@ public class GameData {
 	private int windowWidth, windowHeight;
 	private DialogueBox dialogueBox = new DialogueBox();
 	private Board gameBoard;
-	private GlassPane glassPane;
 	private Menu menuBox = new Menu(this);
 	private Inventory inventory = new Inventory();
 	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
@@ -129,30 +128,45 @@ public class GameData {
 	public void setGameState(GAME_STATE state) {
 		gameState = state;
 	}
+	/**
+	 * @return The game's Time object
+	 */
 	public Time getTime()	{
 		return time;
 	}
-
-
+	/**
+	 * Tells the GameData class where the GameBoard is. This is only called once and only in the Frame class
+	 * 
+	 * @param gameBoard The game's one and only GameBoard
+	 */
 	public void setGameBoard(Board gameBoard) {
 		this.gameBoard = gameBoard;	
 	}
+	/**
+	 * @return The game's GameBoard
+	 */
 	public Board getGameBoard()	{
 		return gameBoard;
 	}
+	/**
+	 * Sets the game as either paused or unpaused. The game should be paused when entering a full screen menu but
+	 * should remain unpaused otherwise
+	 * 
+	 * @param b Whether or not the game should be paused
+	 */
 	public void setPaused(boolean b)	{
 		paused = b;
 	}
+	/**
+	 * @return The inventory screen
+	 */
 	public InventoryPanel getInventoryPanel()	{
 		return inventoryPanel;
 	}
+	/**
+	 * @return The actual collection of items in the party's inventory
+	 */
 	public Inventory getInventory()	{
 		return inventory;
-	}
-	public void setGlassPane(GlassPane pane)	{
-		glassPane = pane;
-	}
-	public GlassPane getGlassPane()	{
-		return glassPane;
 	}
 }

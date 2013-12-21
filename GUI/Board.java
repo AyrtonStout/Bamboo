@@ -89,6 +89,9 @@ public class Board extends JPanel implements ActionListener {
 
 	}
 
+	/**
+	 * @return The game's data
+	 */
 	public GameData getData() {
 		return data;
 	}
