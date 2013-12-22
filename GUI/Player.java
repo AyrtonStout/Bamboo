@@ -297,6 +297,13 @@ public class Player extends Character implements Serializable {
 		}
 	}
 	
+	/**
+	 * After exiting a door, this method will attempt to center the player in the center of the screen. In the event that
+	 * the character is on the side of the screen, the method will attempt to center it as close as possible without ever
+	 * moving the camera off the edge of the playable map.
+	 * 
+	 * @param enteredDoor The door that the player just entered (the method will automatically find the link to the exited door)
+	 */
 	private void centerBackground(Door enteredDoor)	{
 		if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
 			setBackgroundX(0);

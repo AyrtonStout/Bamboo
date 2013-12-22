@@ -146,6 +146,7 @@ public class InputManager extends JPanel {
 					data.setGameState(GAME_STATE.INVENTORY_OUTER);
 					data.getInventoryPanel().setInnerActive(false);
 					data.getInventoryPanel().resetItemCursor();
+					data.getInventoryPanel().clearText();
 				}
 			}
 		}

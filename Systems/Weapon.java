@@ -61,7 +61,7 @@ public class Weapon implements Item, Serializable {
 	 */
 	public Weapon(SWORD sword)	{
 		type = WEAPON_TYPE.SWORD;
-		icon = new ImageIcon("GUI/Resources/Icons/Sword_Iron.png");
+		icon = new ImageIcon("GUI/Resources/Icons/Weapons/Sword_Iron.png");
 		if (sword == SWORD.IRON)	{
 			name = "Iron Sword";
 			attack = new Stat(10);
@@ -74,7 +74,7 @@ public class Weapon implements Item, Serializable {
 	
 	public Weapon(DAGGER dagger)	{
 		type = WEAPON_TYPE.DAGGER;
-		icon = new ImageIcon("GUI/Resources/Icons/Dagger_Gold.png");
+		icon = new ImageIcon("GUI/Resources/Icons/Weapons/Dagger_Gold.png");
 		if (dagger == DAGGER.GOLD)	{
 			name = "Golden Dagger";
 			attack = new Stat(12);
@@ -86,7 +86,7 @@ public class Weapon implements Item, Serializable {
 	
 	public Weapon(MACE mace)	{
 		type = WEAPON_TYPE.MACE;
-		icon = new ImageIcon("GUI/Resources/Icons/Mace_Wood.png");
+		icon = new ImageIcon("GUI/Resources/Icons/Weapons/Mace_Wood.png");
 		if (mace == MACE.WOOD)	{
 			name = "Club";
 			attack = new Stat(35);
@@ -105,7 +105,7 @@ public class Weapon implements Item, Serializable {
 	
 	public Weapon(AXE axe)	{
 		type = WEAPON_TYPE.AXE;
-		icon = new ImageIcon("GUI/Resources/Icons/Axe_Iron.png");
+		icon = new ImageIcon("GUI/Resources/Icons/Weapons/Axe_Iron.png");
 		if (axe == AXE.IRON)	{
 			name = "Iron Axe";
 			attack = new Stat(10);

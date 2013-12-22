@@ -1,6 +1,7 @@
 package Systems;
 
 import javax.swing.ImageIcon;
+import javax.swing.JTextArea;
 
 import Systems.Enums.ARMOR_TYPE;
 
@@ -40,6 +41,30 @@ public class Armor implements Item {
 	 */
 	public ARMOR_TYPE type()	{
 		return type;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JTextArea getMainText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JTextArea getStatText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JTextArea getBuffText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -8,6 +8,10 @@ import java.util.Random;
 import GUI.Enums.ACTION;
 import GUI.Enums.*;
 
+/**
+ * @author mobius
+ * A visible map character that can be initialized with several behaviors.
+ */
 public class NPC extends Character implements Serializable {
 	
 	private static final long serialVersionUID = 5327185907689402233L;
@@ -25,6 +29,19 @@ public class NPC extends Character implements Serializable {
 	
 	private Random rand = new Random();
 	
+	/**
+	 * Creates an NPC at a particular coordinate and with a particular behavior. NPC must be of the enumerated type
+	 * "NAMED_NPC" as that tells the constructor how to initialize the images and animations. NPC must be initialized
+	 * with a behavior and a dialogue even if they are standing (initialize behavior as STAND) or are positioned somewhere
+	 * that the player would never be able to talk to them.
+	 * 
+	 * @param type The NAMED_NPC enumerated type that this character draws art from
+	 * @param facing The initial facing direction of the NPC
+	 * @param behavior The behavior of the NPC (standing, wandering, rotating)
+	 * @param dialogue An ArrayList of all the lines of dialogue the NPC will speak
+	 * @param coordX The NPC's X coordinate on the map 
+	 * @param coordY The NPC's Y coordinate on the map
+	 */
 	public NPC(NAMED_NPC type, ACTION facing, ACTION behavior, ArrayList<String> dialogue, int coordX, int coordY)	{
 		
 		switch (type)	{
@@ -118,6 +135,13 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 	
+	/**
+	 * Makes the NPC face the opposite direction as the action used as the parameter. Useful for
+	 * making the NPC react to an event such as the player talking to them (player faces to the left
+	 * to talk to the NPC, therefore the NPC should face right)
+	 * 
+	 * @param action The facing to be inverted
+	 */
 	@SuppressWarnings("incomplete-switch")
 	public void invertFacing(ACTION action)	{
 		switch (action)	{
@@ -132,6 +156,14 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 	
+	/**
+	 * The destination coordinate for the NPC to walk to. The coordinate can only be in one direction 
+	 * so to get at a new X, Y coordinate this method will have to be called twice. Once for the X and
+	 * one for the Y. If the character gets blocked by something on the way to its destination, movement
+	 * will resume once the pathway is restored.
+	 * 
+	 * @param destination The destination point for the NPC
+	 */
 	public void walkToPoint(Point destination)	{
 		
 		ACTION attemptedMove;
@@ -217,7 +249,8 @@ public class NPC extends Character implements Serializable {
 	/**
 	 * Default wandering behavior will cause an NPC to pick a direction
 	 * at random and, if it is valid, proceed to walk one step in that 
-	 * direction. NPC may also turn to a new direction but not walk
+	 * direction. NPC may also turn to a new direction but not walk. It is
+	 * not recommended to define a wandering NPC but not set wanderLimit() constraints.
 	 */
 	private void wanderingBehavior()	{
 		if (moving)	{
@@ -260,6 +293,10 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 	
+	/**
+	 * Defines the behavior of a patrolling NPC. Once a patrolling NPC has completed its patrol cycle it will
+	 * start over from the beginning.
+	 */
 	private void patrolBehavior()	{
 		walkToPoint(patrolPath.get(currentPatrolPoint));
 		currentPatrolPoint++;
@@ -268,6 +305,9 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 
+	/**
+	 * Defines the actions of an NPC that is walking from one point to another point called by the walkToPoint() method.
+	 */
 	private void pointWalkBehavior()	{
 		if (moving)	{
 			if (remainingSteps > 0)	{
@@ -302,6 +342,12 @@ public class NPC extends Character implements Serializable {
 		}
 	}
 	
+	/**
+	 * Used by an NPC with a wandering behavior to see if its move violates its wander limit constraints
+	 * 
+	 * @param wanderDirection The move the NPC is trying to do
+	 * @return Whether or not the move is a valid one
+	 */
 	private boolean validWanderEh(ACTION wanderDirection)	{
 		if (wanderLimit == null)	{
 			wanderLimit = map.getMoveblocks().clone();
@@ -376,9 +422,21 @@ public class NPC extends Character implements Serializable {
 	public void setPatrolPath(ArrayList<Point> patrolPath)	{
 		this.patrolPath = patrolPath;
 	}
+	/**
+	 * Sets the movement speed of the NPC. Default speed is 1. Player speed is 2. Other speeds not recommended
+	 * and may break things.
+	 * 
+	 * @param speed The new desired speed
+	 */
 	public void setSpeed(int speed)	{
 		this.speed = speed;
 	}
+	/**
+	 * A two dimensional array that adds constraints to what is considered a valid move for an NPC.
+	 * Useful for a variety of things, the biggest being preventing NPCs from wandering into doors.
+	 * 
+	 * @param wanderLimit
+	 */
 	public void setWanderLimit(boolean[][] wanderLimit) {
 		this.wanderLimit = wanderLimit;
 	}

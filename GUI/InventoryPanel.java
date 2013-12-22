@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+import Systems.Consumable;
 import Systems.Inventory;
 import Systems.Item;
 
@@ -173,6 +174,12 @@ public class InventoryPanel extends JPanel {
 	 */
 	public int getItemCursorPosition()	{
 		return list.getItemCursorPosition();
+	}
+	/**
+	 * Clears the text box back to a blank state
+	 */
+	public void clearText()	{
+		statsBox.clear();
 	}
 	
 
@@ -426,6 +433,7 @@ public class InventoryPanel extends JPanel {
 			private static final long serialVersionUID = 4342436547521865798L;
 			private ImageIcon itemIcon = new ImageIcon("GUI/Resources/sword_ico.png");
 			private JLabel itemName = new JLabel();
+			private JLabel itemQuantity = new JLabel();
 			private boolean visible = true;
 
 			public ItemPanel()	{
@@ -437,9 +445,13 @@ public class InventoryPanel extends JPanel {
 
 				this.setAlignmentX(LEFT_ALIGNMENT);
 				itemName.setAlignmentX(LEFT_ALIGNMENT);
+				
+				itemName.setMaximumSize(new Dimension(260, 50));
+				itemName.setPreferredSize(new Dimension(260, 50));
 
 				this.add(Box.createHorizontalStrut(100));
 				this.add(itemName);
+				this.add(itemQuantity);
 			}
 
 			@Override
@@ -452,12 +464,16 @@ public class InventoryPanel extends JPanel {
 			public void setItem(Item item)	{
 				itemName.setText(item.getName());
 				itemIcon = item.getIcon();
+				if (item.getClass() == Consumable.class && ((Consumable) item).getQuantity() > 1)	{
+					itemQuantity.setText("x" + Integer.toString(((Consumable) item).getQuantity()));
+				}
 			}
 
 			public void setVisible(boolean b)	{
 				visible = b;
 				if (b == false)	{
 					itemName.setText("");
+					itemQuantity.setText("");
 				}
 			}
 		}
@@ -552,10 +568,38 @@ public class InventoryPanel extends JPanel {
 		public void update()	{
 			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition() + list.scrollOffset);
 			itemName.setText(queriedItem.getName());
-			leftText.setText(queriedItem.getMainText().getText());
-			middleText.setText(queriedItem.getStatText().getText());
-			rightText.setText(queriedItem.getBuffText().getText());
+			
+			if (queriedItem.getMainText() != null)	{
+				leftText.setText(queriedItem.getMainText().getText());
+			}
+			else	{
+				leftText.setText("");
+			}
+			if (queriedItem.getStatText() != null)	{
+				middleText.setText(queriedItem.getStatText().getText());
+			}
+			else	{
+				middleText.setText("");
+			}
+			if (queriedItem.getBuffText() != null)	{
+				rightText.setText(queriedItem.getBuffText().getText());
+			}
+			else	{
+				rightText.setText("");
+			}
+
 			itemDescription.setText(queriedItem.getDescription());
+		}
+		
+		/**
+		 * Clears the text box part of the inventory panel
+		 */
+		public void clear()	{
+			itemName.setText("");
+			leftText.setText("");
+			middleText.setText("");
+			rightText.setText("");
+			itemDescription.setText("");
 		}
 
 	}

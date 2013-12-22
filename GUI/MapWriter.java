@@ -10,7 +10,9 @@ import Quests.TAction;
 import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
+import Systems.Consumable;
 import Systems.Enums.MACE;
+import Systems.Enums.POTION;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
 import Systems.Weapon;
@@ -91,6 +93,26 @@ public class MapWriter {
 			}
 		}
 		
+		Chest smallHealthChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		smallHealthChest.setLoot(new Consumable(POTION.HEALTH_SMALL));
+		Chest largeHealthChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		largeHealthChest.setLoot(new Consumable(POTION.HEALTH_LARGE));
+		Chest smallManaChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		smallManaChest.setLoot(new Consumable(POTION.MANA_SMALL));
+		Chest largeManaChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		largeManaChest.setLoot(new Consumable(POTION.MANA_LARGE));
+		Chest smallYellowChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		smallYellowChest.setLoot(new Consumable(POTION.YELLOW_SMALL));
+		Chest largeYellowChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		largeYellowChest.setLoot(new Consumable(POTION.YELLOW_LARGE));
+		
+		tiles[11][16] = new Tile(TILE.GROUND_GRASS, smallHealthChest);
+		tiles[12][16] = new Tile(TILE.GROUND_GRASS, largeHealthChest);
+		tiles[13][16] = new Tile(TILE.GROUND_GRASS, smallManaChest);
+		tiles[14][16] = new Tile(TILE.GROUND_GRASS, largeManaChest);
+		tiles[15][16] = new Tile(TILE.GROUND_GRASS, smallYellowChest);
+		tiles[16][16] = new Tile(TILE.GROUND_GRASS, largeYellowChest);
+		
 		ArrayList<NPC> NPCs = new ArrayList<NPC>();
 		
 		ArrayList<String> lockeTalk = new ArrayList<String>();
@@ -131,6 +153,7 @@ public class MapWriter {
 			tiles[0][i] = new Tile(TILE.GROUND_WATER);
 			tiles[tiles.length-1][i] = new Tile(TILE.GROUND_WATER);
 		}
+		
 		Chest magicSwordChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_BIG);
 		magicSwordChest.setLoot(new Weapon(MACE.WOOD));
 		

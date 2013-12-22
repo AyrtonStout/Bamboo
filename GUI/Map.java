@@ -30,6 +30,12 @@ public class Map extends JPanel implements Serializable {
 		this.triggers = triggers;
 	}
 	
+	/**
+	 * All things a map has to do to update regardless of whether or not it has triggers
+	 * 
+	 * @param tiles The map's tiles
+	 * @param NPCs The map's NPCs
+	 */
 	private void mutualConstructor(Tile[][] tiles, ArrayList<NPC> NPCs)	{
 		this.tiles = tiles;
 		moveBlocks = new boolean[tiles.length][tiles[0].length];
@@ -55,6 +61,9 @@ public class Map extends JPanel implements Serializable {
 		}
 	}
 	
+	/**
+	 * Calls all of the map's NPCs to update and checks all triggers to see if they need to fire
+	 */
 	public void updateAll()	{
 		for (int i = 0; i < NPCs.size(); i++)	{
 			NPCs.get(i).update();

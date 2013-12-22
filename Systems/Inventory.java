@@ -42,7 +42,12 @@ public class Inventory {
 			accessories.add(newItem);
 		}
 		else if (newItem.getClass() == Consumable.class)	{
-			consumables.add(newItem);
+			if (consumables.contains(newItem))	{
+				((Consumable) consumables.get(consumables.indexOf(newItem))).raiseQuantity();
+			}
+			else	{
+				consumables.add(newItem);
+			}
 		}
 		else if (newItem.getClass() == Loot.class)	{
 			loot.add(newItem);
