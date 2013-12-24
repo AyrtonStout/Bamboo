@@ -75,7 +75,16 @@ public class InputManager extends JPanel {
 					data.getMenu().dropCursor();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_Z || e.getKeyCode() == KeyEvent.VK_ENTER)	{
-					if (data.getMenu().getCursorPosition() == 1)	{
+					if (data.getMenu().getCursorPosition() == 0)	{
+						data.setGameState(GAME_STATE.PARTY_PANEL);
+						data.getMenu().setVisible(false);
+						data.getMenu().shrink();
+						data.getDialogueBox().shrink();
+						data.getPartyPanel().initialize();
+						data.getGameBoard().add(data.getPartyPanel());
+						data.setPaused(true);
+					}
+					else if (data.getMenu().getCursorPosition() == 1)	{
 						data.setGameState(GAME_STATE.INVENTORY_OUTER);
 						data.getMenu().setVisible(false);
 						data.getMenu().shrink();
@@ -85,6 +94,7 @@ public class InputManager extends JPanel {
 //						data.getDialogueBox().setVisible(true);
 						data.setPaused(true);
 					}
+					
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
 					data.setGameState(GAME_STATE.WALK);
@@ -93,6 +103,21 @@ public class InputManager extends JPanel {
 				}
 			}
 			
+			/*
+			 * Party screen open
+			 */
+			
+			else if (data.getGameState() == GAME_STATE.PARTY_PANEL)	{
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.getGameBoard().remove(data.getPartyPanel());
+					data.getMenu().restore();
+					data.getDialogueBox().restore();
+					data.setGameState(GAME_STATE.MENU);
+					data.getMenu().setVisible(true);
+					data.getDialogueBox().setVisible(false);
+					data.setPaused(false);
+				}
+			}
 			
 			/*
 			 * Inventory screen active

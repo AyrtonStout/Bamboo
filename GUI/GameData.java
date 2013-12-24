@@ -6,7 +6,9 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import GUI.Enums.GAME_STATE;
+import GUI.Enums.NAMED_NPC;
 import Systems.Inventory;
+import Systems.PartyMember;
 import Systems.Time;
 
 /**
@@ -24,6 +26,8 @@ public class GameData {
 	private Menu menuBox = new Menu(this);
 	private Inventory inventory = new Inventory();
 	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
+	private PartyPanel partyPanel = new PartyPanel(this);;
+	private PartyMember[] party = new PartyMember[4];
 	private Time time = new Time();
 	private boolean paused = false;
 	
@@ -40,6 +44,7 @@ public class GameData {
 	public GameData(int windowWidth, int windowHeight)	{
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight);
 		player.initializeImages();
+		party[0] = new PartyMember(NAMED_NPC.SABIN);
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
@@ -168,5 +173,17 @@ public class GameData {
 	 */
 	public Inventory getInventory()	{
 		return inventory;
+	}
+	/**
+	 * @return The party screen
+	 */
+	public PartyPanel getPartyPanel()	{
+		return partyPanel;
+	}
+	/**
+	 * @return An array of all of the party's current party members
+	 */
+	public PartyMember[] getParty()	{
+		return party;
 	}
 }

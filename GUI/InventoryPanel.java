@@ -54,6 +54,10 @@ public class InventoryPanel extends JPanel {
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			gameFont = baseFont.deriveFont(Font.PLAIN, 36);
 			headerFont = baseFont.deriveFont(Font.ITALIC, 48);
+			
+			stream = new BufferedInputStream(
+					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
+			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Use your words!! Font not found");
@@ -494,14 +498,22 @@ public class InventoryPanel extends JPanel {
 		private JLabel itemDescription = new JLabel("", SwingConstants.LEFT);
 		private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
 		
-		private Font defaultFont = leftText.getFont();
-		private Font itemNameFont = defaultFont.deriveFont(Font.ITALIC, 22);
-		private Font statFont = defaultFont.deriveFont(Font.BOLD, 15);
-		private Font descrptionFont = defaultFont.deriveFont(Font.PLAIN, 17);
+		private Font defaultFont, itemNameFont, statFont, descrptionFont;
 		
 		private JTextArea[] textAreas = new JTextArea[] {leftText, middleText, rightText};
 
 		public StatsBox()	{
+			try {
+				stream = new BufferedInputStream(
+						new FileInputStream("GUI/Resources/Font_Arial.ttf"));
+				defaultFont = Font.createFont(Font.TRUETYPE_FONT, stream);
+				itemNameFont = defaultFont.deriveFont(Font.ITALIC, 22);
+				statFont = defaultFont.deriveFont(Font.BOLD, 15);
+				descrptionFont = defaultFont.deriveFont(Font.BOLD, 17);
+			} catch (FontFormatException | IOException e) {
+				e.printStackTrace();
+			}
+			
 			this.setPreferredSize(new Dimension(600, 150));
 			this.setBackground(Color.BLUE);
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -515,6 +527,7 @@ public class InventoryPanel extends JPanel {
 			namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 			namePanel.add(Box.createHorizontalStrut(8));
 			itemName.setFont(itemNameFont);
+			itemName.setPreferredSize(new Dimension(600, 26));
 			namePanel.add(itemName);
 			namePanel.setOpaque(false);
 			namePanel.setAlignmentX(LEFT_ALIGNMENT);
