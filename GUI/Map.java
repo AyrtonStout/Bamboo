@@ -165,7 +165,7 @@ public class Map extends JPanel implements Serializable {
 	}
 	
 	//TODO Figure out why I have to do this and can't in the MapWriter
-	public void initializeMap(Map map, Player player)	{
+	public void initializeMap(Map map, PlayerAvatar player)	{
 		for (int i = 0; i < doors.size(); i++)	{
 			doors.get(i).setParentMap(map);
 		}

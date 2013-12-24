@@ -8,6 +8,9 @@ public class Enums {
 	
 	}
 	
+	/*
+	 * Weapon enums
+	 */
 	public enum WEAPON_TYPE	{
 		
 		SWORD, AXE, DAGGER, MACE, STAFF;
@@ -38,12 +41,37 @@ public class Enums {
 		
 	}
 	
-	
-	public enum ARMOR_TYPE	{
+	/*
+	 * Armor enums
+	 */
+	public enum ARMOR_SLOT	{
 		
 		HELMET, CHEST, GLOVES, BOOTS;
 		
 	}
+	
+	public enum HELMET	{
+		
+		IRON;		
+		
+	}
+	
+	public enum CHEST	{
+
+		IRON;
+		
+	}
+	public enum GLOVES	{
+
+		IRON;
+		
+	}
+	public enum BOOTS	{
+
+		IRON;
+		
+	}
+	
 	
 	public enum ACCESSORY_TYPE	{
 		

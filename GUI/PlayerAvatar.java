@@ -12,7 +12,7 @@ import GUI.Enums.ACTION;
  * The (player-controlled) character for the game. Has knowledge of its own position as a coordinate that corresponds to the map
  * as well as its pixels for when it is drawn to the screen. The offset for the background is also contained here
  */
-public class Player extends Character implements Serializable {
+public class PlayerAvatar extends CharacterAvatar implements Serializable {
 
 	private static final long serialVersionUID = 5680477392037994831L;
 	private int backgroundX, backgroundY, walkDelay;                                              //Current map passed in by the Board
@@ -30,7 +30,7 @@ public class Player extends Character implements Serializable {
 	private boolean keyRight = false;
 	private boolean keyDown = false;
 
-	public Player(String name, int windowWidth, int windowHeight) {
+	public PlayerAvatar(String name, int windowWidth, int windowHeight) {
 		
 		this.name = name;
 		

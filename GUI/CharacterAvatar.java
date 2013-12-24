@@ -13,7 +13,7 @@ import GUI.Enums.ACTION;
  * Defines behavior and variables mutually used by the player and NPCs
  */
 
-public abstract class Character implements Serializable {
+public abstract class CharacterAvatar implements Serializable {
 
 	private static final long serialVersionUID = 1965396667319876293L;
 	protected int charX, charY, coordX, coordY;

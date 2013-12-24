@@ -3,7 +3,7 @@ package Quests;
 import java.awt.Point;
 import java.io.Serializable;
 
-import GUI.Player;
+import GUI.PlayerAvatar;
 import Quests.Enums.TEVENT;
 
 /**
@@ -35,7 +35,7 @@ public class TEvent implements Serializable {
 	 * @param player The player character
 	 * @return Whether or not the Event's conditions are met
 	 */
-	public boolean eventMetEh(Player player)	{
+	public boolean eventMetEh(PlayerAvatar player)	{
 		if (eventType == TEVENT.CHARACTER_ENTERS_TILE)	{
 			if (player.getCoordX() == enteredPoint.x && player.getCoordY() == enteredPoint.y)	{
 				return true;

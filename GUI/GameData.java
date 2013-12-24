@@ -15,7 +15,7 @@ import Systems.Time;
  */
 public class GameData {
 	
-	private Player player;
+	private PlayerAvatar player;
 	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
@@ -38,7 +38,7 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
-		player = new Player("Sabin", windowWidth, windowHeight);
+		player = new PlayerAvatar("Sabin", windowWidth, windowHeight);
 		player.initializeImages();
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
@@ -83,7 +83,7 @@ public class GameData {
 	/**
 	 * @return Returns the player character
 	 */
-	public Player getPlayer()	{
+	public PlayerAvatar getPlayer()	{
 		return player;
 	}
 	/**

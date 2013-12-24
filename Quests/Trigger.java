@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import GUI.Map;
-import GUI.Player;
+import GUI.PlayerAvatar;
 
 /**
  * @author mobius
@@ -16,7 +16,7 @@ public class Trigger implements Serializable {
 	private static final long serialVersionUID = -7516675186987091933L;
 	
 	private Map map;
-	private Player player;
+	private PlayerAvatar player;
 	
 	private boolean activated = false;
 	private boolean repeatedTrigger = false;
@@ -68,7 +68,7 @@ public class Trigger implements Serializable {
 	 * @param map The map the trigger is bound to
 	 * @param player The player character
 	 */
-	public void initialize(Map map, Player player) {
+	public void initialize(Map map, PlayerAvatar player) {
 		this.map = map;
 		this.player = player;
 	}

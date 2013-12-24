@@ -40,12 +40,11 @@ public class Weapon implements Item, Serializable {
 	private Stat critChance;
 	private Stat critDamage;
 	private Stat hit;
-	private Stat expertise;
 	private Stat armorPen;
 	
 	private Stat[] secondaryStats;
 	private String[] secondaryNames = new String[] {"Strength", "Agility", "Spirit", "Intellect", "Stamina", "Crit Chance",
-			"Crit Damage", "Hit", "Expertise", "Armor Pen"};
+			"Crit Damage", "Hit", "Armor Pen"};
 	private JTextArea left = new JTextArea();
 	private JTextArea middle = new JTextArea();
 	private JTextArea right = new JTextArea();
@@ -170,8 +169,7 @@ public class Weapon implements Item, Serializable {
 	@Override
 	public JTextArea getStatText() {
 		if (statChange2)	{
-			secondaryStats = new Stat[] {strength, agility, spirit, intellect, stamina, critChance, critDamage, hit,
-					expertise, armorPen};
+			secondaryStats = new Stat[] {strength, agility, spirit, intellect, stamina, critChance, critDamage, hit, armorPen};
 			for (int i = 0; i < secondaryStats.length; i++)	{
 				if (secondaryStats[i] != null && secondaryStats[i].getBase() > 0)	{
 					middle.append((secondaryStats[i].toString()) + " " + secondaryNames[i] + "\n");

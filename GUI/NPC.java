@@ -12,7 +12,7 @@ import GUI.Enums.*;
  * @author mobius
  * A visible map character that can be initialized with several behaviors.
  */
-public class NPC extends Character implements Serializable {
+public class NPC extends CharacterAvatar implements Serializable {
 	
 	private static final long serialVersionUID = 5327185907689402233L;
 	private ACTION behavior;

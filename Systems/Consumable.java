@@ -24,7 +24,7 @@ public class Consumable implements Item, Serializable {
 	
 	private int healthRestore;
 	private int manaRestore;
-	private int stackQuantity = 0;
+	private int stackQuantity = 1;
 
 	private JTextArea left = new JTextArea();
 	
@@ -89,6 +89,9 @@ public class Consumable implements Item, Serializable {
 	public String getName() {
 		return name;
 	}
+	/**
+	 * @return The type of consumable item this is (potion, food, etc)
+	 */
 	public CONSUMABLE_TYPE getType()	{
 		return type;
 	}
@@ -121,12 +124,21 @@ public class Consumable implements Item, Serializable {
 	public JTextArea getBuffText() {
 		return null;
 	}
+	/**
+	 * Increases the amount of this item in the player's inventory by one
+	 */
 	public void raiseQuantity()	{
 		stackQuantity++;
 	}
+	/**
+	 * Decreases the amount of this item in the player's inventory by one
+	 */
 	public void dropQuantity()	{
 		stackQuantity--;
 	}
+	/**
+	 * @return The number of this item that the player has in their inventory
+	 */
 	public int getQuantity()	{
 		return stackQuantity;
 	}
