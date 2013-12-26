@@ -24,6 +24,8 @@ import javax.swing.SwingConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import Systems.PartyMember;
+
 public class PartyPanel extends JPanel {
 	
 	private static final long serialVersionUID = 9030554443534484268L;
@@ -31,13 +33,17 @@ public class PartyPanel extends JPanel {
 	private GameData data;
 	private ImageIcon portrait = new ImageIcon();
 	private ImageIcon party1, party2, party3, party4;
-	private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_Background.png");
+	private ImageIcon background = new ImageIcon("GUI/Resources/Party_Background.png");
 	private ImageIcon[] party = new ImageIcon[] {party1, party2, party3, party4};
 	
-	private int headerCursorPosition = 0;
+	private int cursorPosition = 0;
 	
 	private InputStream stream;
 	private Font menuFont, boldFont, statFont;
+	
+	HeaderPanel topPanel;
+	CenterPanel midPanel;
+	StatPanel bottomPanel;
 	
 	public PartyPanel(GameData gameData)	{
 		data = gameData;
@@ -50,6 +56,7 @@ public class PartyPanel extends JPanel {
 			boldFont = baseFont.deriveFont(Font.BOLD, 18);
 			statFont = baseFont.deriveFont(Font.PLAIN, 18);
 		} catch (FontFormatException | IOException e) {
+			System.err.println("Where all mah fonts at??");
 			e.printStackTrace();
 		}
 
@@ -59,9 +66,9 @@ public class PartyPanel extends JPanel {
 		this.setBackground(Color.CYAN);
 		
 		
-		HeaderPanel topPanel = new HeaderPanel();
-		CenterPanel midPanel = new CenterPanel();
-		StatPanel bottomPanel = new StatPanel();
+		topPanel = new HeaderPanel();
+		midPanel = new CenterPanel();
+		bottomPanel = new StatPanel();
 		
 		this.add(topPanel);
 		this.add(midPanel);
@@ -74,13 +81,15 @@ public class PartyPanel extends JPanel {
 		g.drawImage(background.getImage(), 0, 0, null);
 	}
 	
-	public void initialize()	{
+	public void update()	{
 		portrait = data.getParty()[0].getPortrait();
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null)	{
 				party[i] = data.getParty()[i].getDown();
 			}
 		}
+		bottomPanel.update();
+		
 	}
 	
 	private class HeaderPanel extends JPanel	{
@@ -253,21 +262,8 @@ public class PartyPanel extends JPanel {
 	
 	private class StatPanel	extends JPanel {
 		
-		private JLabel strength = new JLabel("5");
-		private JLabel agility = new JLabel("5");
-		private JLabel intellect = new JLabel("5");
-		private JLabel spirit = new JLabel("5");
-		private JLabel stamina = new JLabel("5");
+		JTextPane attributeStats, statisticsValues;
 		
-		private JLabel attackPower = new JLabel("5");
-		private JLabel spellPower = new JLabel("5");
-		private JLabel critChance = new JLabel("5");
-		private JLabel critDamage = new JLabel("5");
-		private JLabel hit = new JLabel("5");
-		private JLabel armorPen = new JLabel("5");
-		private JLabel speed = new JLabel("5");
-		private JLabel dodge = new JLabel("5");
-	
 		private int height = 405;
 
 		
@@ -303,7 +299,7 @@ public class PartyPanel extends JPanel {
 			attributeNames.setOpaque(false);
 			
 			//Values
-			JTextPane attributeStats = new JTextPane();
+			attributeStats = new JTextPane();
 			attributeStats.setFont(statFont);
 			attributeStats.setPreferredSize(new Dimension(50, height));
 			attributeStats.setMaximumSize(new Dimension(50, height));
@@ -334,22 +330,23 @@ public class PartyPanel extends JPanel {
 			textWrapper2.add(Box.createVerticalStrut(4));
 			
 			//Names
-			JTextArea statisticsNames = new JTextArea("Kills\nDeaths\n% Damage");
+			JTextArea statisticsNames = new JTextArea("Kills\nDeaths\n% Damage\n% Healing\nBest Crit\n\n            Party\nKills\nDeaths\n" +
+					"Gold Found\nMax Gold\nHunts Done\nSteps Taken\nChests Found\nSigns Read\nDays dayed");
 			statisticsNames.setFont(boldFont);
 			statisticsNames.setPreferredSize(new Dimension(130, height));
 			statisticsNames.setEditable(false);
 			statisticsNames.setOpaque(false);
 			
 			//Values
-			JTextPane statisticsValues = new JTextPane();
+			statisticsValues = new JTextPane();
 			statisticsValues.setFont(statFont);
-			statisticsValues.setPreferredSize(new Dimension(40, height));
+			statisticsValues.setPreferredSize(new Dimension(50, height));
 			statisticsValues.setEditable(false);
 			statisticsValues.setOpaque(false);
 			statisticsValues.selectAll();
 			statisticsValues.setParagraphAttributes(rightAlign, false);
 			
-			statisticsValues.setText("17\n0\n15%");
+			statisticsValues.setText("17\n0\n15%\n5%\n117\n\n\n37\n2\n512\n442\n0\n1258\n4\n6\n0");
 			
 			/*
 			 * Combining
@@ -369,6 +366,15 @@ public class PartyPanel extends JPanel {
 			this.add(attributes);
 			this.add(statistics);
 					
+		}
+		
+		public void update()	{
+			PartyMember member = data.getParty()[cursorPosition];
+			attributeStats.setText(member.getStrength().toString() + "\n" + member.getAgility() + "\n" + member.getIntellect() + "\n" +
+					member.getSpirit() + "\n" + member.getLuck() + "\n\n" + member.getAttackPower() + "\n" + member.getSpellPower() + "\n" +
+					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
+					member.getSpeed() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + member.getDodge() + "%\n" + 
+					member.getResist() + "%");
 		}
 	}
 }

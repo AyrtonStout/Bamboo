@@ -80,7 +80,7 @@ public class InputManager extends JPanel {
 						data.getMenu().setVisible(false);
 						data.getMenu().shrink();
 						data.getDialogueBox().shrink();
-						data.getPartyPanel().initialize();
+						data.getPartyPanel().update();
 						data.getGameBoard().add(data.getPartyPanel());
 						data.setPaused(true);
 					}
