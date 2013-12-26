@@ -6,15 +6,22 @@ import GUI.Enums.NAMED_NPC;
 
 public class PartyMember {
 	
-	private Stat strength;
-	private Stat agility;
-	private Stat spirit;
-	private Stat intellect;
-	private Stat stamina;
+	private String name;
+	private int level = 1;
+	private int xp;
+	private int xpToLevel;
 	
 	private Stat health;
 	private Stat secondary;
 	
+	private Stat strength;
+	private Stat agility;
+	private Stat intellect;
+	private Stat spirit;
+	private Stat stamina;
+	
+	private Stat attackPower = new Stat(0);
+	private Stat spellPower = new Stat(0);
 	private Stat critChance = new Stat(0);
 	private Stat critDamage = new Stat(0);
 	private Stat hit = new Stat(0);
@@ -26,14 +33,17 @@ public class PartyMember {
 	
 	private ImageIcon portrait;
 	private ImageIcon right;
+	private ImageIcon down;
 	
 	@SuppressWarnings("incomplete-switch")
 	public PartyMember(NAMED_NPC member)	{
 		
 		switch (member)	{
 		case SABIN:
-			portrait = new ImageIcon("GUI/Resources/Characters/Sabin - Portrait.gif");
-			right = new ImageIcon("GUI/Resources/Characters/Sabin (Right).gif");
+			name = "Sabin";
+			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
+			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
+			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
 			
 			strength = new Stat(8);
 			agility = new Stat(4);
@@ -49,6 +59,12 @@ public class PartyMember {
 	
 	public ImageIcon getPortrait()	{
 		return portrait;
+	}
+	/**
+	 * @return The downward facing sprite for the character
+	 */
+	public ImageIcon getDown()	{
+		return down;
 	}
 
 }

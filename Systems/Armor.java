@@ -30,10 +30,11 @@ public class Armor implements Item {
 	private Stat hit;
 	private Stat armorPen;
 	private Stat dodge;
+	private Stat speed;
 	
 	private Stat[] secondaryStats;
 	private String[] secondaryNames = new String[] {"Strength", "Agility", "Spirit", "Intellect", "Stamina", "Crit Chance",
-			"Crit Damage", "Hit", "Armor Pen", "Dodge"};
+			"Crit Damage", "Hit", "Armor Pen", "Dodge", "Speed"};
 	
 	private JTextArea left = new JTextArea();
 	private JTextArea middle = new JTextArea();
@@ -94,7 +95,8 @@ public class Armor implements Item {
 	@Override
 	public JTextArea getStatText() {
 		if (statChange2)	{
-			secondaryStats = new Stat[] {strength, agility, spirit, intellect, stamina, critChance, critDamage, hit, armorPen, dodge};
+			secondaryStats = new Stat[] {strength, agility, spirit, intellect, stamina, critChance, critDamage, hit, armorPen, 
+					dodge, speed};
 			for (int i = 0; i < secondaryStats.length; i++)	{
 				if (secondaryStats[i] != null && secondaryStats[i].getBase() > 0)	{
 					middle.append((secondaryStats[i].toString()) + " " + secondaryNames[i] + "\n");
