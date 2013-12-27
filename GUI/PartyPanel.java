@@ -95,14 +95,14 @@ public class PartyPanel extends JPanel {
 	public void moveCursorLeft()	{
 		if (cursorPosition > 0)	{
 			cursorPosition--;
-			bottomPanel.update();
+			update();
 		}
 	}
 	
 	public void moveCursorRight()	{
 		if (cursorPosition < PartyMember.getPartySize() - 1)	{
 			cursorPosition++;
-			bottomPanel.update();
+			update();
 		}
 	}
 	
