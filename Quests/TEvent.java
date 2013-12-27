@@ -3,7 +3,8 @@ package Quests;
 import java.awt.Point;
 import java.io.Serializable;
 
-import GUI.PlayerAvatar;
+import GUI.GameData;
+import GUI.NPC;
 import Quests.Enums.TEVENT;
 
 /**
@@ -16,7 +17,9 @@ public class TEvent implements Serializable {
 	private static final long serialVersionUID = -3505855084423834681L;
 
 	private TEVENT eventType;
+	
 	private Point enteredPoint;
+	private NPC interactedNPC;
 	
 	/**
 	 * A constructor for a trigger event that relies on a point
@@ -28,6 +31,10 @@ public class TEvent implements Serializable {
 		this.eventType = event;
 		this.enteredPoint = enteredPoint;
 	}
+	public TEvent(TEVENT event, NPC interactedNPC)	{
+		this.eventType = event;
+		this.interactedNPC = interactedNPC;
+	}
 	
 	/**
 	 * An Event constructor that relies on the player's information to determine if the event is fulfilled. 
@@ -35,15 +42,20 @@ public class TEvent implements Serializable {
 	 * @param player The player character
 	 * @return Whether or not the Event's conditions are met
 	 */
-	public boolean eventMetEh(PlayerAvatar player)	{
+	public boolean eventMetEh(GameData data)	{
 		if (eventType == TEVENT.CHARACTER_ENTERS_TILE)	{
-			if (player.getCoordX() == enteredPoint.x && player.getCoordY() == enteredPoint.y)	{
+			if (data.getPlayer().getCoordX() == enteredPoint.x && data.getPlayer().getCoordY() == enteredPoint.y)	{
 				return true;
 			}
-			for (int i = 0; i < player.getMap().getNPCs().size(); i++)	{
-				if (player.getMap().getNPCs().get(i).getCoordX() == enteredPoint.x && player.getMap().getNPCs().get(i).getCoordY() == enteredPoint.y)	{
+			for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
+				if (data.getCurrentMap().getNPCs().get(i).getCoordX() == enteredPoint.x && data.getCurrentMap().getNPCs().get(i).getCoordY() == enteredPoint.y)	{
 					return true;
 				}	
+			}
+		}
+		else if (eventType == TEVENT.CHARACTER_FINISHES_TALKING)	{
+			if (interactedNPC.talkedToEh())	{
+				return true;
 			}
 		}
 		return false;

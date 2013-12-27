@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 import GUI.Enums.SIGN;
+import Systems.PartyMember;
 
 /**
  * @author mobius
@@ -42,6 +43,7 @@ public class Sign extends Doodad implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getDialogue()	{
+		PartyMember.incrementSignsRead();
 		return (ArrayList<String>)content.clone();
 	}
 

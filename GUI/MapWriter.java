@@ -15,6 +15,7 @@ import Systems.Enums.MACE;
 import Systems.Enums.POTION;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
+import Systems.PartyMember;
 import Systems.Weapon;
 
 /**
@@ -312,8 +313,10 @@ public class MapWriter {
 		ArrayList<Trigger> triggers = new ArrayList<Trigger>();
 		
 		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawn));
+		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
 		
 		triggers.add(spawnNPC);
+		triggers.add(addToParty);
 		
 		Map map = new Map(tiles, NPCs, triggers);
 		

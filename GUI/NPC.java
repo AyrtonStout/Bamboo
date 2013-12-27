@@ -19,6 +19,7 @@ public class NPC extends CharacterAvatar implements Serializable {
 	private ArrayList<String> dialogue;
 	private boolean talking = false;
 	private boolean pointWalking = false;
+	private boolean talkedTo = false;
 	private Point endPoint;
 	private int random;
 	
@@ -45,6 +46,8 @@ public class NPC extends CharacterAvatar implements Serializable {
 	public NPC(NAMED_NPC type, ACTION facing, ACTION behavior, ArrayList<String> dialogue, int coordX, int coordY)	{
 		
 		switch (type)	{
+		case SABIN:
+			name = "Sabin"; break;
 		case TERRA:
 			name = "Terra"; break;
 		case CELES:
@@ -439,5 +442,20 @@ public class NPC extends CharacterAvatar implements Serializable {
 	 */
 	public void setWanderLimit(boolean[][] wanderLimit) {
 		this.wanderLimit = wanderLimit;
+	}
+	/**
+	 * Denotes whether or not the NPC has been talked to by the player. This is a one time triggered event.
+	 * NPC will not naturally return to a false state once triggered true.
+	 * 
+	 * @return Whether or not the player has spoken to this NPC
+	 */
+	public boolean talkedToEh()	{
+		return talkedTo;
+	}
+	/**
+	 * @param b Whether or not this NPC has been spoken to by the player
+	 */
+	public void setTalkedTo(boolean b)	{
+		talkedTo = b;
 	}
 }

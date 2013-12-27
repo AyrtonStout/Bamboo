@@ -3,8 +3,8 @@ package Quests;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import GUI.GameData;
 import GUI.Map;
-import GUI.PlayerAvatar;
 
 /**
  * @author mobius
@@ -15,8 +15,8 @@ public class Trigger implements Serializable {
 	
 	private static final long serialVersionUID = -7516675186987091933L;
 	
-	private Map map;
-	private PlayerAvatar player;
+	private GameData data;
+	private Map triggersMap;
 	
 	private boolean activated = false;
 	private boolean repeatedTrigger = false;
@@ -41,7 +41,7 @@ public class Trigger implements Serializable {
 	public void fire()	{
 		if (conditionsMet())	{
 			for (int i = 0; i < actions.size(); i++)	{
-				actions.get(i).doAction(map);
+				actions.get(i).doAction(triggersMap, data);
 			}
 		}
 	}
@@ -54,7 +54,7 @@ public class Trigger implements Serializable {
 			return false;
 		}
 		for (int i = 0; i < events.size(); i++)	{
-			if(!events.get(i).eventMetEh(player))	{
+			if(!events.get(i).eventMetEh(data))	{
 				return false;
 			}
 		}
@@ -68,9 +68,9 @@ public class Trigger implements Serializable {
 	 * @param map The map the trigger is bound to
 	 * @param player The player character
 	 */
-	public void initialize(Map map, PlayerAvatar player) {
-		this.map = map;
-		this.player = player;
+	public void initialize(Map map, GameData data) {
+		this.triggersMap = map;
+		this.data = data;
 	}
 
 }

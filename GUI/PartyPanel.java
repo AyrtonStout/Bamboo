@@ -1,15 +1,12 @@
 package GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,6 +33,7 @@ public class PartyPanel extends JPanel {
 	private ImageIcon background = new ImageIcon("GUI/Resources/Party_Background.png");
 	private ImageIcon[] party = new ImageIcon[] {party1, party2, party3, party4};
 	
+	private ImageIcon cursor = new ImageIcon("GUI/Resources/Icon_RedArrow.png");
 	private int cursorPosition = 0;
 	
 	private InputStream stream;
@@ -79,6 +77,7 @@ public class PartyPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g)	{
 		g.drawImage(background.getImage(), 0, 0, null);
+		g.drawImage(cursor.getImage(), 206 + cursorPosition * 50, 60, null);
 	}
 	
 	public void update()	{
@@ -90,6 +89,21 @@ public class PartyPanel extends JPanel {
 		}
 		bottomPanel.update();
 		
+	}
+	
+	public void moveCursorLeft()	{
+		if (cursorPosition > 0)	{
+			cursorPosition--;
+			bottomPanel.update();
+		}
+	}
+	
+	public void moveCursorRight()	{
+		System.out.println(Integer.toString(cursorPosition) + Integer.toString(PartyMember.getPartySize()));
+		if (cursorPosition < PartyMember.getPartySize() - 1)	{
+			cursorPosition++;
+			bottomPanel.update();
+		}
 	}
 	
 	private class HeaderPanel extends JPanel	{
@@ -106,7 +120,6 @@ public class PartyPanel extends JPanel {
 	
 		@Override
 		protected void paintComponent(Graphics g)	{
-//			g.drawImage(background.getImage(), 0, 0, null);
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] != null)	{
 					g.drawImage(party[i].getImage(), 200 + 50 * i, 10, null);
@@ -117,6 +130,8 @@ public class PartyPanel extends JPanel {
 	
 	private class CenterPanel extends JPanel	{
 		
+		private static final long serialVersionUID = -6021372252484376467L;
+
 		private int height = 130;
 		
 		private int level;
@@ -262,6 +277,8 @@ public class PartyPanel extends JPanel {
 	
 	private class StatPanel	extends JPanel {
 		
+		private static final long serialVersionUID = -6568528749764392354L;
+
 		JTextPane attributeStats, statisticsValues;
 		
 		private int height = 405;
@@ -375,6 +392,11 @@ public class PartyPanel extends JPanel {
 					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
 					member.getSpeed() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + member.getDodge() + "%\n" + 
 					member.getResist() + "%");
+			statisticsValues.setText(member.getKills() + "\n" + member.getDeaths() + "\n" + member.getDamagePercentage() + "\n" + 
+					member.getHealingPercentage() + "\n" + member.getHighestCrit() + "\n\n\n" + PartyMember.getPartyKills() + "\n" + 
+					PartyMember.getPartyDeaths() + "\n" + PartyMember.getGoldFound() + "\n" + PartyMember.getMaxGold() + "\n" + 
+					PartyMember.getHuntsDone() + "\n" + PartyMember.getStepsTaken() + "\n" + PartyMember.getChestsFound() + "\n" + 
+					PartyMember.getSignsRead() + "\n" + PartyMember.getDaysDayed());
 		}
 	}
 }

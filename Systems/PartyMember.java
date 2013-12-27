@@ -1,10 +1,14 @@
 package Systems;
 
+import java.io.Serializable;
+
 import javax.swing.ImageIcon;
 
 import GUI.Enums.NAMED_NPC;
 
-public class PartyMember {
+public class PartyMember implements Serializable {
+
+	private static final long serialVersionUID = -2547966350818847472L;
 	
 	private static int partyKills;
 	private static int partyDeaths;
@@ -17,6 +21,8 @@ public class PartyMember {
 	private static int daysDayed;
 	private static int partyDamage;
 	private static int partyHealing;
+	
+	private static int partySize = 1;
 	
 	private String name;
 	private int level = 1;
@@ -77,8 +83,27 @@ public class PartyMember {
 			
 			health = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
 			secondary = new Stat(100);
+			break;
+			
+		case TERRA:
+			name = "Terra";
+			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
+			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
+			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
+			
+			strength = new Stat(4);
+			agility = new Stat(5);
+			spirit = new Stat(6);
+			intellect = new Stat(8);
+			luck = new Stat(8);
+			
+			stamina = new Stat(7);
+			
+			health = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
+			secondary = new Stat(150);
+			break;
+			
 		}
-		
 	}
 	
 	public ImageIcon getPortrait()	{
@@ -89,6 +114,10 @@ public class PartyMember {
 	 */
 	public ImageIcon getDown()	{
 		return down;
+	}
+	
+	public ImageIcon getRight()	{
+		return right;
 	}
 	
 	public String getName() {
@@ -378,6 +407,23 @@ public class PartyMember {
 
 	public static void incrementDaysDayed() {
 		PartyMember.daysDayed++;
+	}
+	
+	public static int getPartySize()	{
+		return PartyMember.partySize;
+	}
+	
+	public static void incrementPartySize()	{
+		PartyMember.partySize++;
+	}
+	
+	public static void decrementPartySize()	{
+		PartyMember.partySize--;
+	}
+	
+	@Override
+	public String toString()	{
+		return name;
 	}
 		
 }

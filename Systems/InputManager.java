@@ -117,6 +117,12 @@ public class InputManager extends JPanel {
 					data.getDialogueBox().setVisible(false);
 					data.setPaused(false);
 				}
+				else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+					data.getPartyPanel().moveCursorLeft();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+					data.getPartyPanel().moveCursorRight();
+				}
 			}
 			
 			/*
@@ -220,6 +226,7 @@ public class InputManager extends JPanel {
 				if(facedTile.getDoodad().getClass() == Chest.class)	{
 					((Chest) facedTile.getDoodad()).interact();
 					data.getInventory().addItem(((Chest) facedTile.getDoodad()).lootChest());
+					PartyMember.incrementChestsFound();
 					data.getDialogueBox().receiveItem(((Chest) facedTile.getDoodad()).lootChest());
 					data.setGameState(GAME_STATE.TALK);
 					data.getDialogueBox().setVisible(true);
@@ -227,7 +234,6 @@ public class InputManager extends JPanel {
 
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
-					((Sign) facedTile.getDoodad()).getDialogue();
 					data.setGameState(GAME_STATE.TALK);
 					data.getDialogueBox().setVisible(true);
 					data.getDialogueBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
@@ -241,6 +247,7 @@ public class InputManager extends JPanel {
 					data.getDialogueBox().setDialogue(data.getCurrentMap().getNPCs().get(i).getDialogue(), false);
 					interactedNPC.invertFacing(data.getPlayer().getFacing());
 					interactedNPC.setTalking(true);
+					interactedNPC.setTalkedTo(true);
 					data.getPlayer().setInteractingNPC(interactedNPC);
 					data.setGameState(GAME_STATE.TALK);
 					data.getDialogueBox().setVisible(true);

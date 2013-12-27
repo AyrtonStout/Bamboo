@@ -6,6 +6,7 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 import GUI.Enums.ACTION;
+import Systems.PartyMember;
 
 /**
  * @author mobius
@@ -131,6 +132,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			//When current move finishes, keep moving or stop movement
 			if (remainingSteps == 0) {
 				updateCoordinate(action, false);
+				PartyMember.incrementStepsTaken();
 				if (doorTransition = true)
 					doorTransition = false;
 				if (queuedMove & validMoveEh(queuedAction))	{

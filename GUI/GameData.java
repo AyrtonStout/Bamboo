@@ -52,7 +52,7 @@ public class GameData {
 			stream = new ObjectInputStream( new FileInputStream(new File("GUI/Maps/test1")));
 			for (int i = 0; i < 3; i++)	{
 				worldMaps.add((Map) stream.readObject());
-				worldMaps.get(i).initializeMap(worldMaps.get(i), player);
+				worldMaps.get(i).initializeMap(worldMaps.get(i), this);
 			}
 			stream.close();
 		} catch (Exception e) {
@@ -83,6 +83,7 @@ public class GameData {
 			menuBox.update();
 			currentMap.updateAll();
 		}
+//		System.out.println(party[0] + "   " + party[1] + "   " + party[2] + "   " + party[3]);
 	}
 
 	/**
