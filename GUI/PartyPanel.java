@@ -99,7 +99,6 @@ public class PartyPanel extends JPanel {
 	}
 	
 	public void moveCursorRight()	{
-		System.out.println(Integer.toString(cursorPosition) + Integer.toString(PartyMember.getPartySize()));
 		if (cursorPosition < PartyMember.getPartySize() - 1)	{
 			cursorPosition++;
 			bottomPanel.update();
