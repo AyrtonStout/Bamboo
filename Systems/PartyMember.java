@@ -25,20 +25,19 @@ public class PartyMember implements Serializable {
 	private static int partySize = 1;
 	
 	private String name;
+	private String gender;
 	private int level = 1;
 
-	private int xp;
-	private int xpToLevel;
+	private int xpThisLevel;
+	private int xpTotalEarned;
+	private int xpRequirement;
 	
-	private Stat health;
-	private Stat secondary;
+	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
+	private Stat currentMana = new Stat(1), maximumMana = new Stat(1);
 	
-	private Stat strength;
-	private Stat agility;
-	private Stat intellect;
-	private Stat spirit;
-	private Stat luck;
-	private Stat stamina;
+	private Stat strength, agility, intellect, spirit, luck, stamina;
+	//Partial stats are used primarily for leveling up. Once a value exceeds 10 it will increase the main stat by 1
+	private int partialStr, partialAgi, partialInt, partialSpi, partialLuck, partialSta;
 	
 	private Stat attackPower = new Stat(0);
 	private Stat spellPower = new Stat(0);
@@ -50,7 +49,7 @@ public class PartyMember implements Serializable {
 	private Stat resist = new Stat(0);
 	private Stat speed = new Stat(0);
 	
-	private int STAMINA_TO_HEALTH_RATIO = 5;
+	private int STAMINA_TO_HEALTH_RATIO = 10;
 	
 	private ImageIcon portrait;
 	private ImageIcon right;
@@ -69,6 +68,7 @@ public class PartyMember implements Serializable {
 		switch (member)	{
 		case SABIN:
 			name = "Sabin";
+			gender = "Male";
 			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
 			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
 			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
@@ -78,15 +78,21 @@ public class PartyMember implements Serializable {
 			spirit = new Stat(5);
 			intellect = new Stat(4);
 			luck = new Stat(7);
-			
 			stamina = new Stat(8);
 			
-			health = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
-			secondary = new Stat(100);
+			partialStr = 3;
+			partialAgi = 6;
+			partialInt = 4;
+			partialSpi = 0;
+			partialLuck = 5;
+			partialSta = 5;
+			
+			maximumMana = new Stat(100);
 			break;
 			
 		case TERRA:
 			name = "Terra";
+			gender = "Female";
 			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
 			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
 			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
@@ -96,16 +102,88 @@ public class PartyMember implements Serializable {
 			spirit = new Stat(6);
 			intellect = new Stat(8);
 			luck = new Stat(8);
-			
 			stamina = new Stat(7);
 			
-			health = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
-			secondary = new Stat(150);
-			break;
+			partialStr = 6;
+			partialAgi = 6;
+			partialInt = 9;
+			partialSpi = 2;
+			partialLuck = 7;
+			partialSta = 1;
 			
+			maximumMana = new Stat(150);
+			break;
 		}
+		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
+		currentHealth.setBase(maximumHealth.getBase());
+		currentMana.setBase(maximumMana.getBase());
 	}
 	
+	public void levelUp()	{
+		level++;
+		
+		partialStr += 15;
+		partialAgi += 15;
+		partialInt += 15;
+		partialSpi += 15;
+		partialLuck += 1;
+		partialSta += 20;
+		
+		if (gender.equals("Male"))	{
+			partialStr += 3;
+			partialAgi += 2;
+			partialInt += 1;
+			partialSpi += 2;
+			partialLuck += 0;
+			partialSta += 3;
+		}
+		else if (gender.equals("Female"))	{
+			partialStr += 1;
+			partialAgi += 2;
+			partialInt += 3;
+			partialSpi += 2;
+			partialLuck += 1;
+			partialSta += 2;
+		}
+		
+		updateStats();
+		
+		currentHealth = maximumHealth;
+	}
+	
+	public void updateStats()	{
+		while (partialStr >= 10)	{
+			strength.modifyBase(1);
+			partialStr -= 10;
+		}
+		while (partialAgi >= 10)	{
+			agility.modifyBase(1);
+			partialAgi -= 10;
+		}
+		while (partialInt >= 10)	{
+			intellect.modifyBase(1);
+			partialInt -= 10;
+		}
+		while (partialSpi >= 10)	{
+			spirit.modifyBase(1);
+			partialSpi -= 10;
+		}
+		while (partialLuck >= 10)	{
+			luck.modifyBase(1);
+			partialLuck -= 10;
+		}
+		while (partialSta >= 10)	{
+			stamina.modifyBase(1);
+			partialSta -= 10;
+		}
+		
+		maximumHealth.setBase(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
+		currentHealth.setBase(maximumHealth.getBase());
+		currentMana.setBase(maximumMana.getBase());
+	}
+	
+	
+	//--------------------------------------
 	public ImageIcon getPortrait()	{
 		return portrait;
 	}
@@ -136,38 +214,64 @@ public class PartyMember implements Serializable {
 		this.level = level;
 	}
 
-	public int getXp() {
-		return xp;
+	public int getXpThisLevel() {
+		return xpThisLevel;
 	}
 
-	public void setXp(int xp) {
-		this.xp = xp;
+	public void setXpThisLevel(int xp) {
+		this.xpThisLevel = xp;
 	}
 
-	public int getXpToLevel() {
-		return xpToLevel;
+	public int getXpTotalEarned() {
+		return xpTotalEarned;
 	}
 
-	public void setXpToLevel(int xpToLevel) {
-		this.xpToLevel = xpToLevel;
+	public void setXpTotalEarned(int xp) {
+		this.xpTotalEarned = xp;
 	}
 
-	public Stat getHealth() {
-		return health;
+	public int getXpRequirement() {
+		return xpRequirement;
 	}
 
-	public void setHealth(Stat health) {
-		this.health = health;
+	public void setXpRequirement(int xpToLevel) {
+		this.xpRequirement = xpToLevel;
 	}
 
-	public Stat getSecondary() {
-		return secondary;
+	public Stat getMaxHealth() {
+		return maximumHealth;
 	}
 
-	public void setSecondary(Stat secondary) {
-		this.secondary = secondary;
+	public void setMaximumHealth(Stat health) {
+		this.maximumHealth = health;
 	}
 
+	public Stat getCurrentHealth() {
+		return currentHealth;
+	}
+
+	public void setCurrentHealth(Stat health) {
+		this.currentHealth = health;
+	}
+
+	
+	public Stat getMaxMana() {
+		return maximumMana;
+	}
+
+	public void setMaxMana(Stat mana) {
+		this.maximumMana = mana;
+	}
+
+	public Stat getCurrentMana() {
+		return currentMana;
+	}
+
+	public void setCurrentMana(Stat currentMana) {
+		this.currentMana = currentMana;
+	}
+
+	
 	public Stat getStrength()	{
 		return strength;
 	}

@@ -5,13 +5,14 @@ import java.io.Serializable;
 public class Stat implements Serializable {
 	
 	/**
-	 * Contains the base and actual values for a particular stat. Useful for remembering what an item or
-	 * character's stats were prior to the application of a buff.
+	 * Contains the base and buff values for a particular stat. Useful for remembering what an item or
+	 * character's stats were prior to the application of a buff, but still being able to return an
+	 * integer that represents the combination of both values.
 	 */
 	private static final long serialVersionUID = -6815283919717300517L;
 	
-	int base = 0;
-	int actual = 0;
+	int base;
+	int buff = 0;
 	
 	/**
 	 * Creates a new stat and sets its base value to the integer provided
@@ -20,46 +21,63 @@ public class Stat implements Serializable {
 	 */
 	public Stat(int original)	{
 		this.base = original;
-		actual = original;
 	}
 	/**
+	 * Sets the base value of the stat to a new value. Those wishing only to modify the stat by a set amount
+	 * should instead use the modifyBase() method.
+	 * 
 	 * @param value The new base value for the stat
 	 */
 	public void setBase(int value)	{
 		base = value;
 	}
 	/**
-	 * @param value The new actual or practical value for the stat
+	 * Changes the base value by the amount provided. The provided number can be negative and will reduce the 
+	 * character's stat instead.
+	 * 
+	 * @param value The value that the base will be changed by
 	 */
-	public void setActual(int value)	{
-		actual = value;
+	public void modifyBase(int value)	{
+		base += value;
 	}
 	/**
-	 * @param value Increase the actual stat value by a set amount
+	 * Sets the value of the buff to a new value. Those wishing only to modify the buff by a set amount
+	 * should instead use the modifyBuff() method.
+	 * 
+	 * @param value The new value for the buff
 	 */
-	public void buff(int value)	{
-		actual += value;
+	public void setBuff(int value)	{
+		buff = value;
 	}
 	/**
-	 * Sets the actual value back down to the base value
+	 * Changes the base value's buff's strength by the amount provided. The provided number can be negative 
+	 * and will reduce the character's stat instead.
+	 * 
+	 * @param value Modify the buffing value of this stat by a certain amount
+	 */
+	public void modifyBuff(int value)	{
+		buff += value;
+	}
+	/**
+	 * Removes the buffs from this stat
 	 */
 	public void clear()	{
-		actual = base;
+		buff = 0;
 	}
 	/**
-	 * @return The base value for the stat
+	 * @return The base value for the stat before buffs
 	 */
 	public int getBase()	{
 		return base;
 	}
 	/**
-	 * @return The actual value of the stat
+	 * @return The actual value of the stat (base + buffs)
 	 */
 	public int getActual()	{
-		return actual;
+		return base + buff;
 	}
 	@Override
 	public String toString()	{
-		return Integer.toString(actual);
+		return Integer.toString(base + buff);
 	}
 }

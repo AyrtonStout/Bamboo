@@ -50,7 +50,7 @@ public class InputManager extends JPanel {
 					data.getMenu().setVisible(true);
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
-					data.getCurrentMap().getNPCs().get(0).walkToPoint(new Point(4, data.getCurrentMap().getNPCs().get(0).getCoordY()));
+					data.getParty()[0].levelUp();
 				}
 			}
 			

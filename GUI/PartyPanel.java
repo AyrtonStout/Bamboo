@@ -87,6 +87,7 @@ public class PartyPanel extends JPanel {
 				party[i] = data.getParty()[i].getDown();
 			}
 		}
+		midPanel.update();
 		bottomPanel.update();
 		
 	}
@@ -187,8 +188,6 @@ public class PartyPanel extends JPanel {
 			healthManaLabelPanel.setPreferredSize(new Dimension(40, height));
 			healthManaLabelPanel.setMaximumSize(new Dimension(40, height));
 			healthManaLabelPanel.setMinimumSize(new Dimension(40, height));
-//			healthManaLabelPanel.setAlignmentX(RIGHT_ALIGNMENT);
-//			rightPanel.setBackground(Color.RED);
 			healthManaLabelPanel.setOpaque(false);
 			
 			JLabel healthLabel = new JLabel("HP");
@@ -269,8 +268,17 @@ public class PartyPanel extends JPanel {
 		}
 		
 		protected void paintComponent(Graphics g)	{
-//			g.drawImage(background.getImage(), 0, 0, null);
 			g.drawImage(portrait.getImage(), 60, 30, null);
+		}
+		
+		public void update()	{
+			PartyMember member = data.getParty()[cursorPosition];
+			levelNumberLabel.setText(Integer.toString(member.getLevel()));
+			healthNumberLabel.setText(member.getCurrentHealth().toString() + "/" + member.getMaxHealth().toString());
+			manaNumberLabel.setText(member.getCurrentMana().toString() + "/" + member.getMaxMana().toString());
+			xpEarnedText.setText(member.getXpTotalEarned() + " (" + 
+					Integer.toString(member.getXpRequirement() - member.getXpThisLevel()) + ")");
+			xpToGoText.setText(member.getXpThisLevel() + "/" + member.getXpRequirement());
 		}
 	}
 	
