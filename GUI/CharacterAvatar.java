@@ -95,9 +95,6 @@ public abstract class CharacterAvatar implements Serializable {
 				currentImage = up;
 				return false;
 			}
-			else	{
-				
-			}
 		}
 		else if (action == ACTION.RIGHT)        {
 			if (coordX == map.getWidth() - 1 || moveCheck[coordX+1][coordY] == true)        {
