@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 import GUI.Enums.*;
 import Systems.Item;
+import Systems.PartyMember;
 
 /**
  * @author mobius
@@ -72,6 +73,7 @@ public class Chest extends Doodad implements Serializable {
 	 * @return The item the chest contains
 	 */
 	public Item lootChest()	{
+		PartyMember.incrementChestsFound();
 		return reward;
 	}
 	/**

@@ -2,11 +2,15 @@ package Systems;
 
 import java.util.ArrayList;
 
+import GUI.GameData;
+
 /**
  * @author mobius
  * The container for all of the party's items. Sub divided into separate categories
  */
 public class Inventory {
+	
+	private GameData data;
 	
 	private ArrayList<ArrayList<Item>> inventory = new ArrayList<ArrayList<Item>>();
 	
@@ -17,7 +21,10 @@ public class Inventory {
 	private ArrayList<Item> loot = new ArrayList<Item>();
 	private ArrayList<Item> keyItems = new ArrayList<Item>();
 	
-	public Inventory()	{
+	public Inventory(GameData data)	{
+		
+		this.data = data;
+		
 		inventory.add(weapons);
 		inventory.add(armor);
 		inventory.add(accessories);
@@ -58,6 +65,7 @@ public class Inventory {
 		else	{
 			System.err.print("Whoa! What the hell kind of item is this!");
 		}
+		data.getDialogueBox().receiveItem(newItem);
 	}
 	
 	/**

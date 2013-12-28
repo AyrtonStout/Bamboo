@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import GUI.Enums.GAME_STATE;
 import GUI.Enums.NAMED_NPC;
+import Systems.InputManager;
 import Systems.Inventory;
 import Systems.PartyMember;
 import Systems.Time;
@@ -21,15 +22,17 @@ public class GameData {
 	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
-	private DialogueBox dialogueBox = new DialogueBox();
+	private DialogueBox dialogueBox = new DialogueBox(this);
 	private Board gameBoard;
 	private Menu menuBox = new Menu(this);
-	private Inventory inventory = new Inventory();
+	private Inventory inventory = new Inventory(this);
 	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
 	private PartyPanel partyPanel = new PartyPanel(this);;
 	private PartyMember[] party = new PartyMember[4];
 	private Time time = new Time();
 	private boolean paused = false;
+	private InputManager input;
+
 	
 	private Map currentMap;
 
@@ -80,10 +83,22 @@ public class GameData {
 				dialogueBox.update();	
 			}
 			time.update();
-			menuBox.update();
+			if (gameState == GAME_STATE.MENU)	{
+				menuBox.update();
+			}
 			currentMap.updateAll();
 		}
-//		System.out.println(party[0] + "   " + party[1] + "   " + party[2] + "   " + party[3]);
+		
+		/*
+		 * TODO Figure out why I need this
+		 * If this statement is left out, the game will lose focus and become unresponsive
+		 * after clicking away from the game and back in under certain circumstances
+		 */
+		else	{
+			if (!input.isFocusOwner())	{
+				input.requestFocusInWindow();
+			}
+		}
 	}
 
 	/**
@@ -187,4 +202,20 @@ public class GameData {
 	public PartyMember[] getParty()	{
 		return party;
 	}
+
+	
+	
+
+	/**
+	 * Shows the GameData where the InputManager is. This method is currently only
+	 * being used to fix a big where focus of the InputManager is lost when clicking
+	 * away from the program under unusual conditions. If that problem is fixed, this
+	 * method should be removed.
+	 * 
+	 * @param input The game's InputManager
+	 */
+	public void setInputManager(InputManager input) {
+		this.input = input;
+	}
+
 }

@@ -1,6 +1,5 @@
 package Systems;
 
-import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -17,6 +16,8 @@ public class InputManager extends JPanel {
 
 	private static final long serialVersionUID = -1120571601725209112L;
 	private GameData data;
+	
+	private boolean directAccess;
 
 	public InputManager(GameData data)	{
 		this.data = data;
@@ -49,10 +50,18 @@ public class InputManager extends JPanel {
 					data.setGameState(GAME_STATE.MENU);
 					data.getMenu().setVisible(true);
 				}
+				else if (e.getKeyCode() == KeyEvent.VK_P)	{
+					directAccess = true;
+					openParty();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_I)	{
+					directAccess = true;
+					openInventory();
+				}
 				else if (e.getKeyCode() == KeyEvent.VK_G)	{
 					for (int i = 0; i < data.getParty().length; i++)	{
 						if (data.getParty()[i] != null)	{
-							data.getParty()[i].levelUp();		
+							data.getParty()[i].levelUp();
 						}
 					}
 				}
@@ -63,7 +72,7 @@ public class InputManager extends JPanel {
 			 */
 			else if (data.getGameState() == GAME_STATE.TALK)	{
 				if (e.getKeyCode() == KeyEvent.VK_Z)	{
-					advanceDialogue();
+					data.getDialogueBox().advanceDialogue();
 				}
 			}
 			
@@ -79,23 +88,12 @@ public class InputManager extends JPanel {
 					data.getMenu().dropCursor();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_Z || e.getKeyCode() == KeyEvent.VK_ENTER)	{
+					directAccess = false;
 					if (data.getMenu().getCursorPosition() == 0)	{
-						data.setGameState(GAME_STATE.PARTY_PANEL);
-						data.getMenu().setVisible(false);
-						data.getMenu().shrink();
-						data.getDialogueBox().shrink();
-						data.getPartyPanel().update();
-						data.getGameBoard().add(data.getPartyPanel());
-						data.setPaused(true);
+						openParty();
 					}
 					else if (data.getMenu().getCursorPosition() == 1)	{
-						data.setGameState(GAME_STATE.INVENTORY_OUTER);
-						data.getMenu().setVisible(false);
-						data.getMenu().shrink();
-						data.getDialogueBox().shrink();
-						data.getGameBoard().add(data.getInventoryPanel());
-						data.getInventoryPanel().initializeList();
-						data.setPaused(true);
+						openInventory();
 					}
 					
 				}
@@ -112,13 +110,7 @@ public class InputManager extends JPanel {
 			 */
 			else if (data.getGameState() == GAME_STATE.PARTY_PANEL)	{
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
-					data.getGameBoard().remove(data.getPartyPanel());
-					data.getMenu().restore();
-					data.getDialogueBox().restore();
-					data.setGameState(GAME_STATE.MENU);
-					data.getMenu().setVisible(true);
-					data.getDialogueBox().setVisible(false);
-					data.setPaused(false);
+					closeParty();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
 					data.getPartyPanel().moveCursorLeft();
@@ -152,15 +144,7 @@ public class InputManager extends JPanel {
 					}
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
-					data.getGameBoard().remove(data.getInventoryPanel());
-					data.getMenu().restore();
-					data.getDialogueBox().restore();
-					data.setGameState(GAME_STATE.MENU);
-					data.getMenu().setVisible(true);
-					data.getDialogueBox().setVisible(false);
-					data.getInventoryPanel().resetCategoryCursor();
-					data.getInventoryPanel().resetHeaderCursor();
-					data.setPaused(false);
+					closeInventory();
 				}
 			}
 			
@@ -230,20 +214,12 @@ public class InputManager extends JPanel {
 				if(facedTile.getDoodad().getClass() == Chest.class)	{
 					((Chest) facedTile.getDoodad()).interact();
 					data.getInventory().addItem(((Chest) facedTile.getDoodad()).lootChest());
-					PartyMember.incrementChestsFound();
-					data.getDialogueBox().receiveItem(((Chest) facedTile.getDoodad()).lootChest());
-					data.setGameState(GAME_STATE.TALK);
-					data.getDialogueBox().setVisible(true);
-					advanceDialogue();
-
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
-					data.setGameState(GAME_STATE.TALK);
-					data.getDialogueBox().setVisible(true);
 					data.getDialogueBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);
-					advanceDialogue();
 				}
 			}
+			
 			NPC interactedNPC;
 			for (int i = 0; i < data.getCurrentMap().getNPCs().size(); i++)	{
 				interactedNPC = data.getCurrentMap().getNPCs().get(i);
@@ -251,36 +227,71 @@ public class InputManager extends JPanel {
 					data.getDialogueBox().setDialogue(data.getCurrentMap().getNPCs().get(i).getDialogue(), false);
 					interactedNPC.invertFacing(data.getPlayer().getFacing());
 					interactedNPC.setTalking(true);
-					interactedNPC.setTalkedTo(true);
 					data.getPlayer().setInteractingNPC(interactedNPC);
-					data.setGameState(GAME_STATE.TALK);
-					data.getDialogueBox().setVisible(true);
-					advanceDialogue();
 				}
 			}
 		}
 	}
 	
-	/**
-	 * Moves the text box's dialogue forward one line
-	 */
-	public void advanceDialogue()	{
-		if (data.getDialogueBox().writingEh() && !data.getDialogueBox().writeFasterEh())	{
-			data.getDialogueBox().writeFaster();
+	private void openParty()	{
+		data.setGameState(GAME_STATE.PARTY_PANEL);
+		data.getMenu().setVisible(false);
+		data.getMenu().shrink();
+		data.getDialogueBox().shrink();
+		data.getPartyPanel().update();
+		data.getGameBoard().add(data.getPartyPanel());
+		data.setPaused(true);
+	}
+	
+	private void closeParty()	{
+		
+		data.getGameBoard().remove(data.getPartyPanel());
+		data.getMenu().restore();
+		data.getDialogueBox().restore();
+		data.setPaused(false);
+		
+		if (directAccess)	{
+			data.setGameState(GAME_STATE.WALK);
+			data.getMenu().setVisible(false);
 		}
-		else if (!data.getDialogueBox().writingEh())	{
-			if (data.getDialogueBox().hasNextLine())	{
-				data.getDialogueBox().read();
-			}
-			else	{
-				data.setGameState(GAME_STATE.WALK);
-				if (data.getPlayer().getInteractingNPC() != null)	{
-					data.getPlayer().getInteractingNPC().setTalking(false);
-					data.getPlayer().setInteractingNPC(null);
-				}
-				data.getDialogueBox().setVisible(false);
-			}
+		else	{
+			data.setGameState(GAME_STATE.MENU);
+			data.getMenu().setVisible(true);
 		}
+		
+		data.getDialogueBox().setVisible(false);
+	}
+	
+	private void openInventory()	{
+		data.setGameState(GAME_STATE.INVENTORY_OUTER);
+		data.getMenu().setVisible(false);
+		data.getMenu().shrink();
+		data.getDialogueBox().shrink();
+		data.getGameBoard().add(data.getInventoryPanel());
+		data.getInventoryPanel().initializeList();
+		data.setPaused(true);
+	}
+	
+	private void closeInventory()	{
+		
+		data.getGameBoard().remove(data.getInventoryPanel());
+		data.getMenu().restore();
+		data.getDialogueBox().restore();
+		
+		data.getDialogueBox().setVisible(false);
+		data.getInventoryPanel().resetCategoryCursor();
+		data.getInventoryPanel().resetHeaderCursor();
+		data.setPaused(false);
+		
+		if (directAccess)	{
+			data.setGameState(GAME_STATE.WALK);
+		}
+		else	{
+			data.setGameState(GAME_STATE.MENU);
+			data.getMenu().setVisible(true);
+			
+		}
+		
 	}
 
 }

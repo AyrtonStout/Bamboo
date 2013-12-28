@@ -6,34 +6,35 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.22 - Inventory Update
+ * @version 0.25 - Party Update
  */
-public class Frame {
+public class Frame extends JFrame {
+
+	private static final long serialVersionUID = 7994551050627642940L;
 
 	public final int WINDOW_HEIGHT = 600;
 	public final int WINDOW_WIDTH = 600;
 	
 	public Frame(){
-		JFrame frame = new JFrame();
 		GameData data = new GameData(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Board gameBoard = new Board(data);
 		data.setGameBoard(gameBoard);
 		InputManager input = new InputManager(data);
+		data.setInputManager(input);
 		
-		frame.add(input);
-		frame.add(gameBoard);	
-		frame.setTitle("Project Bamboo");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+		this.add(input);
+		this.add(gameBoard);	
+		this.setTitle("Project Bamboo");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
 		
-		frame.pack();
-		frame.setVisible(true);	
-		frame.setLocationRelativeTo(null);
+		this.pack();
+		this.setVisible(true);	
+		this.setLocationRelativeTo(null);
 		
 	}
+	
 	public static void main(String[] args){
 		new Frame();
-		
-		
 	}
 }

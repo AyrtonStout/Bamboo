@@ -10,7 +10,7 @@ public class Enums {
 
 	public enum TACTION	{
 		
-		SPAWN_NPC, ADD_NPC_TO_PARTY;
+		SPAWN_NPC, ADD_NPC_TO_PARTY, REMOVE_NPC_FROM_MAP;
 		
 	}
 	

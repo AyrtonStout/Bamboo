@@ -30,7 +30,7 @@ public class PartyMember implements Serializable {
 
 	private int xpThisLevel;
 	private int xpTotalEarned;
-	private int xpRequirement;
+	private int xpRequirement = 200;
 	
 	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
 	private Stat currentMana = new Stat(1), maximumMana = new Stat(1);
@@ -120,13 +120,26 @@ public class PartyMember implements Serializable {
 	}
 	
 	public void levelUp()	{
+		xpThisLevel -= xpRequirement;
+		if (xpThisLevel < 0)	{
+			xpThisLevel = 0;
+		}
+		if (level <= 50)	{
+			xpRequirement = (int) (7 * Math.pow((double) level, 2.0) + 45 * level + 200);	
+		}
+		else if (level <= 97)	{
+			xpRequirement = (int) (7 * Math.pow((double) level, 2.0) + 45 * level + 200);
+		}
+		else	{
+			
+		}
 		level++;
 		
 		partialStr += 15;
 		partialAgi += 15;
 		partialInt += 15;
 		partialSpi += 15;
-		partialLuck += 1;
+		partialLuck += 2;
 		partialSta += 20;
 		
 		if (gender.equals("Male"))	{
@@ -149,6 +162,8 @@ public class PartyMember implements Serializable {
 		updateStats();
 		
 		currentHealth = maximumHealth;
+		
+		
 	}
 	
 	public void updateStats()	{

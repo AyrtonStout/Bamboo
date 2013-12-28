@@ -96,7 +96,12 @@ public class Map extends JPanel implements Serializable {
 		this.moveBlocks[addedNPC.getCoordX()][addedNPC.getCoordY()] = true;
 	}
 	
-	
+	public void removeNPC(NPC npc) {
+		if (NPCs.contains(npc))	{
+			NPCs.remove(npc);
+			moveBlocks[npc.getCoordX()][npc.getCoordY()] = false;
+		}
+	}
 	/**
 	 * @return Array representation of the map
 	 */

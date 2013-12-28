@@ -17,7 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import GUI.Enums.GAME_STATE;
 import Systems.Item;
+import Systems.PartyMember;
 
 /**
  * @author mobius
@@ -28,6 +30,8 @@ import Systems.Item;
  */
 @SuppressWarnings("serial")
 public class DialogueBox extends JPanel{
+	
+	private GameData data;
 	
 	private boolean visible = true;
 	private boolean writing = false;
@@ -59,7 +63,10 @@ public class DialogueBox extends JPanel{
 	/**
 	 * Formats the text box with panels and labels. Loads the font from file and assigns it to the labels
 	 */
-	public DialogueBox()	{
+	public DialogueBox(GameData data)	{
+		
+		this.data = data;
+		
 		try {
 			stream = new BufferedInputStream(
                     new FileInputStream("GUI/Resources/Font_Main.ttf"));
@@ -224,10 +231,29 @@ public class DialogueBox extends JPanel{
 		}
 	}
 	
+	public void advanceDialogue()	{
+		if (writing && !writeFaster)	{
+			writeFaster = true;
+		}
+		else if (!writing)	{
+			if (hasNextLine())	{
+				read();
+			}
+			else	{
+				data.setGameState(GAME_STATE.WALK);
+				if (data.getPlayer().getInteractingNPC() != null)	{
+					data.getPlayer().getInteractingNPC().setTalking(false);
+					data.getPlayer().getInteractingNPC().setTalkedTo(true);
+					data.getPlayer().setInteractingNPC(null);
+				}
+				setVisible(false);
+			}
+		}
+	}
 	/**
 	 * Gets the text box started on writing the Sign's next sentence
 	 */
-	public void read() {
+	private void read() {
 
 		labels[0].setText("");
 		labels[1].setText("");
@@ -256,6 +282,7 @@ public class DialogueBox extends JPanel{
 	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
 		this.dialogue = dialogue;
 		this.instantWrite = instantWrite;
+		startDialogue();
 	}
 	/**
 	 * Uses the text box to show what item has just been looted.
@@ -265,6 +292,22 @@ public class DialogueBox extends JPanel{
 	public void receiveItem(Item item)	{
 		this.dialogue.add("You looted " + vowelEh(item.getName()) + item.getName() + "!");
 		this.instantWrite = false;
+		startDialogue();
+	}
+	/**
+	 * Uses the text box to show who just joined the party.
+	 * 
+	 * @param member The party member that just joined.
+	 */
+	public void joinParty(PartyMember member)	{
+		this.dialogue.add(member.getName() + " has joined the party!");
+		this.instantWrite = false;
+		startDialogue();
+	}
+	private void startDialogue()	{
+		setVisible(true);
+		data.setGameState(GAME_STATE.TALK);
+		advanceDialogue();
 	}
 	/**
 	 * Used to have intelligent sounding dialogue when using the articles "a" and "an". 
@@ -298,25 +341,11 @@ public class DialogueBox extends JPanel{
 	/**
 	 * @return Whether or not the text box has more information to give
 	 */
-	public boolean hasNextLine()	{
+	private boolean hasNextLine()	{
 		if (dialogue.size() > 0)
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * Makes the text appear at a more rapid rate (though is not instant)
-	 */
-	public void writeFaster() {
-		writeFaster = true;		
-	}
-
-	/**
-	 * @return Whether or not the text box is already writing at the fastest possible speed
-	 */
-	public boolean writeFasterEh() {
-		return writeFaster;
 	}
 	
 	/**

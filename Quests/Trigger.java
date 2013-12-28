@@ -62,6 +62,14 @@ public class Trigger implements Serializable {
 		return true;
 	}
 	
+	public void addEvent(TEvent e)	{
+		events.add(e);
+	}
+	
+	public void addAction(TAction a)	{
+		actions.add(a);
+	}
+	
 	/**
 	 * Initializes the trigger's information when the game starts
 	 * 

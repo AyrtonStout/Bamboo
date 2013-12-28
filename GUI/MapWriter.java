@@ -293,7 +293,7 @@ public class MapWriter {
 				
 		ArrayList<String> terraTalk = new ArrayList<String>();
 		terraTalk.add("I have teal hair.");
-		terraTalk.add("Push G and I will probably walk to the left.");
+		terraTalk.add("Push G and your party will probably level up.");
 		ArrayList<String> celesTalk = new ArrayList<String>();
 		celesTalk.add("I wander about aimlessly.");
 		
@@ -314,6 +314,7 @@ public class MapWriter {
 		
 		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawn));
 		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
+		addToParty.addAction(new TAction(TACTION.REMOVE_NPC_FROM_MAP, terra));
 		
 		triggers.add(spawnNPC);
 		triggers.add(addToParty);

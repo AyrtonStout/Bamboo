@@ -134,15 +134,11 @@ public class PartyPanel extends JPanel {
 
 		private int height = 130;
 		
-		private int level;
-		private int health, healthMax;
-		private int mana, manaMax;
-		
-		private JLabel levelNumberLabel = new JLabel("1", SwingConstants.CENTER);
-		private JLabel healthNumberLabel = new JLabel("1200/1500", SwingConstants.RIGHT);
-		private JLabel manaNumberLabel = new JLabel("100/100", SwingConstants.RIGHT);
-		private JLabel xpEarnedText = new JLabel("5312 (-933)", SwingConstants.RIGHT);
-		private JLabel xpToGoText = new JLabel("117/1050", SwingConstants.RIGHT);
+		private JLabel levelNumberLabel = new JLabel("", SwingConstants.CENTER);
+		private JLabel healthNumberLabel = new JLabel();
+		private JLabel manaNumberLabel = new JLabel();
+		private JLabel xpEarnedText = new JLabel();
+		private JLabel xpToGoText = new JLabel();
 		
 		
 		public CenterPanel()	{
@@ -153,7 +149,6 @@ public class PartyPanel extends JPanel {
 			this.setOpaque(false);
 			
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-//			this.add(Box.createHorizontalStrut(40));
 			
 			JPanel leftPanel = new JPanel();
 			leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -273,10 +268,11 @@ public class PartyPanel extends JPanel {
 		
 		public void update()	{
 			PartyMember member = data.getParty()[cursorPosition];
+			portrait = data.getParty()[cursorPosition].getPortrait();
 			levelNumberLabel.setText(Integer.toString(member.getLevel()));
 			healthNumberLabel.setText(member.getCurrentHealth().toString() + "/" + member.getMaxHealth().toString());
 			manaNumberLabel.setText(member.getCurrentMana().toString() + "/" + member.getMaxMana().toString());
-			xpEarnedText.setText(member.getXpTotalEarned() + " (" + 
+			xpEarnedText.setText(member.getXpTotalEarned() + " (-" + 
 					Integer.toString(member.getXpRequirement() - member.getXpThisLevel()) + ")");
 			xpToGoText.setText(member.getXpThisLevel() + "/" + member.getXpRequirement());
 		}
