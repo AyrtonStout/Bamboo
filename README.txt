@@ -22,7 +22,7 @@ v0.26 - Level Algorithm
 -Corrected oversight on not having party portrait update to the currently selected party member.
 -Moved dialogue advancement method out of the input manager and into the dialogue box class because it had no place being there to begin with.
 -Moved most of the logic for looting items and reading signs into the dialogue box class. Now it all happens automatically after something is added to the inventory or a sign is interacted with.
--Many dialogue box methods can now been made private as a result of the previous changes.
+-Many dialogue box methods can now be made private as a result of the previous changes.
 -"Fixed" a bug that would cause the game to freeze when clicking off of the game and back on. The fix merely treats the symptoms of the problem but is 100% functional. Further documentation available in bug report section.
 -Triggers now correctly contain the methods needed to add additional events and actions.
 -Two new trigger action available- remove NPC from the map and add PartyMember to party.
