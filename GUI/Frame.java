@@ -6,7 +6,7 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.25 - Party Update
+ * @version 0.26 - Party Update
  */
 public class Frame extends JFrame {
 
@@ -15,7 +15,7 @@ public class Frame extends JFrame {
 	public final int WINDOW_HEIGHT = 600;
 	public final int WINDOW_WIDTH = 600;
 	
-	public Frame(){
+	public Frame()	{
 		GameData data = new GameData(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Board gameBoard = new Board(data);
 		data.setGameBoard(gameBoard);

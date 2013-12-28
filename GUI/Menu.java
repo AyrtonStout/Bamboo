@@ -25,7 +25,6 @@ public class Menu extends JPanel {
 
 	private static final long serialVersionUID = 7128111428003212233L;
 	private boolean visible;
-	private boolean shrunken = false;
 	private ImageIcon background = new ImageIcon("GUI/Resources/Menu_Background.png");
 	private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 	private int cursorPosition;
@@ -73,7 +72,6 @@ public class Menu extends JPanel {
 			labels[i].setMinimumSize(new Dimension(180, FONT_HEIGHT));
 			labels[i].setMaximumSize(new Dimension(180, FONT_HEIGHT));			
 			labels[i].setFont(gameFont);
-//			labels[i].setAlignmentX(LEFT_ALIGNMENT);
 			
 			panels[i].add(labels[i]);
 		}
@@ -142,19 +140,15 @@ public class Menu extends JPanel {
 			panels[i].setPreferredSize(new Dimension(0, 50));
 		}
 		this.setPreferredSize(new Dimension(0, 450));
-		shrunken = true;
 	}
 	/**
 	 * Undoes the shrink() method and returns the menu to its former glory
 	 */
 	public void restore()	{
-		if (shrunken)	{
-			for (int i = 0; i < panels.length; i++)	{
-				panels[i].setPreferredSize(new Dimension(180, 50));
-			}
-			this.setPreferredSize(new Dimension(180, 450));
-			shrunken = false;
+		for (int i = 0; i < panels.length; i++)	{
+			panels[i].setPreferredSize(new Dimension(180, 50));
 		}
+		this.setPreferredSize(new Dimension(180, 450));
 	}
 	
 	/**

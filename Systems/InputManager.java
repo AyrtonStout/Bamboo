@@ -234,6 +234,9 @@ public class InputManager extends JPanel {
 	}
 	
 	private void openParty()	{
+		if (directAccess)	{				
+			data.getMenu().setVisible(true);		//TODO Why do I need this
+		}
 		data.setGameState(GAME_STATE.PARTY_PANEL);
 		data.getMenu().setVisible(false);
 		data.getMenu().shrink();
@@ -263,8 +266,11 @@ public class InputManager extends JPanel {
 	}
 	
 	private void openInventory()	{
-		data.setGameState(GAME_STATE.INVENTORY_OUTER);
+		if (directAccess)	{
+			data.getMenu().setVisible(true);
+		}
 		data.getMenu().setVisible(false);
+		data.setGameState(GAME_STATE.INVENTORY_OUTER);
 		data.getMenu().shrink();
 		data.getDialogueBox().shrink();
 		data.getGameBoard().add(data.getInventoryPanel());
@@ -273,7 +279,6 @@ public class InputManager extends JPanel {
 	}
 	
 	private void closeInventory()	{
-		
 		data.getGameBoard().remove(data.getInventoryPanel());
 		data.getMenu().restore();
 		data.getDialogueBox().restore();
