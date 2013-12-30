@@ -355,7 +355,6 @@ public class InventoryPanel extends JPanel {
 
 		private static final long serialVersionUID = 3631604066140292636L;
 
-//		private ImageIcon scrollBar = new ImageIcon("GUI/Resources/Tree_Palm.png");
 		private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_ListBackground.png");
 		private int itemCursorPosition = 0;
@@ -380,7 +379,6 @@ public class InventoryPanel extends JPanel {
 
 		@Override
 		protected void paintComponent(Graphics g)	{
-//			g.drawImage(scrollBar.getImage(), 350, 40, null);
 			g.drawImage(background.getImage(), 0, 0, null);
 			if (innerBoxActive)	{
 				g.drawImage(cursor.getImage(), 10, 20 + (itemCursorPosition * 50), null);

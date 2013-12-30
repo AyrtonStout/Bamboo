@@ -92,7 +92,7 @@ public class InputManager extends JPanel {
 					if (data.getMenu().getCursorPosition() == 0)	{
 						openParty();
 					}
-					else if (data.getMenu().getCursorPosition() == 1)	{
+					else if (data.getMenu().getCursorPosition() == 2)	{
 						openInventory();
 					}
 					
@@ -109,15 +109,14 @@ public class InputManager extends JPanel {
 			 * Party screen open
 			 */
 			else if (data.getGameState() == GAME_STATE.PARTY_PANEL)	{
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X  && data.getPartyPanel().readyToExitEh())	{
 					closeParty();
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-					data.getPartyPanel().moveCursorLeft();
+				else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || 
+						e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_Z || e.getKeyCode() == KeyEvent.VK_X)	{
+					data.getPartyPanel().respondToKeyPress(e);
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-					data.getPartyPanel().moveCursorRight();
-				}
+				
 			}
 			
 			
@@ -143,7 +142,7 @@ public class InputManager extends JPanel {
 						data.getInventoryPanel().setInnerActive(true);
 					}
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X || e.getKeyCode() == KeyEvent.VK_I)	{
 					closeInventory();
 				}
 			}
@@ -166,6 +165,12 @@ public class InputManager extends JPanel {
 					data.getInventoryPanel().setInnerActive(false);
 					data.getInventoryPanel().resetItemCursor();
 					data.getInventoryPanel().clearText();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_I)	{
+					data.getInventoryPanel().setInnerActive(false);
+					data.getInventoryPanel().resetItemCursor();
+					data.getInventoryPanel().clearText();
+					closeInventory();
 				}
 			}
 		}

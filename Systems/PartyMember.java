@@ -21,8 +21,9 @@ public class PartyMember implements Serializable {
 	private static int daysDayed;
 	private static int partyDamage;
 	private static int partyHealing;
-	
 	private static int partySize = 1;
+	
+	private Equipment equipment = new Equipment();
 	
 	private String name;
 	private String gender;
@@ -543,6 +544,12 @@ public class PartyMember implements Serializable {
 	@Override
 	public String toString()	{
 		return name;
+	}
+	public Equipment getEquipment()	{
+		return equipment;
+	}
+	public void setEquipment(Equipment equipment)	{
+		this.equipment = equipment;
 	}
 		
 }

@@ -32,8 +32,8 @@ public class Menu extends JPanel {
 	private final int FONT_HEIGHT = 28;
 	private JPanel[] panels = new JPanel[] {new JPanel(), new JPanel(), new JPanel(), new JPanel(), new JPanel(), 
 			new JPanel(), new JPanel(), new JPanel(), new JPanel()};
-	private JLabel[] labels = new JLabel[] {new JLabel("Party"), new JLabel("Items"), new JLabel("Map"), new JLabel("Quests"), 
-			new JLabel("Hunts"), new JLabel("Save"), new JLabel("Options"), new JLabel("Box8"), new JLabel("0:00")};
+	private JLabel[] labels = new JLabel[] {new JLabel("Party"), new JLabel("Equip"), new JLabel("Items"), new JLabel("Map"), new JLabel("Quests"), 
+			new JLabel("Hunts"), new JLabel("Save"), new JLabel("Options"), new JLabel("0:00")};
 	
 	private Font baseFont;
 	private Font gameFont;
