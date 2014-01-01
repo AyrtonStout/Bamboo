@@ -6,7 +6,7 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.26 - Party Update
+ * @version 0.27 - Party Remake
  */
 public class Frame extends JFrame {
 
