@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import Quests.Trigger;
+import Systems.GameData;
 
 /**
  * @author mobius

@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
-import GUI.GameData;
 import GUI.Chest;
 import GUI.NPC;
 import GUI.Sign;
@@ -64,6 +63,9 @@ public class InputManager extends JPanel {
 							data.getParty()[i].levelUp();
 						}
 					}
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_K)	{
+					data.getPlayer().changePartyMember(data.getParty()[1]);
 				}
 			}
 			

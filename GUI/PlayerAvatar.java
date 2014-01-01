@@ -327,6 +327,20 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		}
 	}
 	
+	public void changePartyMember(PartyMember member)	{
+		name = member.getName();
+		
+		left = member.getLeft();
+		up = member.getUp();
+		right = member.getRight();
+		down = member.getDown();
+		
+		walkLeft = member.getWalkLeft();
+		walkUp = member.getWalkUp();
+		walkRight = member.getWalkRight();
+		walkDown = member.getWalkDown();
+	}
+	
 	/**
 	 * @return Background's X offset due to player movement
 	 */

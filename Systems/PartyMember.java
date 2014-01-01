@@ -53,8 +53,8 @@ public class PartyMember implements Serializable {
 	private int STAMINA_TO_HEALTH_RATIO = 10;
 	
 	private ImageIcon portrait;
-	private ImageIcon right;
-	private ImageIcon down;
+	private ImageIcon left, up, right, down;
+	private ImageIcon walkLeft, walkUp, walkRight, walkDown;
 	
 	private int kills;
 	private int deaths;
@@ -70,10 +70,7 @@ public class PartyMember implements Serializable {
 		case SABIN:
 			name = "Sabin";
 			gender = "Male";
-			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
-			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
-			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
-			
+
 			strength = new Stat(8);
 			agility = new Stat(4);
 			spirit = new Stat(5);
@@ -94,9 +91,6 @@ public class PartyMember implements Serializable {
 		case TERRA:
 			name = "Terra";
 			gender = "Female";
-			portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
-			right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
-			down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
 			
 			strength = new Stat(4);
 			agility = new Stat(5);
@@ -115,6 +109,17 @@ public class PartyMember implements Serializable {
 			maximumMana = new Stat(150);
 			break;
 		}
+		portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
+		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
+		up = new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
+		right = new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
+		down = new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
+		
+		walkLeft = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Left).gif");
+		walkUp = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Up).gif");
+		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
+		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
+		
 		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
 		currentHealth.setBase(maximumHealth.getBase());
 		currentMana.setBase(maximumMana.getBase());
@@ -198,10 +203,31 @@ public class PartyMember implements Serializable {
 		currentMana.setBase(maximumMana.getBase());
 	}
 	
+	public void initializeImages()	{
+		
+		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
+		up= new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
+		right= new ImageIcon("GUI/Resources/Characters/" + name + " (Right).gif");
+		down= new ImageIcon("GUI/Resources/Characters/" + name + " (Down).gif");
+
+		
+		walkLeft = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Left).gif");
+		walkUp = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Up).gif");
+		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
+		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
+	}
 	
 	//--------------------------------------
 	public ImageIcon getPortrait()	{
 		return portrait;
+	}
+	
+	public ImageIcon getLeft()	{
+		return left;
+	}
+	
+	public ImageIcon getUp()	{
+		return up;
 	}
 	/**
 	 * @return The downward facing sprite for the character
@@ -212,6 +238,22 @@ public class PartyMember implements Serializable {
 	
 	public ImageIcon getRight()	{
 		return right;
+	}
+	
+	public ImageIcon getWalkLeft()	{
+		return walkLeft;
+	}
+	
+	public ImageIcon getWalkUp()	{
+		return walkUp;
+	}
+	
+	public ImageIcon getWalkRight()	{
+		return walkRight;
+	}
+	
+	public ImageIcon getWalkDown()	{
+		return walkDown;
 	}
 	
 	public String getName() {

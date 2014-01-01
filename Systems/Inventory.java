@@ -2,8 +2,6 @@ package Systems;
 
 import java.util.ArrayList;
 
-import GUI.GameData;
-
 /**
  * @author mobius
  * The container for all of the party's items. Sub divided into separate categories

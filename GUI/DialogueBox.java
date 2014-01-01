@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import GUI.Enums.GAME_STATE;
+import Systems.GameData;
 import Systems.Item;
 import Systems.PartyMember;
 

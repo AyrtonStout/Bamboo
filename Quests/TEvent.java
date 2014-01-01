@@ -3,9 +3,9 @@ package Quests;
 import java.awt.Point;
 import java.io.Serializable;
 
-import GUI.GameData;
 import GUI.NPC;
 import Quests.Enums.TEVENT;
+import Systems.GameData;
 
 /**
  * @author mobius

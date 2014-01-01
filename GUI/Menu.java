@@ -16,6 +16,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import Systems.GameData;
+
 /**
  * @author mobius
  * Side menu accessed from the world map screen. Has options to enter many other menus (like inventory or party screens)

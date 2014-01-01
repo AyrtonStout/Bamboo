@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.*;
 
+import Systems.GameData;
 import Systems.InputManager;
 
 /**

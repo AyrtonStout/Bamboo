@@ -3,8 +3,8 @@ package Quests;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import GUI.GameData;
 import GUI.Map;
+import Systems.GameData;
 
 /**
  * @author mobius

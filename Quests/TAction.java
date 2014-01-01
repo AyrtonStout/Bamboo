@@ -3,10 +3,10 @@ package Quests;
 import java.io.Serializable;
 
 import GUI.Enums.GAME_STATE;
-import GUI.GameData;
 import GUI.Map;
 import GUI.NPC;
 import Quests.Enums.TACTION;
+import Systems.GameData;
 import Systems.PartyMember;
 
 /**
@@ -50,6 +50,7 @@ public class TAction implements Serializable {
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] == null)	{
 					data.getParty()[i] = member;
+					data.getParty()[i].initializeImages();
 					PartyMember.incrementPartySize();
 					data.getDialogueBox().setVisible(true);
 					data.getDialogueBox().joinParty(member);

@@ -1,16 +1,20 @@
-package GUI;
+package Systems;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import GUI.Board;
+import GUI.DialogueBox;
+import GUI.Enums;
+import GUI.InventoryPanel;
+import GUI.Map;
+import GUI.Menu;
+import GUI.PartyPanel;
+import GUI.PlayerAvatar;
 import GUI.Enums.GAME_STATE;
 import GUI.Enums.NAMED_NPC;
-import Systems.InputManager;
-import Systems.Inventory;
-import Systems.PartyMember;
-import Systems.Time;
 
 /**
  * @author mobius
@@ -48,6 +52,7 @@ public class GameData {
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight);
 		player.initializeImages();
 		party[0] = new PartyMember(NAMED_NPC.SABIN);
+		party[0].initializeImages();
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		

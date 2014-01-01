@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import Systems.GameData;
 import Systems.Item;
 import Systems.PartyMember;
 import Systems.Weapon;
