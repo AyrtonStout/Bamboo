@@ -443,7 +443,7 @@ public class InventoryPanel extends JPanel {
 				this.setPreferredSize(new Dimension(395, 50));
 				this.setMaximumSize(new Dimension(395, 50));
 				this.setMinimumSize(new Dimension(395, 50));
-				this.setOpaque(true);
+				this.setOpaque(false);
 
 				this.setAlignmentX(LEFT_ALIGNMENT);
 				itemName.setAlignmentX(LEFT_ALIGNMENT);

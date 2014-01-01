@@ -99,6 +99,7 @@ public class GameData {
 				input.requestFocusInWindow();
 			}
 		}
+//		System.out.println(input.isFocusOwner());
 	}
 
 	/**

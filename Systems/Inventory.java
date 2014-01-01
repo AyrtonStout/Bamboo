@@ -34,11 +34,26 @@ public class Inventory {
 	}
 	
 	/**
-	 * Adds an item to the inventory. Sorts the items into categories as they come in
+	 * Adds an item to the inventory. Sorts the items into categories as they come in. This method calls the dialogue box
+	 * and sets the GameState to "TALK". Do not use for anything else but receiving loot.
 	 * 
 	 * @param newItem The item to be received
 	 */
+	public void lootItem(Item newItem)	{
+		sortItem(newItem);
+		data.getDialogueBox().receiveItem(newItem);
+	}
+	
+	/**
+	 * Adds the item to the inventory. Does nothing else. Use "lootItem()" to call the dialogue box as well.
+	 * 
+	 * @param newItem
+	 */
 	public void addItem(Item newItem)	{
+		sortItem(newItem);
+	}
+	
+	private void sortItem(Item newItem)	{
 		if (newItem.getClass() == Weapon.class)	{
 			weapons.add(newItem);
 		}
@@ -65,7 +80,6 @@ public class Inventory {
 		else	{
 			System.err.print("Whoa! What the hell kind of item is this!");
 		}
-		data.getDialogueBox().receiveItem(newItem);
 	}
 	
 	/**

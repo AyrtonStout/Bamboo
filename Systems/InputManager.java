@@ -108,6 +108,7 @@ public class InputManager extends JPanel {
 			/*
 			 * Party screen open
 			 */
+
 			else if (data.getGameState() == GAME_STATE.PARTY_PANEL)	{
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X  && data.getPartyPanel().readyToExitEh())	{
 					closeParty();
@@ -218,7 +219,7 @@ public class InputManager extends JPanel {
 			if (facedTile.getDoodad() != null)	{
 				if(facedTile.getDoodad().getClass() == Chest.class)	{
 					((Chest) facedTile.getDoodad()).interact();
-					data.getInventory().addItem(((Chest) facedTile.getDoodad()).lootChest());
+					data.getInventory().lootItem(((Chest) facedTile.getDoodad()).lootChest());
 				}
 				else if (facedTile.getDoodad().getClass() == Sign.class)	{
 					data.getDialogueBox().setDialogue(((Sign) facedTile.getDoodad()).getDialogue(), true);

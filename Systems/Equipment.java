@@ -13,11 +13,27 @@ public class Equipment implements Serializable {
 	public Item[] toArray()	{
 		return new Item[] {weapon, helmet, chest, gloves, boots, ring1, ring2, necklace};
 	}
+	public void removeAll(Inventory inventory)	{
+		if (weapon != null) inventory.addItem(weapon);
+		if (helmet != null) inventory.addItem(helmet);
+		if (chest != null) inventory.addItem(chest);
+		if (gloves != null) inventory.addItem(gloves);
+		if (boots != null) inventory.addItem(boots);
+		if (ring1 != null) inventory.addItem(ring1);
+		if (ring2 != null) inventory.addItem(ring2);
+		if (necklace != null) inventory.addItem(necklace);
+		
+		weapon = null;
+		helmet = null;
+		chest = null;
+		gloves = null;
+		boots = null;
+		ring1 = null;
+		ring2 = null;
+		necklace = null;
+	}
 	public Weapon getWeapon()	{
 		return weapon;
-	}
-	public Armor gethelmet()	{
-		return helmet;
 	}
 	public Armor getHelmet() {
 		return helmet;
@@ -63,5 +79,45 @@ public class Equipment implements Serializable {
 	}
 	public void setNecklace(Accessory necklace) {
 		this.necklace = necklace;
+	}
+	public Weapon removeWeapon()	{
+		Weapon tmp = weapon;
+		weapon = null;
+		return tmp;
+	}
+	public Armor removeHelmet() {
+		Armor tmp = helmet;
+		helmet = null;
+		return tmp;
+	}
+	public Armor removeChest() {
+		Armor tmp = chest;
+		chest = null;
+		return tmp;
+	}
+	public Armor removeGloves() {
+		Armor tmp = gloves;
+		gloves = null;
+		return tmp;
+	}
+	public Armor removeBoots() {
+		Armor tmp = boots;
+		boots = null;
+		return tmp;
+	}
+	public Accessory removeRing1() {
+		Accessory tmp = ring1;
+		ring1 = null;
+		return tmp;
+	}
+	public Accessory removeRing2() {
+		Accessory tmp = ring2;
+		ring2 = null;
+		return tmp;
+	}
+	public Accessory removeNecklace() {
+		Accessory tmp = necklace;
+		necklace = null;
+		return tmp;
 	}
 }

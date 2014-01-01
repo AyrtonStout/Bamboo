@@ -25,6 +25,7 @@ import javax.swing.text.StyleConstants;
 
 import Systems.Item;
 import Systems.PartyMember;
+import Systems.Weapon;
 
 public class PartyPanel extends JPanel {
 
@@ -37,7 +38,6 @@ public class PartyPanel extends JPanel {
 	private ImageIcon[] party = new ImageIcon[] {party1, party2, party3, party4};
 
 	private PartyState partyState = PartyState.OPTIONS;
-	private boolean swapped = false;
 
 	private ImageIcon characterCursor = new ImageIcon("GUI/Resources/Icon_RedArrow.png");
 	private int characterCursorPosition = 0;
@@ -45,6 +45,11 @@ public class PartyPanel extends JPanel {
 	private int optionsCursorPosition = 0;
 	private int slotCursorPosition = 0;
 	private int itemCursorPosition = 0;
+	
+	private final int EQUIP = 0;
+	private final int REMOVE = 1;
+	private final int AUTO = 2;
+	private final int REMOVEALL = 3;
 
 	private InputStream stream;
 	private Font menuFont, boldFont, statFont;
@@ -99,10 +104,10 @@ public class PartyPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g)	{
 		g.drawImage(background.getImage(), 0, 0, null);
-		if (optionsCursorPosition == 0 || optionsCursorPosition == 1)	{
+		if (optionsCursorPosition == EQUIP || optionsCursorPosition == REMOVE)	{
 			g.drawImage(optionsCursor.getImage(), 5 + 70 * optionsCursorPosition, 15 , null);
 		}
-		else if (optionsCursorPosition == 2 || optionsCursorPosition == 3)	{
+		else if (optionsCursorPosition == AUTO || optionsCursorPosition == REMOVEALL)	{
 			g.drawImage(optionsCursor.getImage(), 5 + 70 * (optionsCursorPosition - 2), 41, null);
 		}
 
@@ -131,24 +136,25 @@ public class PartyPanel extends JPanel {
 		}
 		midPanel.update();
 		bottomLeftPanel.update();
-		if (!swapped)	{	
+		if (partyState == PartyState.SLOT_SELECT || partyState == PartyState.CHARACTER_SELECT)	{	
 			bottomRightPanel.update();
 		}
-		else	{
+		else if (partyState == PartyState.ITEM_SELECT)	{
 			itemPanel.update();
 		}
 	}
 	
 	private void swapPanels()	{
-		if (!swapped)	{
+		if (partyState == PartyState.SLOT_SELECT)	{
 			wrapper.remove(bottomRightPanel);
 			wrapper.add(itemPanel, BorderLayout.EAST);
-			swapped = true;
+			partyState = PartyState.ITEM_SELECT;
 		}
-		else	{
+		else if (partyState == PartyState.ITEM_SELECT)	{
 			wrapper.remove(itemPanel);
 			wrapper.add(bottomRightPanel, BorderLayout.EAST);
-			swapped = false;
+			partyState = PartyState.SLOT_SELECT;
+			itemCursorPosition = 0;
 		}
 	}
 
@@ -167,6 +173,7 @@ public class PartyPanel extends JPanel {
 			}
 			break;
 
+			
 		case KeyEvent.VK_UP:
 			if (partyState == PartyState.OPTIONS)	{
 				if (optionsCursorPosition == 2 || optionsCursorPosition == 3)	{
@@ -188,6 +195,7 @@ public class PartyPanel extends JPanel {
 			}
 			break;
 
+			
 		case KeyEvent.VK_RIGHT:
 			if (partyState == PartyState.OPTIONS)	{
 				if (optionsCursorPosition == 0 || optionsCursorPosition == 2)	{
@@ -201,6 +209,7 @@ public class PartyPanel extends JPanel {
 			}
 			break;
 
+			
 		case KeyEvent.VK_DOWN:
 			if (partyState == PartyState.OPTIONS)	{
 				if (optionsCursorPosition == 0 || optionsCursorPosition == 1)	{
@@ -223,28 +232,61 @@ public class PartyPanel extends JPanel {
 			
 			break;
 
+			
 		case KeyEvent.VK_Z:
 			if (partyState == PartyState.OPTIONS)	{
-				if (optionsCursorPosition == 0 || optionsCursorPosition == 1)	{
+				if (optionsCursorPosition == EQUIP || optionsCursorPosition == REMOVE)	{
 					partyState = PartyState.SLOT_SELECT;
 				}
-				else if (optionsCursorPosition == 2 || optionsCursorPosition == 3)	{
+				else if (optionsCursorPosition == AUTO || optionsCursorPosition == REMOVEALL)	{
 					partyState = PartyState.CHARACTER_SELECT;
 				}
 			}
+			
 			else if (partyState == PartyState.SLOT_SELECT)	{
+				if (optionsCursorPosition == EQUIP)	{
+					swapPanels();
+				}
+				
+				else if (optionsCursorPosition == REMOVE)	{
+					if (slotCursorPosition == 0)	{
+						data.getInventory().getCategory(0).add((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon()));
+					}
+				}
+			}
+
+			else if (partyState == PartyState.ITEM_SELECT)	{
+				if (slotCursorPosition == 0)	{
+					if (data.getInventory().getCategory(0).size() > 0)	{
+						data.getParty()[characterCursorPosition].getEquipment().setWeapon(
+								(Weapon) data.getInventory().getCategory(0).remove(itemCursorPosition + itemPanel.scrollOffset));
+					}
+					else	{
+						if (data.getParty()[characterCursorPosition].getEquipment().getWeapon() != null)	{
+							data.getInventory().addItem(((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon())));
+						}
+					}
+				}
 				swapPanels();
-				partyState = PartyState.ITEM_SELECT;
+			}
+			
+			else if (partyState == PartyState.CHARACTER_SELECT)	{
+				if (optionsCursorPosition == AUTO)	{
+					//TODO AUTO EQUIP BEST EQUIPMENT
+				}
+				else if (optionsCursorPosition == REMOVEALL)	{
+					data.getParty()[characterCursorPosition].getEquipment().removeAll(data.getInventory());
+				}
 			}
 			break;
 
+			
 		case KeyEvent.VK_X:
 			if (partyState == PartyState.CHARACTER_SELECT || partyState == PartyState.SLOT_SELECT)	{
 				partyState = PartyState.OPTIONS;
 			}
 			else if (partyState == PartyState.ITEM_SELECT)	{
 				swapPanels();
-				partyState = PartyState.SLOT_SELECT;
 			}
 			break;
 		}
@@ -699,12 +741,16 @@ public class PartyPanel extends JPanel {
 					itemList[i].setVisible(false);
 				}
 			}
+			if (elements == 0)	{
+				itemList[0].clear();
+				itemList[0].setVisible(true);
+			}
 		}
 		
 		private class ItemPanel extends JPanel	{
 
 			private static final long serialVersionUID = 4342436547521865798L;
-			private ImageIcon itemIcon = new ImageIcon("GUI/Resources/sword_ico.png");
+			private ImageIcon itemIcon = new ImageIcon();
 			private JLabel itemName = new JLabel();
 			private boolean visible = true;
 
@@ -713,8 +759,7 @@ public class PartyPanel extends JPanel {
 				this.setPreferredSize(new Dimension(355, 40));
 				this.setMaximumSize(new Dimension(395, 40));
 				this.setMinimumSize(new Dimension(395, 40));
-				this.setBackground(Color.GREEN);
-				this.setOpaque(true);
+				this.setOpaque(false);
 
 				this.setAlignmentX(LEFT_ALIGNMENT);
 				itemName.setAlignmentX(LEFT_ALIGNMENT);
@@ -743,6 +788,10 @@ public class PartyPanel extends JPanel {
 				if (b == false)	{
 					itemName.setText("");
 				}
+			}
+			public void clear()	{
+				itemName.setText("EMPTY");
+				itemIcon = new ImageIcon();
 			}
 		}
 	}
