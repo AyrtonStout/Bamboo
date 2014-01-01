@@ -15,6 +15,16 @@ I and P will directly access inventory and party panels. Currently buggy
 
 Changelog-
 
+v0.27 - Party Overhaul
+-Partial redesign of party panel to be more of an equipment panel. Statistics will be moved to their own section at a later date
+-Party panel now supports 3 out of 4 options, equip, remove, and removeAll. Auto will be completed at a later date once it is better determined what metrics will be used.
+-In continued effort to compact down the code in the InputManager class, all key presses related to the party panel are now handled by the party panel. This will instead cause the party panel to have the sprawling code maze instead. This will be looked at to make more readible in the next update.
+-Fixed a flickering bug that was present when doing certain actions in the inventory screens. This bug seemed isolated to Windows systems so was not until recently discovered.
+-Added methods to remove equipment instead of just setting them to null
+-Equipping items causes them to disappear from the inventory. Removing the items will cause them to reappear.
+-Created method for Inventory to add an item without calling up the dialogue box and changing the game state
+
+
 v0.26 - Level Algorithm
 -Party members are now have a piecewise XP growth algorithm in place for when they level up. Algorithm may grow too slowly but will be re-evaluated later.
 -Testing level ups is possible at any time by pressing the 'G' key.
