@@ -6,10 +6,15 @@ public class Equipment implements Serializable {
 
 	private static final long serialVersionUID = -8207154870997336759L;
 
+	PartyMember owner;
+	
 	Weapon weapon;
 	Armor helmet, chest, gloves, boots;
 	Accessory ring1, ring2, necklace;
 	
+	public Equipment(PartyMember partyMember) {
+		owner = partyMember;
+	}
 	public Item[] toArray()	{
 		return new Item[] {weapon, helmet, chest, gloves, boots, ring1, ring2, necklace};
 	}
@@ -57,6 +62,8 @@ public class Equipment implements Serializable {
 		return necklace;
 	}
 	public void setWeapon(Weapon weapon) {
+		owner.getStrength().modifyBuff(weapon.getStrength());
+		owner.refresh();
 		this.weapon = weapon;
 	}
 	public void setHelmet(Armor helmet) {
@@ -81,6 +88,8 @@ public class Equipment implements Serializable {
 		this.necklace = necklace;
 	}
 	public Weapon removeWeapon()	{
+		owner.getStrength().modifyBuff(-weapon.getStrength());
+		owner.refresh();
 		Weapon tmp = weapon;
 		weapon = null;
 		return tmp;

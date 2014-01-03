@@ -187,4 +187,11 @@ public class Weapon implements Item, Serializable {
 		return right;
 	}
 	
+	public int getStrength()	{
+		if (strength != null)
+			return strength.getActual();
+		else
+			return 0;
+	}
+	
 }

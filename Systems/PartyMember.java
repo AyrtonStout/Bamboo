@@ -23,7 +23,7 @@ public class PartyMember implements Serializable {
 	private static int partyHealing;
 	private static int partySize = 1;
 	
-	private Equipment equipment = new Equipment();
+	private Equipment equipment = new Equipment(this);
 	
 	private String name;
 	private String gender;
@@ -120,9 +120,7 @@ public class PartyMember implements Serializable {
 		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
 		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
 		
-		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
-		currentHealth.setBase(maximumHealth.getBase());
-		currentMana.setBase(maximumMana.getBase());
+		refresh();
 	}
 	
 	public void levelUp()	{
@@ -198,9 +196,7 @@ public class PartyMember implements Serializable {
 			partialSta -= 10;
 		}
 		
-		maximumHealth.setBase(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
-		currentHealth.setBase(maximumHealth.getBase());
-		currentMana.setBase(maximumMana.getBase());
+		refresh();
 	}
 	
 	public void initializeImages()	{
@@ -592,6 +588,16 @@ public class PartyMember implements Serializable {
 	}
 	public void setEquipment(Equipment equipment)	{
 		this.equipment = equipment;
+	}
+
+	/**
+	 * Recalculates derivative stats (example, health amount being partially calculated based on stamina).
+	 */
+	public void refresh() {
+		attackPower.setBase(strength.getActual());
+		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
+		currentHealth.setBase(maximumHealth.getBase());
+		currentMana.setBase(maximumMana.getBase());
 	}
 		
 }
