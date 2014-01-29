@@ -91,6 +91,12 @@ public class Enums {
 		
 	}
 	
+	public enum MONSTER	{
+		
+		GIANT_RAT, RAZORCLAW_CRAB, DEATHSTALKER_CROW;
+		
+	}
+	
 
 	
 }

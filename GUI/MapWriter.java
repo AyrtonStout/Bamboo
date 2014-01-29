@@ -26,7 +26,7 @@ public class MapWriter {
 	
 	public static void main(String[] args)	{
 
-
+		
 		
 		Map map1 = test1();
 		Map map2 = test2();

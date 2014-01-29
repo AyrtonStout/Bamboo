@@ -251,9 +251,7 @@ public class PartyPanel extends JPanel {
 				
 				else if (optionsCursorPosition == REMOVE)	{
 					if (slotCursorPosition == 0)	{
-						if (data.getParty()[characterCursorPosition].getEquipment().getWeapon() != null)	{
-							data.getInventory().getCategory(0).add((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon()));
-						}
+						data.getInventory().getCategory(0).add((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon()));
 					}
 				}
 			}
@@ -261,9 +259,6 @@ public class PartyPanel extends JPanel {
 			else if (partyState == PartyState.ITEM_SELECT)	{
 				if (slotCursorPosition == 0)	{
 					if (data.getInventory().getCategory(0).size() > 0)	{
-						if (data.getParty()[characterCursorPosition].getEquipment().getWeapon() != null)	{
-							data.getInventory().addItem(((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon())));
-						}
 						data.getParty()[characterCursorPosition].getEquipment().setWeapon(
 								(Weapon) data.getInventory().getCategory(0).remove(itemCursorPosition + itemPanel.scrollOffset));
 					}

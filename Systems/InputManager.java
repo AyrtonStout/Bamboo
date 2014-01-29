@@ -94,7 +94,7 @@ public class InputManager extends JPanel {
 					if (data.getMenu().getCursorPosition() == 0)	{
 						openParty();
 					}
-					else if (data.getMenu().getCursorPosition() == 2)	{
+					else if (data.getMenu().getCursorPosition() == 1)	{
 						openInventory();
 					}
 					
