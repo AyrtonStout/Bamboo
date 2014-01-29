@@ -15,6 +15,12 @@ I and P will directly access inventory and party panels. Currently buggy
 
 Changelog-
 
+v0.28 - Enemy Update
+-Structure for enemy units is in place though the ability to spawn them is not
+-Three enemies, Giant Rat, Razorclaw Crab, and DeathStalker Crow have been added; though all enemies currently use old placeholder art for the crab.
+-Inventory screen now properly displays the current party instead of hard coded values
+ (A note on this is that the way that the equip screen now works, showing unique party members in the item screen may soon be deleted altogether)
+
 v0.27 - Party Overhaul
 -Partial redesign of party panel to be more of an equipment panel. Statistics will be moved to their own section at a later date
 -Party panel now supports 3 out of 4 options, equip, remove, and removeAll. Auto will be completed at a later date once it is better determined what metrics will be used.
