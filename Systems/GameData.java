@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import GUI.Board;
 import GUI.DialogueBox;
-import GUI.Enums;
 import GUI.InventoryPanel;
 import GUI.Map;
 import GUI.Menu;
@@ -23,6 +22,7 @@ import GUI.Enums.NAMED_NPC;
 public class GameData {
 	
 	private PlayerAvatar player;
+	private PartyMember[] party = new PartyMember[4];
 	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
@@ -30,9 +30,8 @@ public class GameData {
 	private Board gameBoard;
 	private Menu menuBox = new Menu(this);
 	private Inventory inventory = new Inventory(this);
-	private InventoryPanel inventoryPanel = new InventoryPanel(inventory);
+	private InventoryPanel inventoryPanel = new InventoryPanel(this, inventory);
 	private PartyPanel partyPanel = new PartyPanel(this);;
-	private PartyMember[] party = new PartyMember[4];
 	private Time time = new Time();
 	private boolean paused = false;
 	private InputManager input;

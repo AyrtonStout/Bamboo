@@ -20,8 +20,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import Systems.Consumable;
+import Systems.GameData;
 import Systems.Inventory;
 import Systems.Item;
+import Systems.PartyMember;
 
 /**
  * @author mobius
@@ -43,18 +45,20 @@ public class InventoryPanel extends JPanel {
 	private boolean innerBoxActive = false;
 
 	private Inventory inventory;
+	private GameData data;
 
-	public InventoryPanel(Inventory inventory)	{
+	public InventoryPanel(GameData data, Inventory inventory)	{
 
 		this.inventory = inventory;
-		
+		this.data = data;
+
 		try {
 			stream = new BufferedInputStream(
 					new FileInputStream("GUI/Resources/Font_Inventory.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			gameFont = baseFont.deriveFont(Font.PLAIN, 36);
 			headerFont = baseFont.deriveFont(Font.ITALIC, 48);
-			
+
 			stream = new BufferedInputStream(
 					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
@@ -81,10 +85,10 @@ public class InventoryPanel extends JPanel {
 		this.add(categories, BorderLayout.WEST);
 		this.add(rightPanel, BorderLayout.CENTER);	
 		this.add(statsBox, BorderLayout.SOUTH);
-	
+
 		list.updateList(0);
 	}
-	
+
 	/**
 	 * Sets whether or not the scrolling window or the category window is the active window
 	 * 
@@ -99,6 +103,7 @@ public class InventoryPanel extends JPanel {
 	 */
 	public void initializeList()	{
 		list.updateList(0);
+		header.update();
 	}
 
 
@@ -185,7 +190,7 @@ public class InventoryPanel extends JPanel {
 	public void clearText()	{
 		statsBox.clear();
 	}
-	
+
 
 	/**
 	 * @author mobius
@@ -294,7 +299,7 @@ public class InventoryPanel extends JPanel {
 		private ImageIcon cursor = new ImageIcon("GUI/Resources/Icon_RedArrow.png");
 		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_HeaderBackground.png");
 		private int cursorPosition = 0;
-		private String[] party;
+		JLabel[] party = new JLabel[] {new JLabel(), new JLabel(), new JLabel(), new JLabel()};
 
 		public PartyHeader()	{
 
@@ -311,11 +316,10 @@ public class InventoryPanel extends JPanel {
 			inner.setMinimumSize(new Dimension(395, 50));
 			inner.setOpaque(false);
 
-			party = new String[]{"Sabin", "Terra", "Celes", "Locke", "Cyan"};
-
-			for (int i = 0; i < party.length; i++)	{
-				inner.add(Box.createHorizontalStrut(20));
-				inner.add(new JLabel(new ImageIcon("GUI/Resources/Characters/" + party[i] + " (Down).gif")));
+			inner.add(Box.createHorizontalStrut(3));
+			for (int i = 0; i < 4; i++)  {
+				inner.add(Box.createHorizontalStrut(18));
+				inner.add(party[i]);
 			}
 
 			this.add(inner);
@@ -331,7 +335,7 @@ public class InventoryPanel extends JPanel {
 		}
 
 		public void moveCursorRight()	{
-			if (cursorPosition < party.length - 1)
+			if (cursorPosition < PartyMember.getPartySize() - 1)
 				cursorPosition++;
 		}
 		public void moveCursorLeft()	{
@@ -343,6 +347,11 @@ public class InventoryPanel extends JPanel {
 		}
 		public int getCursorPosition()	{
 			return cursorPosition;
+		}
+		public void update()  {
+			for (int i = 0; i < PartyMember.getPartySize(); i++)  {
+				party[i].setIcon(new ImageIcon("GUI/Resources/Characters/" + data.getParty()[i] + " (Down).gif"));
+			}
 		}
 	}
 
@@ -374,8 +383,8 @@ public class InventoryPanel extends JPanel {
 				this.add(itemList[i]);
 			}
 		}
-		
-		
+
+
 
 		@Override
 		protected void paintComponent(Graphics g)	{
@@ -386,18 +395,18 @@ public class InventoryPanel extends JPanel {
 		}
 
 		public void updateList(int outerCursorPosition)	{
-			
+
 			for (int i = 0; i < 7; i++)	{
 				if (i < inventory.getCategory(outerCursorPosition).size())	{
-				itemList[i].setItem(inventory.getCategory(outerCursorPosition).get(i + scrollOffset));
-				itemList[i].setVisible(true);
+					itemList[i].setItem(inventory.getCategory(outerCursorPosition).get(i + scrollOffset));
+					itemList[i].setVisible(true);
 				}
 				else	{
 					itemList[i].setVisible(false);
 				}
 			}
 		}
-		
+
 		public void dropItemCursor()	{
 			if (itemCursorPosition < 6 && itemCursorPosition < inventory.getCategory(categories.getCursorPosition()).size() - 1)	{
 				itemCursorPosition++;
@@ -447,7 +456,7 @@ public class InventoryPanel extends JPanel {
 
 				this.setAlignmentX(LEFT_ALIGNMENT);
 				itemName.setAlignmentX(LEFT_ALIGNMENT);
-				
+
 				itemName.setMaximumSize(new Dimension(260, 50));
 				itemName.setPreferredSize(new Dimension(260, 50));
 
@@ -480,7 +489,7 @@ public class InventoryPanel extends JPanel {
 			}
 		}
 	}		
-	
+
 	/**
 	 * @author mobius
 	 * The text screen area that displays the stats and description of an item selected within the scroll box
@@ -488,16 +497,16 @@ public class InventoryPanel extends JPanel {
 	private class StatsBox extends JPanel	{
 
 		private static final long serialVersionUID = -5497664525623334310L;
-		
+
 		private JLabel itemName = new JLabel("", SwingConstants.LEFT);
 		private JTextArea leftText = new JTextArea();
 		private JTextArea middleText = new JTextArea();
 		private JTextArea rightText = new JTextArea();
 		private JLabel itemDescription = new JLabel("", SwingConstants.LEFT);
 		private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
-		
+
 		private Font defaultFont, itemNameFont, statFont, descrptionFont;
-		
+
 		private JTextArea[] textAreas = new JTextArea[] {leftText, middleText, rightText};
 
 		public StatsBox()	{
@@ -511,7 +520,7 @@ public class InventoryPanel extends JPanel {
 			} catch (FontFormatException | IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			this.setPreferredSize(new Dimension(600, 150));
 			this.setBackground(Color.BLUE);
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -529,7 +538,7 @@ public class InventoryPanel extends JPanel {
 			namePanel.add(itemName);
 			namePanel.setOpaque(false);
 			namePanel.setAlignmentX(LEFT_ALIGNMENT);
-			
+
 			JPanel textFields = new JPanel();
 			textFields.setLayout(new BoxLayout(textFields, BoxLayout.X_AXIS));
 			textFields.setPreferredSize(new Dimension(600, 94));
@@ -537,7 +546,7 @@ public class InventoryPanel extends JPanel {
 			textFields.setMinimumSize(new Dimension(600, 94));
 			textFields.setOpaque(false);
 			textFields.setAlignmentX(LEFT_ALIGNMENT);
-			
+
 			textFields.add(Box.createHorizontalStrut(10));
 			for (int i = 0; i < textAreas.length; i++)	{
 				textAreas[i].setEditable(false);
@@ -546,7 +555,7 @@ public class InventoryPanel extends JPanel {
 				textFields.add(textAreas[i]);
 			}	
 			textFields.add(Box.createHorizontalStrut(10));
-			
+
 			JPanel descriptionPanel = new JPanel();
 			descriptionPanel.setPreferredSize(new Dimension(600, 20));
 			descriptionPanel.setMaximumSize(new Dimension(600, 20));
@@ -557,29 +566,29 @@ public class InventoryPanel extends JPanel {
 			descriptionPanel.add(itemDescription);
 			descriptionPanel.setOpaque(false);
 			descriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
-			
-			
-			
+
+
+
 			this.add(Box.createVerticalStrut(6));
 			this.add(namePanel);
-//			this.add(Box.createVerticalStrut(5));
+			//			this.add(Box.createVerticalStrut(5));
 			this.add(textFields);
 			this.add(descriptionPanel);
 
 		}
-		
+
 		@Override
 		public void paintComponent(Graphics g)	{
 			g.drawImage(background.getImage(), 0, 0, null);
 		}
-		
+
 		/**
 		 * Updates the text box to display the contents of the currently selected item
 		 */
 		public void update()	{
 			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition() + list.scrollOffset);
 			itemName.setText(queriedItem.getName());
-			
+
 			if (queriedItem.getMainText() != null)	{
 				leftText.setText(queriedItem.getMainText().getText());
 			}
@@ -601,7 +610,7 @@ public class InventoryPanel extends JPanel {
 
 			itemDescription.setText(queriedItem.getDescription());
 		}
-		
+
 		/**
 		 * Clears the text box part of the inventory panel
 		 */
