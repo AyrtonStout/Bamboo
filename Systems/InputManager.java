@@ -97,6 +97,9 @@ public class InputManager extends JPanel {
 					else if (data.getMenu().getCursorPosition() == 1)	{
 						openInventory();
 					}
+					else if (data.getMenu().getCursorPosition() == 5)	{
+						openStats();
+					}
 					
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_X)	{
@@ -176,6 +179,24 @@ public class InputManager extends JPanel {
 					closeInventory();
 				}
 			}
+			
+			
+			/*
+			 * Statistics Screen active
+			 */
+			else if (data.getGameState() == GAME_STATE.STATISTICS_PANEL)	{
+				if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+					data.getStatisticsPanel().moveCursorLeft();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+					data.getStatisticsPanel().moveCursorRight();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_X)	{
+					closeStats();
+				}
+
+			}
+			
 		}
 		
 		
@@ -294,6 +315,39 @@ public class InputManager extends JPanel {
 		data.getDialogueBox().setVisible(false);
 		data.getInventoryPanel().resetCategoryCursor();
 		data.getInventoryPanel().resetHeaderCursor();
+		data.setPaused(false);
+		
+		if (directAccess)	{
+			data.setGameState(GAME_STATE.WALK);
+		}
+		else	{
+			data.setGameState(GAME_STATE.MENU);
+			data.getMenu().setVisible(true);
+			
+		}
+		
+	}
+	
+	private void openStats()	{
+		if (directAccess)	{
+			data.getMenu().setVisible(true);
+		}
+		data.getMenu().setVisible(false);
+		data.setGameState(GAME_STATE.STATISTICS_PANEL);
+		data.getMenu().shrink();
+		data.getDialogueBox().shrink();
+		data.getGameBoard().add(data.getStatisticsPanel());
+		data.getStatisticsPanel().update();
+		data.setPaused(true);
+	}
+	
+	private void closeStats()	{
+		data.getGameBoard().remove(data.getStatisticsPanel());
+		data.getMenu().restore();
+		data.getDialogueBox().restore();
+		
+		data.getDialogueBox().setVisible(false);
+		data.getStatisticsPanel().resetCursor();
 		data.setPaused(false);
 		
 		if (directAccess)	{

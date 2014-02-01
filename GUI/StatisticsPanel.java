@@ -2,49 +2,127 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import Systems.GameData;
 import Systems.PartyMember;
 
 public class StatisticsPanel extends JPanel {
 
 	private static final long serialVersionUID = -9057800474525049386L;
 
+	private InputStream stream;
+	private Font boldFont;
+	private Font normalFont;
+	private GameData data;
+	private int cursorPosition;
 
-	public StatisticsPanel()	{
+	TopPanel topPanel = new TopPanel();
+	BottomPanel bottomPanel = new BottomPanel();
+
+	public StatisticsPanel(GameData data)	{
 		this.setPreferredSize(new Dimension(600, 600));
-		
-		this.add(new TopPanel());
-		this.add(new CenterPanel());
-		this.add(new BottomPanel());
+		this.data = data;
 
+		this.add(topPanel);
+		this.add(bottomPanel);
+
+	}
+
+	public void update()	{
+		bottomPanel.update();
+		topPanel.update();
+	}
+	
+	public void moveCursorLeft()	{
+		topPanel.moveCursorLeft();
+	}
+	
+	public void moveCursorRight()	{
+		topPanel.moveCursorRight();
+	}
+	
+	public void resetCursor()	{
+		topPanel.resetCursor();
 	}
 
 	private class TopPanel extends JPanel	{
 
-		private static final long serialVersionUID = -7385760280733183237L;
+		private static final long serialVersionUID = -1231677531208626435L;
+
+		JPanel inner = new JPanel();
+		private boolean visible = true;
+		private ImageIcon cursor = new ImageIcon("GUI/Resources/Icon_RedArrow.png");
+		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_HeaderBackground.png");
+		private int cursorPosition = 0;
+		JLabel[] party = new JLabel[] {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel(), 
+				new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
 
 		public TopPanel()	{
+
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			this.setPreferredSize(new Dimension(600, 100));
-			this.setBackground(Color.RED);
+			this.setMaximumSize(new Dimension(600, 100));
+			this.setMinimumSize(new Dimension(600, 100));
+			this.add(Box.createVerticalStrut(15));
+			this.setOpaque(false);
+
+			inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
+			inner.setPreferredSize(new Dimension(600, 50));
+			inner.setMaximumSize(new Dimension(600, 50));
+			inner.setMinimumSize(new Dimension(600, 50));
+			inner.setOpaque(false);
+
+			inner.add(Box.createHorizontalStrut(13));
+			for (int i = 0; i < party.length; i++)  {
+				inner.add(Box.createHorizontalStrut(18));
+				inner.add(party[i]);
+			}
+
+			this.add(inner);
+			this.add(Box.createVerticalStrut(30));
 		}
 
-	}
+		@Override
+		protected void paintComponent(Graphics g) {
+			if (visible)	{
+//				g.drawImage(background.getImage(), 0, 0, null);
+				g.drawImage(cursor.getImage(), 37 + (50 * cursorPosition), 66, null);
+			}
+		}
 
-	private class CenterPanel extends JPanel	{
-
-		private static final long serialVersionUID = -4403157000077270536L;
-
-		public CenterPanel()	{
-			this.setPreferredSize(new Dimension(600, 100));
-			this.setBackground(Color.RED);	
+		public void moveCursorRight()	{
+			if (cursorPosition < 10)
+				cursorPosition++;
+		}
+		public void moveCursorLeft()	{
+			if (cursorPosition > 0)
+				cursorPosition--;
+		}
+		public void resetCursor()	{
+			cursorPosition = 0;
+		}
+		public void update()  {
+//			for (int i = 0; i < data.getPlayableCharacters().size(); i++)  {
+			for (int i = 0; i < 11; i++)  {		
+				party[i].setIcon(new ImageIcon("GUI/Resources/Characters/" + data.getPlayableCharacters().get(0) + " (Down).gif"));
+			}
 		}
 
 	}
@@ -52,10 +130,24 @@ public class StatisticsPanel extends JPanel {
 	private class BottomPanel extends JPanel	{
 
 		private static final long serialVersionUID = 6563412072256404570L;
+		JTextPane attributeStats, statisticsValues;
 
 		public BottomPanel()	{
 
-			JTextPane attributeStats, statisticsValues;
+
+			try {
+				Font baseFont;
+
+				stream = new BufferedInputStream(
+						new FileInputStream("GUI/Resources/Font_Arial.ttf"));
+				baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
+				boldFont = baseFont.deriveFont(Font.BOLD, 18);
+				normalFont = baseFont.deriveFont(Font.PLAIN, 18);
+
+			} catch (FontFormatException | IOException e) {
+				System.err.println("Use your words!! Font not found");
+				e.printStackTrace();
+			}
 
 			int height = 405;
 
@@ -71,9 +163,9 @@ public class StatisticsPanel extends JPanel {
 			 */
 			JPanel attributes = new JPanel();
 			attributes.setLayout(new BoxLayout(attributes, BoxLayout.X_AXIS));
-			attributes.setPreferredSize(new Dimension(300, height));
-			attributes.setMaximumSize(new Dimension(300, height));
-			attributes.setMinimumSize(new Dimension(300, height));
+			attributes.setPreferredSize(new Dimension(350, height));
+			attributes.setMaximumSize(new Dimension(350, height));
+			attributes.setMinimumSize(new Dimension(350, height));
 			attributes.setOpaque(false);
 
 			JPanel textWrapper = new JPanel();
@@ -82,19 +174,21 @@ public class StatisticsPanel extends JPanel {
 			textWrapper.add(Box.createVerticalStrut(4));
 
 			//Names
-			JTextArea attributeNames = new JTextArea("Strength\nAgility\nIntellect\nSpirit\nLuck\n\n" +
-					"Attack Power\nSpell Power\nCrit Chance\nCrit Damage\nHit\nArmor Pen\nSpeed\n\nArmor\nStamina\nDodge\nResist");
+			JTextArea attributeNames = new JTextArea("Most Kills\nMost Damage\nMost Deaths\nMost Healing\nHighest Crit\n" +
+					"Highest Participation\nMost Played\n");
 			attributeNames.setFont(boldFont);
-			attributeNames.setPreferredSize(new Dimension(130, height));
+			attributeNames.setPreferredSize(new Dimension(190, height));
+			attributeNames.setMaximumSize(new Dimension(190, height));
+			attributeNames.setMinimumSize(new Dimension(190, height));
 			attributeNames.setEditable(false);
 			attributeNames.setOpaque(false);
 
 			//Values
 			attributeStats = new JTextPane();
-			attributeStats.setFont(statFont);
-			attributeStats.setPreferredSize(new Dimension(50, height));
-			attributeStats.setMaximumSize(new Dimension(50, height));
-			attributeStats.setMinimumSize(new Dimension(50, height));
+			attributeStats.setFont(normalFont);
+			attributeStats.setPreferredSize(new Dimension(100, height));
+			attributeStats.setMaximumSize(new Dimension(100, height));
+			attributeStats.setMinimumSize(new Dimension(100, height));
 			attributeStats.setEditable(false);
 			attributeStats.setOpaque(false);
 
@@ -103,16 +197,16 @@ public class StatisticsPanel extends JPanel {
 			attributeStats.selectAll();
 			attributeStats.setParagraphAttributes(rightAlign, false);
 
-			attributeStats.setText("5\n5\n5\n5\n5\n\n5\n5\n5\n200%\n5\n5\n5\n\n5\n5\n5\n5");
+			attributeStats.setText("Mercutio\nRobert\nHarrison\nWilliam\nGeorge\nAlbert\nBummington");
 
 			/*
 			 * Right Panel
 			 */
 			JPanel statistics = new JPanel();
 			statistics.setLayout(new BoxLayout(statistics, BoxLayout.X_AXIS));
-			statistics.setPreferredSize(new Dimension(300, height));
-			statistics.setMaximumSize(new Dimension(300, height));
-			statistics.setMinimumSize(new Dimension(300, height));
+			statistics.setPreferredSize(new Dimension(250, height));
+			statistics.setMaximumSize(new Dimension(250, height));
+			statistics.setMinimumSize(new Dimension(250, height));
 			statistics.setOpaque(false);
 
 			JPanel textWrapper2 = new JPanel();
@@ -130,7 +224,7 @@ public class StatisticsPanel extends JPanel {
 
 			//Values
 			statisticsValues = new JTextPane();
-			statisticsValues.setFont(statFont);
+			statisticsValues.setFont(normalFont);
 			statisticsValues.setPreferredSize(new Dimension(50, height));
 			statisticsValues.setEditable(false);
 			statisticsValues.setOpaque(false);
@@ -145,14 +239,14 @@ public class StatisticsPanel extends JPanel {
 			textWrapper.add(attributeNames);
 			textWrapper2.add(statisticsNames);
 
-			attributes.add(Box.createHorizontalStrut(85));
+			attributes.add(Box.createHorizontalStrut(40));
 			attributes.add(textWrapper);
 			attributes.add(attributeStats);
 			attributes.add(Box.createHorizontalStrut(45));
 			statistics.add(Box.createHorizontalStrut(35));
 			statistics.add(textWrapper2);
 			statistics.add(statisticsValues);
-			statistics.add(Box.createHorizontalStrut(95));
+			statistics.add(Box.createHorizontalStrut(55));
 
 			this.add(attributes);
 			this.add(statistics);
@@ -161,11 +255,7 @@ public class StatisticsPanel extends JPanel {
 
 		public void update()	{
 			PartyMember member = data.getParty()[cursorPosition];
-			attributeStats.setText(member.getStrength().toString() + "\n" + member.getAgility() + "\n" + member.getIntellect() + "\n" +
-					member.getSpirit() + "\n" + member.getLuck() + "\n\n" + member.getAttackPower() + "\n" + member.getSpellPower() + "\n" +
-					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
-					member.getSpeed() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + member.getDodge() + "%\n" + 
-					member.getResist() + "%");
+			attributeStats.setText("Mercutio\nRobert\nHarrison\nWilliam\nGeorge\nAlbert\nBummington");
 			statisticsValues.setText(member.getKills() + "\n" + member.getDeaths() + "\n" + member.getDamagePercentage() + "\n" + 
 					member.getHealingPercentage() + "\n" + member.getHighestCrit() + "\n\n\n" + PartyMember.getPartyKills() + "\n" + 
 					PartyMember.getPartyDeaths() + "\n" + PartyMember.getGoldFound() + "\n" + PartyMember.getMaxGold() + "\n" + 

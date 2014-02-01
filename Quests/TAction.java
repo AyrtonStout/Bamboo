@@ -57,6 +57,8 @@ public class TAction implements Serializable {
 					data.setGameState(GAME_STATE.TALK);
 					break;
 				}
+				data.getPlayableCharacters().add(member);
+				data.getPlayableCharacters().get(data.getPlayableCharacters().size() - 1).initializeImages();
 			}
 		}
 		else if (consequence == TACTION.REMOVE_NPC_FROM_MAP)	{

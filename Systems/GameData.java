@@ -1,5 +1,6 @@
 package Systems;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -14,6 +15,7 @@ import GUI.PartyPanel;
 import GUI.PlayerAvatar;
 import GUI.Enums.GAME_STATE;
 import GUI.Enums.NAMED_NPC;
+import GUI.StatisticsPanel;
 
 /**
  * @author mobius
@@ -23,15 +25,17 @@ public class GameData {
 	
 	private PlayerAvatar player;
 	private PartyMember[] party = new PartyMember[4];
+	private ArrayList<PartyMember> playableCharacters = new ArrayList<PartyMember>();
 	private GAME_STATE gameState = GAME_STATE.WALK;
 	private ArrayList<Map> worldMaps = new ArrayList<Map>();
 	private int windowWidth, windowHeight;
 	private DialogueBox dialogueBox = new DialogueBox(this);
+	private StatisticsPanel statsPanel = new StatisticsPanel(this);
 	private Board gameBoard;
 	private Menu menuBox = new Menu(this);
 	private Inventory inventory = new Inventory(this);
 	private InventoryPanel inventoryPanel = new InventoryPanel(this, inventory);
-	private PartyPanel partyPanel = new PartyPanel(this);;
+	private PartyPanel partyPanel = new PartyPanel(this);
 	private Time time = new Time();
 	private boolean paused = false;
 	private InputManager input;
@@ -52,6 +56,7 @@ public class GameData {
 		player.initializeImages();
 		party[0] = new PartyMember(NAMED_NPC.SABIN);
 		party[0].initializeImages();
+		playableCharacters.add(party[0]);
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
@@ -223,4 +228,13 @@ public class GameData {
 		this.input = input;
 	}
 
+
+	public StatisticsPanel getStatisticsPanel() {
+		return statsPanel;
+	}
+
+	public ArrayList<PartyMember> getPlayableCharacters()	{
+		return playableCharacters;
+	}
+	
 }

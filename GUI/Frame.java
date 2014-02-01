@@ -7,7 +7,7 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.28 - Enemy Update
+ * @version 0.29 - Stats Panel Resurrection
  */
 public class Frame extends JFrame {
 
