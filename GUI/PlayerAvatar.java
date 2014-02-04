@@ -2,10 +2,12 @@ package GUI;
 
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 
 import GUI.Enums.ACTION;
+import Systems.GameData;
 import Systems.PartyMember;
 
 /**
@@ -17,8 +19,9 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 
 	private static final long serialVersionUID = 5680477392037994831L;
 	private int backgroundX, backgroundY, walkDelay;                                              //Current map passed in by the Board
-	int windowWidth, windowHeight;
-
+	private int windowWidth, windowHeight;
+	private GameData data;
+	
 	private boolean doorTransition = false;                          //Whether or not the character just exited a door
 	private final int MOVEMENT_BUFFER = 235;                         /*Minimum number of pixels between the character and the side of the screen
                                                                       for the screen to begin scrolling */
@@ -30,10 +33,14 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	private boolean keyUp = false;
 	private boolean keyRight = false;
 	private boolean keyDown = false;
+	
+	Random rand = new Random();
+	int stepsSinceBattle = 0;
 
-	public PlayerAvatar(String name, int windowWidth, int windowHeight) {
+	public PlayerAvatar(String name, int windowWidth, int windowHeight, GameData data) {
 		
 		this.name = name;
+		this.data = data;
 		
 		left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
 		up= new ImageIcon("GUI/Resources/Sabin (Up).gif");
@@ -133,8 +140,22 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			if (remainingSteps == 0) {
 				updateCoordinate(action, false);
 				PartyMember.incrementStepsTaken();
-				if (doorTransition = true)
+				
+				//Check to see if recently exited a door
+				if (doorTransition = true)	{
 					doorTransition = false;
+				}
+				
+				//Check to see if a monster was spawned
+				if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn() != null)	{
+					int random = rand.nextInt(100);
+					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random))	{
+						data.getBattleScreen().enterBattle(
+								data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEnemy(random));
+					}
+				}
+				
+				//Continue Movement
 				if (queuedMove & validMoveEh(queuedAction))	{
 					action = queuedAction;
 					facing = action;

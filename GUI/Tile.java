@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 import GUI.Enums.*;
+import Systems.SpawnGenerator;
 
 /**
  * @author mobius
@@ -24,6 +25,7 @@ public class Tile implements Serializable {
 	private ImageIcon background;
 	private boolean moveBlock;
 	private Doodad doodad;
+	private SpawnGenerator spawn = null;
 
 	
 	/**
@@ -132,6 +134,14 @@ public class Tile implements Serializable {
 	 */
 	public void setMoveBlock(boolean b) {
 		moveBlock = b;
-		
 	}
+	
+	public void setSpawn(SpawnGenerator spawn)	{
+		this.spawn = spawn;
+	}
+	
+	public SpawnGenerator getSpawn()	{
+		return spawn;
+	}
+	
 }

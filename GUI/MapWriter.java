@@ -11,11 +11,14 @@ import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
 import Systems.Consumable;
+import Systems.Enemy;
 import Systems.Enums.MACE;
+import Systems.Enums.MONSTER;
 import Systems.Enums.POTION;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
 import Systems.PartyMember;
+import Systems.SpawnGenerator;
 import Systems.Weapon;
 
 /**
@@ -213,8 +216,24 @@ public class MapWriter {
 	 * @return The main testing map
 	 */
 	public static Map test1()	{
+		
+		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+		ArrayList<Integer> spawnChances = new ArrayList<Integer>();
+		int spawnProbability = 20;
+		
+		enemies.add(new Enemy(MONSTER.GIANT_RAT));
+		enemies.add(new Enemy(MONSTER.RAZORCLAW_CRAB));
+		enemies.add(new Enemy(MONSTER.DEATHSTALKER_CROW));
+		
+		spawnChances.add(50);
+		spawnChances.add(30);
+		spawnChances.add(20);
+		
+		SpawnGenerator spawn = new SpawnGenerator(enemies, spawnChances, spawnProbability);
+		
 		Tile[][] tiles = new Tile[22][18];
 		Tile grassTile = new Tile(TILE.GROUND_GRASS);
+		grassTile.setSpawn(spawn);
 		Tile waterTile = new Tile(TILE.GROUND_WATER);
 		Tile treeTile = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 		
@@ -308,11 +327,11 @@ public class MapWriter {
 		ArrayList<String> spawnTalk = new ArrayList<String>();
 		spawnTalk.add("Whoa! Where the hell did I come from!");
 		
-		NPC spawn = new NPC(NAMED_NPC.GHOST, ACTION.DOWN, ACTION.WANDER, spawnTalk, 2, 2);
+		NPC spawnGhost = new NPC(NAMED_NPC.GHOST, ACTION.DOWN, ACTION.WANDER, spawnTalk, 2, 2);
 		
 		ArrayList<Trigger> triggers = new ArrayList<Trigger>();
 		
-		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawn));
+		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawnGhost));
 		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
 		addToParty.addAction(new TAction(TACTION.REMOVE_NPC_FROM_MAP, terra));
 		

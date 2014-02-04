@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import GUI.BattleScreen;
 import GUI.Board;
 import GUI.DialogueBox;
 import GUI.InventoryPanel;
@@ -36,6 +37,7 @@ public class GameData {
 	private Inventory inventory = new Inventory(this);
 	private InventoryPanel inventoryPanel = new InventoryPanel(this, inventory);
 	private PartyPanel partyPanel = new PartyPanel(this);
+	private BattleScreen battleScreen = new BattleScreen(this);
 	private Time time = new Time();
 	private boolean paused = false;
 	private InputManager input;
@@ -52,7 +54,7 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
-		player = new PlayerAvatar("Sabin", windowWidth, windowHeight);
+		player = new PlayerAvatar("Sabin", windowWidth, windowHeight, this);
 		player.initializeImages();
 		party[0] = new PartyMember(NAMED_NPC.SABIN);
 		party[0].initializeImages();
@@ -83,7 +85,10 @@ public class GameData {
 	 * Updates all the game elements in the current map
 	 */
 	public void update()	{
-		if (!paused)	{
+		if (gameState == GAME_STATE.BATTLE)	{
+			
+		}
+		else if (!paused)	{
 			player.update();
 			if (player.doorTransitionEh())	{
 				currentMap = player.getMap();
@@ -235,6 +240,10 @@ public class GameData {
 
 	public ArrayList<PartyMember> getPlayableCharacters()	{
 		return playableCharacters;
+	}
+	
+	public BattleScreen getBattleScreen()	{
+		return battleScreen;
 	}
 	
 }

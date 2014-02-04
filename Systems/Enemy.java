@@ -1,12 +1,13 @@
 package Systems;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 
 import Systems.Enums.MONSTER;
 
-public class Enemy {
+public class Enemy implements Serializable {
 	
 	private String name;
 	private ImageIcon picture;
@@ -77,8 +78,13 @@ public class Enemy {
 			
 			break;
 		}
-		level = Math.abs(rand.nextInt()) % (maxLevel - minLevel) + minLevel;
-		
+		int variance = maxLevel - minLevel;
+		if (variance == 0)	{
+			level = minLevel;
+		}
+		else	{
+			level = Math.abs(rand.nextInt()) % variance + minLevel;
+		}
 		attack.setBase((int) (attackBase + (attackGrowth * level)));
 		defense.setBase((int) (defenseBase + (defenseGrowth * level)));
 		magic.setBase((int) (magicBase + (magicGrowth * level)));
