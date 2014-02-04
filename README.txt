@@ -15,6 +15,13 @@ I and P will directly access inventory and party panels. Currently buggy
 
 Changelog-
 
+v0.30 - Combat Series
+-Starter map now has a chance to spawn a random enemy of 3 types, though all 3 types currently use the same placeholder picture
+-Combat screen is currently inescapable and functionless. This build is not recommended for experiencing other parts of the game
+
+v0.29 - Stats Panel Resurrection
+-Stats panel that used to be part of the Party panel has now been somewhat restored. Previous functionality has been retained but new stuff is non functional and a placeholder
+
 v0.28 - Enemy Update
 -Structure for enemy units is in place though the ability to spawn them is not
 -Three enemies, Giant Rat, Razorclaw Crab, and DeathStalker Crow have been added; though all enemies currently use old placeholder art for the crab.
