@@ -2,6 +2,7 @@ An old school role playing game that borrows heavily from games like Pokemon and
 
 Completion Status-
 Game is continually being developed and is still missing many key systems. However many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, inventory and party screens.
+Current Focus: Combat screen
 
 Note on running the game-
 Run the game from the Frame class. If an error is thrown, first run the MapWriter class to regenerate the map and then run again from the Frame class.
@@ -11,9 +12,15 @@ Current keybinds are hard coded.
 Z will interact with the world and advance dialogue
 X will backtrack menus
 ESC or ENTER will bring up the side menu
-I and P will directly access inventory and party panels. Currently buggy 
+I and P will directly access inventory and party panels
 
 Changelog-
+
+v0.31
+-Combat screen now has a properly formatted menu
+-Arrows show selected option
+-Arrows respond to key commands
+-Run option will escape combat 100% of the time
 
 v0.30 - Combat Series
 -Starter map now has a chance to spawn a random enemy of 3 types, though all 3 types currently use the same placeholder picture
