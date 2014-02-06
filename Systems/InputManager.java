@@ -197,6 +197,13 @@ public class InputManager extends JPanel {
 
 			}
 			
+			/*
+			 * Battle screen
+			 */
+			else if (data.getGameState() == GAME_STATE.BATTLE)	{
+				data.getBattleScreen().respondToInput(e);
+			}
+			
 		}
 		
 		

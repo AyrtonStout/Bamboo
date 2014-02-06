@@ -152,6 +152,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random))	{
 						data.getBattleScreen().enterBattle(
 								data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEnemy(random));
+						queuedMove = false;
 					}
 				}
 				
@@ -217,6 +218,10 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		if (moving)	{
 			updateCoordinate(action, true);
 		}
+	}
+	
+	private void continueMovement()	{
+		
 	}
 
 	/**
