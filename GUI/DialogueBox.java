@@ -33,6 +33,7 @@ import Systems.PartyMember;
 public class DialogueBox extends JPanel{
 	
 	private GameData data;
+	private GAME_STATE restoreState;
 	
 	private boolean visible = true;
 	private boolean writing = false;
@@ -241,8 +242,11 @@ public class DialogueBox extends JPanel{
 				read();
 			}
 			else	{
-				data.setGameState(GAME_STATE.WALK);
-				if (data.getPlayer().getInteractingNPC() != null)	{
+				data.setGameState(restoreState);
+				if (restoreState == GAME_STATE.BATTLE)	{
+					data.getBattleScreen().switchToMain();
+				}
+				else if (data.getPlayer().getInteractingNPC() != null)	{
 					data.getPlayer().getInteractingNPC().setTalking(false);
 					data.getPlayer().getInteractingNPC().setTalkedTo(true);
 					data.getPlayer().setInteractingNPC(null);
@@ -281,6 +285,8 @@ public class DialogueBox extends JPanel{
 	 * @param instantWrite Whether or not the text will come one letter at a time or all at once
 	 */
 	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
+		restoreState = data.getGameState();
+		
 		this.dialogue = dialogue;
 		this.instantWrite = instantWrite;
 		startDialogue();

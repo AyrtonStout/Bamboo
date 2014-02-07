@@ -12,8 +12,8 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import GUI.Enums.GAME_STATE;
+import Systems.Encounter;
 import Systems.Enemy;
 import Systems.GameData;
 import Systems.PartyMember;
@@ -29,21 +30,24 @@ public class BattleScreen extends JPanel {
 
 	private static final long serialVersionUID = 9019740276603325359L;
 	private GameData data;
-	private Enemy enemy;
+	private Encounter enemies;
 
 	private BattleArea battleArea = new BattleArea();
 	private TurnOrder turns = new TurnOrder();
 	private Menu menu = new Menu();
+	private DialogueBox dialogue;
 
 	private final int MAIN = 0;
 	private final int SELECT = 1;
 	private final int WAIT = 2;
+	private final int ATTACK = 3;
 
 
 	private int state = MAIN;
 
 	public BattleScreen(GameData data)	{
 		this.data = data;
+		this.dialogue = data.getDialogueBox();
 
 		Dimension screenSize = new Dimension(600, 600);
 		this.setPreferredSize(screenSize);
@@ -56,7 +60,7 @@ public class BattleScreen extends JPanel {
 		this.add(menu, BorderLayout.SOUTH);
 	}
 
-	public void enterBattle(Enemy enemy)	{
+	public void enterBattle(Encounter enemies)	{
 		menu.erase();
 		menu.update();
 		data.setGameState(GAME_STATE.BATTLE);
@@ -66,13 +70,12 @@ public class BattleScreen extends JPanel {
 		data.getDialogueBox().shrink();
 		data.getGameBoard().add(this);
 
-		this.enemy = enemy;
+
+		this.enemies = enemies;
 	}
 
 	public void leaveBattle()	{
 		data.setGameState(GAME_STATE.WALK);
-//		data.getMenu().setVisible(true);         //Needed for some unknown stupid reason
-//		data.getMenu().setVisible(false);
 		data.getMenu().restore();
 		data.getDialogueBox().restore();
 		data.getGameBoard().remove(this);
@@ -103,35 +106,91 @@ public class BattleScreen extends JPanel {
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 				switch (menu.cursorPosition)	{
 				case 0:
+					battleArea.targetAlly = false;
+					state = ATTACK; 
 					break;
 				case 1:
+					switchToTalk(); 
+					ArrayList<String> string = new ArrayList<String>();
+					string.add("Hi brozinsky!!! Words!!");
+					string.add("MORE WORDS");
+					dialogue.setDialogue(string, false); 
 					break;
 				case 2:
 					break;
 				case 3:
-					leaveBattle(); break;
+					leaveBattle(); 
+					break;
 				}
 			}
 		}
 		else if (state == SELECT)	{
 
 		}
+		else if (state == ATTACK)	{
+			if (e.getKeyCode() == KeyEvent.VK_UP)	{
+				if (battleArea.targetAlly)	{
+					if (battleArea.friendlyCursorPosition > 0)	{
+						battleArea.friendlyCursorPosition--;
+					}
+				}
+				else	{
+					if (battleArea.enemyCursorPosition > 0)	{
+						battleArea.enemyCursorPosition--;
+					}
+				}
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+				if (battleArea.targetAlly)	{
+					if (data.getParty()[battleArea.friendlyCursorPosition + 1] != null)	{
+						battleArea.friendlyCursorPosition++;
+					}
+				}
+				else	{
+					if (battleArea.enemyCursorPosition + 1 < enemies.toArrayList().size())	{
+						battleArea.enemyCursorPosition--;
+					}
+				}
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				battleArea.targetAlly = true;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+				battleArea.targetAlly = false;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				state = MAIN;
+			}
+		}
+	}
+
+	private void switchToTalk()	{
+		this.remove(menu);
+		dialogue.restore();
+		this.add(dialogue, BorderLayout.SOUTH);
+	}
+	public void switchToMain()	{
+		this.remove(dialogue);
+		this.add(menu, BorderLayout.SOUTH);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g)	{
 		super.paintComponent(g);
-		for (int i = 0; i < data.getParty().length; i++)	{
-			if (data.getParty()[i] != null)	{
-				g.drawImage(data.getParty()[i].getRight().getImage(), 80, 90 + 80 * i, null);
-			}
-		}
-
 	}
+
 
 	private class BattleArea extends JPanel	{
 
 		private static final long serialVersionUID = 1081923729370436576L;
+
+		private int enemyCursorPosition = 0;
+		private int friendlyCursorPosition = 0;
+		private boolean targetAlly = false;
+
+		ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
+		ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
+
 
 		public BattleArea()	{
 			Dimension screenSize = new Dimension(600, 400);
@@ -143,7 +202,22 @@ public class BattleScreen extends JPanel {
 
 		@Override
 		protected void paintComponent(Graphics g)	{
-			g.drawImage(enemy.getPicture().getImage(), 350, 115, null);
+			for (int i = 0; i < data.getParty().length; i++)	{
+				if (data.getParty()[i] != null)	{
+					g.drawImage(data.getParty()[i].getRight().getImage(), 80, 90 + 80 * i, null);
+				}
+			}
+			enemies.drawEnemies(g);
+			if (state == ATTACK)	{
+				if (!targetAlly)	{
+					Enemy target = enemies.toArrayList().get(enemyCursorPosition);
+					g.drawImage(enemyCursor.getImage(), target.getOrigin().x - 10, 
+							target.getOrigin().y + target.getHeight() / 2 + 10, null);
+				}
+				else	{
+					g.drawImage(friendlyCursor.getImage(), 110, 105 + 80 * friendlyCursorPosition, null);
+				}
+			}
 		}
 
 	}
@@ -211,11 +285,12 @@ public class BattleScreen extends JPanel {
 			JPanel status = new JPanel();
 			status.setPreferredSize(new Dimension(320, 150));
 			status.setLayout(new BoxLayout(status, BoxLayout.Y_AXIS));
+			status.setOpaque(false);
 
 			status.add(Box.createVerticalStrut(10));
 			for (int i = 0; i < partyStatuses.length - 1; i++)	{
 				status.add(partyStatuses[i]);
-				status.add(Box.createVerticalStrut(7));
+				status.add(Box.createVerticalStrut(6));
 			}
 			status.add(partyStatuses[partyStatuses.length - 1]);
 
@@ -270,15 +345,17 @@ public class BattleScreen extends JPanel {
 		@Override
 		protected void paintComponent(Graphics g)	{
 			g.drawImage(background.getImage(), 0, 0, null);
-			switch (cursorPosition)	{
-			case 0:
-				g.drawImage(cursor.getImage(), 350, 36, null); break;
-			case 1:
-				g.drawImage(cursor.getImage(), 462, 36, null); break;
-			case 2:
-				g.drawImage(cursor.getImage(), 350, 86, null); break;
-			case 3:
-				g.drawImage(cursor.getImage(), 462, 86, null); break;
+			if (state == MAIN)	{
+				switch (cursorPosition)	{
+				case 0:
+					g.drawImage(cursor.getImage(), 350, 36, null); break;
+				case 1:
+					g.drawImage(cursor.getImage(), 462, 36, null); break;
+				case 2:
+					g.drawImage(cursor.getImage(), 350, 86, null); break;
+				case 3:
+					g.drawImage(cursor.getImage(), 462, 86, null); break;
+				}
 			}
 		}
 
@@ -308,18 +385,20 @@ public class BattleScreen extends JPanel {
 			public partyStatus()	{
 				this.setPreferredSize(new Dimension(320, 30));
 				this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+				this.setOpaque(false);
 
 				JPanel nameLabel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 				JPanel healthLabel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 				JPanel manaLabel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-				nameLabel.setPreferredSize(new Dimension(100, 30));
-				healthLabel.setPreferredSize(new Dimension(100, 30));
-				manaLabel.setPreferredSize(new Dimension(100, 30));
+				JPanel[] panels = new JPanel[]{nameLabel, healthLabel, manaLabel};
 
-				name.setFont(partyFont);
-				health.setFont(partyFont);
-				mana.setFont(partyFont);
+				Dimension panelSize = new Dimension();
+				for (int i = 0; i < panels.length; i++)	{
+					panels[i].setPreferredSize(panelSize);
+					panels[i].setFont(partyFont);
+					panels[i].setOpaque(false);
+				}
 
 				nameLabel.add(name);
 				healthLabel.add(health);

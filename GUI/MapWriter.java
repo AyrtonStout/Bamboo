@@ -11,6 +11,7 @@ import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
 import Systems.Consumable;
+import Systems.Encounter;
 import Systems.Enemy;
 import Systems.Enums.MACE;
 import Systems.Enums.MONSTER;
@@ -217,19 +218,26 @@ public class MapWriter {
 	 */
 	public static Map test1()	{
 		
-		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+		ArrayList<Encounter> encounters = new ArrayList<Encounter>();
 		ArrayList<Integer> spawnChances = new ArrayList<Integer>();
 		int spawnProbability = 20;
 		
-		enemies.add(new Enemy(MONSTER.GIANT_RAT));
-		enemies.add(new Enemy(MONSTER.RAZORCLAW_CRAB));
-		enemies.add(new Enemy(MONSTER.DEATHSTALKER_CROW));
+		ArrayList<Enemy> encounter1 = new ArrayList<Enemy>(4);
+		encounter1.add(new Enemy(MONSTER.GIANT_RAT));
+		ArrayList<Enemy> encounter2 = new ArrayList<Enemy>(4);
+		encounter2.add(new Enemy(MONSTER.RAZORCLAW_CRAB));
+		ArrayList<Enemy> encounter3 = new ArrayList<Enemy>(4);
+		encounter3.add(new Enemy(MONSTER.DEATHSTALKER_CROW));
+		
+		encounters.add(new Encounter(encounter1));
+		encounters.add(new Encounter(encounter2));
+		encounters.add(new Encounter(encounter3));
 		
 		spawnChances.add(50);
 		spawnChances.add(30);
 		spawnChances.add(20);
 		
-		SpawnGenerator spawn = new SpawnGenerator(enemies, spawnChances, spawnProbability);
+		SpawnGenerator spawn = new SpawnGenerator(encounters, spawnChances, spawnProbability);
 		
 		Tile[][] tiles = new Tile[22][18];
 		Tile grassTile = new Tile(TILE.GROUND_GRASS);

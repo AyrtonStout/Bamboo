@@ -16,6 +16,12 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.32
+-Arrows now appear and disappear at more logical times
+-Friendly and enemy targetting arrows
+-Methods to call the dialogue box to be used in combat screen to display information
+-Groups of enemies can now attack instead of just individual enemies
+
 v0.31
 -Combat screen now has a properly formatted menu
 -Arrows show selected option

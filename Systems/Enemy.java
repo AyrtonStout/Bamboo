@@ -1,5 +1,6 @@
 package Systems;
 
+import java.awt.Point;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -11,6 +12,8 @@ public class Enemy implements Serializable {
 	
 	private String name;
 	private ImageIcon picture;
+	private int width, height;
+	private Point origin;                 //The point that the enemy is drawn to on the battle screen
 	
 	private Stat attack = new Stat(0);
 	private Stat defense = new Stat(0);
@@ -35,6 +38,7 @@ public class Enemy implements Serializable {
 		case GIANT_RAT:
 			name = "Giant Rat";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			width = 100; height = 150;
 			xpPerLevel = 40;
 			
 			minLevel = 1;       maxLevel = 3;
@@ -50,6 +54,7 @@ public class Enemy implements Serializable {
 		case RAZORCLAW_CRAB:
 			name = "Razorclaw Crab";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			width = 150; height = 150;
 			xpPerLevel = 45;
 			
 			minLevel = 2;       maxLevel = 4;
@@ -65,6 +70,7 @@ public class Enemy implements Serializable {
 		case DEATHSTALKER_CROW:
 			name = "Deathstalker Crow";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			width = 100; height = 150;
 			xpPerLevel = 45;
 			
 			minLevel = 3;       maxLevel = 3;
@@ -78,6 +84,7 @@ public class Enemy implements Serializable {
 			
 			break;
 		}
+		
 		int variance = maxLevel - minLevel;
 		if (variance == 0)	{
 			level = minLevel;
@@ -136,5 +143,16 @@ public class Enemy implements Serializable {
 	public int getMaximumMana()	{
 		return maximumMana.getActual();
 	}
-	
+	public int getWidth()	{
+		return width;
+	}
+	public int getHeight()	{
+		return height;
+	}
+	public void setOrigin(Point origin)	{
+		this.origin = origin;
+	}
+	public Point getOrigin()	{
+		return origin;
+	}
 }

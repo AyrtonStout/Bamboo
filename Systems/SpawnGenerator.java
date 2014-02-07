@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public class SpawnGenerator implements Serializable {
 	
-	ArrayList<Enemy> enemies;
+	ArrayList<Encounter> encounters;
 	ArrayList<Integer> spawnChances;
 	int spawnProbability;
 	
-	public SpawnGenerator(ArrayList<Enemy> enemies, ArrayList<Integer> spawnChance, int spawnProbability)	{
-		this.enemies = enemies;
+	public SpawnGenerator(ArrayList<Encounter> encounters, ArrayList<Integer> spawnChance, int spawnProbability)	{
+		this.encounters = encounters;
 		this.spawnChances = spawnChance;
 		this.spawnProbability = spawnProbability;
 		
@@ -30,14 +30,12 @@ public class SpawnGenerator implements Serializable {
 		return false;
 	}
 	
-	public Enemy spawnEnemy(int random)	{
+	public Encounter spawnEnemy(int random)	{
 		random = (int) 100.0 / spawnProbability * random;
-		
-//		System.out.println("Spawn: " + random);
 		
 		for (int i = spawnChances.size() - 1; i >= 0; i--)	{
 			if (random < spawnChances.get(i))	{
-				return enemies.get(i);
+				return encounters.get(i);
 			}
 			else	{
 				random -= spawnChances.get(i);
