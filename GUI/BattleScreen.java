@@ -41,7 +41,14 @@ public class BattleScreen extends JPanel {
 	private final int SELECT = 1;
 	private final int WAIT = 2;
 	private final int ATTACK = 3;
-
+	
+	private final int ANIM_ATTACK = 4;
+	private final int ANIM_RECOIL = 5;
+	private int animationSteps;
+	
+	private PartyMember activeMember;
+	private Enemy activeEnemy;
+	private boolean playerMove = true;
 
 	private int state = MAIN;
 
@@ -69,6 +76,7 @@ public class BattleScreen extends JPanel {
 		data.getMenu().shrink();
 		data.getDialogueBox().shrink();
 		data.getGameBoard().add(this);
+		activeMember = data.getParty()[0];
 
 
 		this.enemies = enemies;
@@ -158,6 +166,9 @@ public class BattleScreen extends JPanel {
 			else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
 				battleArea.targetAlly = false;
 			}
+			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+				startAttack();
+			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				state = MAIN;
 			}
@@ -172,6 +183,15 @@ public class BattleScreen extends JPanel {
 	public void switchToMain()	{
 		this.remove(dialogue);
 		this.add(menu, BorderLayout.SOUTH);
+	}
+	
+	public void update()	{
+		battleArea.update();
+	}
+	
+	private void startAttack()	{
+		animationSteps = 40;
+		state = ANIM_ATTACK;
 	}
 
 	@Override
@@ -191,6 +211,7 @@ public class BattleScreen extends JPanel {
 		ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
 		ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
 
+		private int animationOffset;
 
 		public BattleArea()	{
 			Dimension screenSize = new Dimension(600, 400);
@@ -199,12 +220,35 @@ public class BattleScreen extends JPanel {
 			this.setMinimumSize(screenSize);
 
 		}
+		
+		public void update()	{
+			if (playerMove)	{
+				if (state == ANIM_ATTACK)	{
+					if (animationSteps > 20)	{
+						animationOffset += 2;
+						animationSteps -= 2;
+					}
+					else if (animationSteps > 0)	{
+						animationOffset -= 2;
+						animationSteps -= 2;
+					}
+					else if (animationSteps == 0)	{
+						state = MAIN;
+					}
+				}
+			}
+		}
 
 		@Override
 		protected void paintComponent(Graphics g)	{
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] != null)	{
-					g.drawImage(data.getParty()[i].getRight().getImage(), 80, 90 + 80 * i, null);
+					if (data.getParty()[i] == activeMember)	{
+						g.drawImage(data.getParty()[i].getRight().getImage(), 80 + animationOffset, 90 + 80 * i, null);
+					}
+					else	{
+						g.drawImage(data.getParty()[i].getRight().getImage(), 80, 90 + 80 * i, null);
+					}
 				}
 			}
 			enemies.drawEnemies(g);

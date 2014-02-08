@@ -86,7 +86,7 @@ public class GameData {
 	 */
 	public void update()	{
 		if (gameState == GAME_STATE.BATTLE)	{
-			
+			battleScreen.update();
 		}
 		else if (!paused)	{
 			player.update();
