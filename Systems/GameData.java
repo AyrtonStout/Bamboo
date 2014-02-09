@@ -38,6 +38,7 @@ public class GameData {
 	private InventoryPanel inventoryPanel = new InventoryPanel(this, inventory);
 	private PartyPanel partyPanel = new PartyPanel(this);
 	private BattleScreen battleScreen = new BattleScreen(this);
+	private Combat combat = new Combat(this);
 	private Time time = new Time();
 	private boolean paused = false;
 	private InputManager input;
@@ -57,7 +58,7 @@ public class GameData {
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight, this);
 		player.initializeImages();
 		party[0] = new PartyMember(NAMED_NPC.SABIN);
-		party[0].initializeImages();
+		party[0].initialize(this);
 		playableCharacters.add(party[0]);
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
@@ -244,6 +245,10 @@ public class GameData {
 	
 	public BattleScreen getBattleScreen()	{
 		return battleScreen;
+	}
+	
+	public Combat getCombat()	{
+		return combat;
 	}
 	
 }

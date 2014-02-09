@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 import Systems.Enums.MONSTER;
 
-public class Enemy implements Serializable {
+public class Enemy implements Serializable, Combatant {
 	
 	private String name;
 	private ImageIcon picture;
@@ -19,8 +19,11 @@ public class Enemy implements Serializable {
 	private Stat defense = new Stat(0);
 	private Stat magic = new Stat(0);
 	private Stat magDefense = new Stat(0);
-	private Stat crit = new Stat(0);
 	private Stat speed = new Stat(0);
+	private Stat hit = new Stat(0);
+	private Stat critChance = new Stat(0);
+	private Stat critDamage = new Stat(0);
+	private Stat dodge = new Stat(0);
 	private int level; 
 	private int xpPerLevel;
 	
@@ -122,17 +125,26 @@ public class Enemy implements Serializable {
 	public int getMagDefense()	{
 		return magDefense.getActual();
 	}
-	public int getCrit()	{
-		return crit.getActual();
-	}
 	public int getSpeed()	{
 		return speed.getActual();
+	}
+	public Stat getCritChance() {
+		return critChance;
+	}
+	public Stat getCritDamage() {
+		return critDamage;
+	}
+	public Stat getDodge() {
+		return dodge;
+	}
+	public Stat getArmor() {
+		return defense;
 	}
 	public int getXP()	{
 		return xpPerLevel * level;
 	}
-	public int getCurrentHealth()	{
-		return currentHealth.getActual();
+	public Stat getCurrentHealth()	{
+		return currentHealth;
 	}
 	public int getMaximumHealth()	{
 		return maximumHealth.getActual();
@@ -154,5 +166,11 @@ public class Enemy implements Serializable {
 	}
 	public Point getOrigin()	{
 		return origin;
+	}
+	public Stat getHit() {
+		return hit;
+	}
+	public void modCurrentHealth(int health) {
+		currentHealth.modifyBase(health);
 	}
 }

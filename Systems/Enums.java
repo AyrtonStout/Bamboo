@@ -8,6 +8,12 @@ public class Enums {
 	
 	}
 	
+	public enum COMBAT_ACTION	{
+		
+		IDLE, ATTACK;
+		
+	}
+	
 	/*
 	 * Weapon enums
 	 */

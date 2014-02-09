@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -21,8 +22,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import GUI.Enums.GAME_STATE;
+import Systems.Combatant;
 import Systems.Encounter;
 import Systems.Enemy;
+import Systems.Enums.COMBAT_ACTION;
 import Systems.GameData;
 import Systems.PartyMember;
 
@@ -51,11 +54,34 @@ public class BattleScreen extends JPanel {
 	private boolean playerMove = true;
 
 	private int state = MAIN;
+	
+	private Font damageFont, healingFont;
+	
 
 	public BattleScreen(GameData data)	{
 		this.data = data;
 		this.dialogue = data.getDialogueBox();
 
+		InputStream stream;
+		Font baseFont;
+		
+		try {
+			stream = new BufferedInputStream(
+					new FileInputStream("GUI/Resources/Font_Inventory.ttf"));
+			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
+			damageFont = baseFont.deriveFont(Font.PLAIN, 36);
+			healingFont = baseFont.deriveFont(Font.ITALIC, 48);
+			
+
+			stream = new BufferedInputStream(
+					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
+			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
+
+		} catch (FontFormatException | IOException e) {
+			System.err.println("Use your words!! Font not found");
+			e.printStackTrace();
+		}
+		
 		Dimension screenSize = new Dimension(600, 600);
 		this.setPreferredSize(screenSize);
 		this.setMaximumSize(screenSize);
@@ -65,6 +91,7 @@ public class BattleScreen extends JPanel {
 		this.add(battleArea, BorderLayout.NORTH);
 		this.add(turns, BorderLayout.CENTER);
 		this.add(menu, BorderLayout.SOUTH);
+
 	}
 
 	public void enterBattle(Encounter enemies)	{
@@ -75,6 +102,14 @@ public class BattleScreen extends JPanel {
 		data.getMenu().setVisible(false);
 		data.getMenu().shrink();
 		data.getDialogueBox().shrink();
+		
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null)	{
+				data.getParty()[i].setCurrent(data.getParty()[i].getRight());
+				data.getParty()[i].setOrigin(new Point(80, 90 + 80 * i));
+			}
+		}
+		
 		data.getGameBoard().add(this);
 		activeMember = data.getParty()[0];
 
@@ -187,11 +222,28 @@ public class BattleScreen extends JPanel {
 	
 	public void update()	{
 		battleArea.update();
+		if (state == ANIM_ATTACK)	{
+			boolean turnOverEh = true;
+			for (int i = 0; i < data.getParty().length; i++)	{
+				if (data.getParty()[i] != null && data.getParty()[i].getAction() != COMBAT_ACTION.IDLE)	{
+					turnOverEh = false;
+					break;
+				}
+			}
+			if (turnOverEh)	{
+				state = MAIN;
+			}
+		}
 	}
 	
 	private void startAttack()	{
-		animationSteps = 40;
+		animationSteps = 80;
 		state = ANIM_ATTACK;
+		activeMember.attackTarget(enemies.toArrayList().get(battleArea.enemyCursorPosition));
+	}
+	
+	public void addBattleText(int damage, Combatant target)	{
+		battleArea.addBattleText(damage, target);
 	}
 
 	@Override
@@ -208,10 +260,12 @@ public class BattleScreen extends JPanel {
 		private int friendlyCursorPosition = 0;
 		private boolean targetAlly = false;
 
-		ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
-		ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
+		private ArrayList<BattleText> battleText = new ArrayList<BattleText>();
+		private ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
+		private ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
 
 		private int animationOffset;
+		
 
 		public BattleArea()	{
 			Dimension screenSize = new Dimension(600, 400);
@@ -223,17 +277,9 @@ public class BattleScreen extends JPanel {
 		
 		public void update()	{
 			if (playerMove)	{
-				if (state == ANIM_ATTACK)	{
-					if (animationSteps > 20)	{
-						animationOffset += 2;
-						animationSteps -= 2;
-					}
-					else if (animationSteps > 0)	{
-						animationOffset -= 2;
-						animationSteps -= 2;
-					}
-					else if (animationSteps == 0)	{
-						state = MAIN;
+				for (int i = 0; i < data.getParty().length; i++)	{
+					if (data.getParty()[i] != null)	{
+						data.getParty()[i].update();
 					}
 				}
 			}
@@ -241,14 +287,18 @@ public class BattleScreen extends JPanel {
 
 		@Override
 		protected void paintComponent(Graphics g)	{
+			g.setColor(Color.RED);
+			g.setFont(damageFont);
+			for (int i = 0; i < battleText.size(); i++)	{
+				g.drawString(battleText.get(i).text, battleText.get(i).x, battleText.get(i).y);
+				battleText.get(i).duration--;
+				if (battleText.get(i).duration == 0)	{
+					battleText.remove(i);
+				}
+			}
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] != null)	{
-					if (data.getParty()[i] == activeMember)	{
-						g.drawImage(data.getParty()[i].getRight().getImage(), 80 + animationOffset, 90 + 80 * i, null);
-					}
-					else	{
-						g.drawImage(data.getParty()[i].getRight().getImage(), 80, 90 + 80 * i, null);
-					}
+					data.getParty()[i].drawSelf(g);
 				}
 			}
 			enemies.drawEnemies(g);
@@ -262,6 +312,26 @@ public class BattleScreen extends JPanel {
 					g.drawImage(friendlyCursor.getImage(), 110, 105 + 80 * friendlyCursorPosition, null);
 				}
 			}
+		}
+		
+		public void addBattleText(int damage, Combatant target)	{
+			battleArea.battleText.add(new BattleText(Integer.toString(damage), target));
+		}
+		
+		private class BattleText	{
+
+			private String text;
+			private int x;
+			private int y;
+			private int duration;
+			
+			public BattleText(String str, Combatant target)	{
+				text = str;
+				this.x = target.getOrigin().x + target.getWidth() / 2 + 25;
+				this.y = target.getOrigin().y + 10;
+				duration = 45;
+			}
+			
 		}
 
 	}

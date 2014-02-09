@@ -50,7 +50,7 @@ public class TAction implements Serializable {
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] == null)	{
 					data.getParty()[i] = member;
-					data.getParty()[i].initializeImages();
+					data.getParty()[i].initialize(data);
 					PartyMember.incrementPartySize();
 					data.getDialogueBox().setVisible(true);
 					data.getDialogueBox().joinParty(member);
@@ -58,7 +58,7 @@ public class TAction implements Serializable {
 					break;
 				}
 				data.getPlayableCharacters().add(member);
-				data.getPlayableCharacters().get(data.getPlayableCharacters().size() - 1).initializeImages();
+				data.getPlayableCharacters().get(data.getPlayableCharacters().size() - 1).initialize(data);
 			}
 		}
 		else if (consequence == TACTION.REMOVE_NPC_FROM_MAP)	{

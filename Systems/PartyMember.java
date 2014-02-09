@@ -1,12 +1,15 @@
 package Systems;
 
+import java.awt.Graphics;
+import java.awt.Point;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
 import GUI.Enums.NAMED_NPC;
+import Systems.Enums.COMBAT_ACTION;
 
-public class PartyMember implements Serializable {
+public class PartyMember implements Serializable, Combatant {
 
 	private static final long serialVersionUID = -2547966350818847472L;
 	
@@ -24,6 +27,7 @@ public class PartyMember implements Serializable {
 	private static int partySize = 1;
 	
 	private Equipment equipment = new Equipment(this);
+	private GameData data;
 	
 	private String name;
 	private String gender;
@@ -52,9 +56,19 @@ public class PartyMember implements Serializable {
 	
 	private int STAMINA_TO_HEALTH_RATIO = 10;
 	
+	private COMBAT_ACTION combatAction = COMBAT_ACTION.IDLE;
+	private int animationSteps;
+	private Combatant target;
+	private Point origin;
+	private int width = 32;
+	private int height = 48;
+	private int offsetX;
+	
+	private ImageIcon current;
 	private ImageIcon portrait;
 	private ImageIcon left, up, right, down;
 	private ImageIcon walkLeft, walkUp, walkRight, walkDown;
+	private ImageIcon actionIMG, leap;
 	
 	private int kills;
 	private int deaths;
@@ -119,6 +133,9 @@ public class PartyMember implements Serializable {
 		walkUp = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Up).gif");
 		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
 		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
+		
+		actionIMG = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
+		leap = new ImageIcon("GUI/Resources/Characters/" + name + " - Leap.gif");
 		
 		refresh();
 	}
@@ -199,7 +216,9 @@ public class PartyMember implements Serializable {
 		refresh();
 	}
 	
-	public void initializeImages()	{
+	public void initialize(GameData data)	{
+		
+		this.data = data;
 		
 		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
 		up= new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
@@ -211,6 +230,38 @@ public class PartyMember implements Serializable {
 		walkUp = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Up).gif");
 		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
 		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
+	}
+	
+	public void update()	{
+		switch (combatAction)	{
+		case IDLE:
+			break;
+		case ATTACK:
+			if (animationSteps == 75)	{
+				current = actionIMG;
+				animationSteps -= 1;
+			}
+			else if (animationSteps > 40)	{
+				animationSteps -= 1;
+			}
+			else if (animationSteps == 40)	{
+				current = leap;
+				animationSteps -= 1;
+				data.getCombat().attack(this, target);
+			}
+			else if (animationSteps > 20)	{
+				offsetX += 4;
+				animationSteps -= 4;
+			}
+			else if (animationSteps > 0)	{
+				offsetX -= 4;
+				animationSteps -= 4;
+			}
+			else {
+				current = right;
+				combatAction = COMBAT_ACTION.IDLE;
+			}
+		}
 	}
 	
 	//--------------------------------------
@@ -250,6 +301,22 @@ public class PartyMember implements Serializable {
 	
 	public ImageIcon getWalkDown()	{
 		return walkDown;
+	}
+	
+	public ImageIcon getActionImage()	{
+		return actionIMG;
+	}
+	public ImageIcon getLeapImage()	{
+		return leap;
+	}
+	public ImageIcon getCurrent()	{
+		return current;
+	}
+	public void setCurrent(ImageIcon icon)	{
+		current = icon;
+	}
+	public Point getOrigin()	{
+		return origin;
 	}
 	
 	public String getName() {
@@ -304,8 +371,8 @@ public class PartyMember implements Serializable {
 		return currentHealth;
 	}
 
-	public void setCurrentHealth(Stat health) {
-		this.currentHealth = health;
+	public void modCurrentHealth(int health) {
+		currentHealth.modifyBase(health);
 	}
 
 	
@@ -455,6 +522,13 @@ public class PartyMember implements Serializable {
 		this.resist = resist;
 	}
 	
+	public int getWidth()	{
+		return width;
+	}
+	public int getHeight()	{
+		return height;
+	}
+	
 	
 	//-------------------------------------------
 	public void incrementKills()	{
@@ -598,6 +672,31 @@ public class PartyMember implements Serializable {
 		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
 		currentHealth.setBase(maximumHealth.getBase());
 		currentMana.setBase(maximumMana.getBase());
+	}
+
+	@Override
+	public int getAttack() {
+		return (strength.getActual());
+	}
+	public COMBAT_ACTION getAction()	{
+		return combatAction;
+	}
+	public void drawSelf(Graphics g)	{
+		g.drawImage(current.getImage(), origin.x + offsetX, origin.y, null);
+	}
+	
+	public void attackTarget(Combatant target)	{
+		combatAction = COMBAT_ACTION.ATTACK;
+		animationSteps = 80;
+		this.target = target;
+	}
+	
+	public void setCombatState(COMBAT_ACTION action)	{
+		
+	}
+	
+	public void setOrigin(Point origin)	{
+		this.origin = origin;
 	}
 		
 }
