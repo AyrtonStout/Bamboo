@@ -143,6 +143,13 @@ public class PartyMember implements Serializable, Combatant {
 		refresh();
 	}
 	
+	public boolean levelUpEh() {
+		if (xpThisLevel >= xpRequirement)	{
+			return true;
+		}
+		return false;
+	}
+	
 	public void levelUp()	{
 		xpThisLevel -= xpRequirement;
 		if (xpThisLevel < 0)	{
@@ -360,6 +367,11 @@ public class PartyMember implements Serializable, Combatant {
 
 	public void setXpRequirement(int xpToLevel) {
 		this.xpRequirement = xpToLevel;
+	}
+	
+	public void giveXP(int xp)	{
+		xpThisLevel += xp;
+		xpTotalEarned += xp;
 	}
 
 	public Stat getMaxHealth() {
@@ -721,5 +733,7 @@ public class PartyMember implements Serializable, Combatant {
 	public void setJustDied(boolean b) {
 		justDied = b;
 	}
+
+	
 		
 }

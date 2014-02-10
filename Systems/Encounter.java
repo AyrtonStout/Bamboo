@@ -52,4 +52,17 @@ public class Encounter implements Serializable {
 		}
 	}
 
+
+	public void giveXP(PartyMember[] party) {
+		int partySize = 0;
+		for (int i = 0; i < party.length; i++)	{
+			if (party[i] != null)	{
+				partySize++;
+			}
+		}
+		for (int i = 0; i < partySize; i++)	{
+			party[i].giveXP(earnedXP() / partySize);
+		}
+	}
+
 }

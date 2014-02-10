@@ -114,10 +114,14 @@ public class BattleScreen extends JPanel {
 	}
 
 	public void leaveBattle()	{
+//		switchToMain();
 		data.setGameState(GAME_STATE.WALK);
 		data.getMenu().restore();
 		data.getDialogueBox().restore();
 		data.getGameBoard().remove(this);
+		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
+//		data.getDialogueBox().setVisible(true);
+//		data.getDialogueBox().restore();
 	}
 
 	public void respondToInput(KeyEvent e)	{
@@ -230,13 +234,22 @@ public class BattleScreen extends JPanel {
 			if (turnOverEh)	{
 				for (int i = 0; i < enemies.toArrayList().size(); i++)	{
 					if (enemies.toArrayList().get(i).justDiedEh())	{
-						dialogue.addDialogue("Something just died!");
+						dialogue.addDialogue(enemies.toArrayList().get(i).getName() + " has been killed!");
 					}
 				}
 				state = MAIN;
 				
 				if (enemies.defeatedEh())	{
 					dialogue.addDialogue("Your party earned " + enemies.earnedXP() + " XP!");
+					enemies.giveXP(data.getParty());
+					for (int i = 0; i < data.getParty().length; i++)	{
+						if (data.getParty()[i] != null && data.getParty()[i].levelUpEh())	{
+							while (data.getParty()[i].levelUpEh())	{
+								data.getParty()[i].levelUp();
+							}
+							dialogue.addDialogue(data.getParty()[i].getName() + " is now level " + data.getParty()[i].getLevel() + "!");
+						}
+					}
 					state = END;
 				}
 			}
