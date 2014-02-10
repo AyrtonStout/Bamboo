@@ -10,10 +10,14 @@ import Systems.Enums.MONSTER;
 
 public class Enemy implements Serializable, Combatant {
 	
+	private static final long serialVersionUID = 8656364136085883106L;
+	
 	private String name;
 	private ImageIcon picture;
-	private int width, height;
+	private int width, height;            //Dimensions of the artwork for the enemy
 	private Point origin;                 //The point that the enemy is drawn to on the battle screen
+	private boolean alive = true;
+	private boolean justDied = false;
 	
 	private Stat attack = new Stat(0);
 	private Stat defense = new Stat(0);
@@ -25,7 +29,7 @@ public class Enemy implements Serializable, Combatant {
 	private Stat critDamage = new Stat(0);
 	private Stat dodge = new Stat(0);
 	private int level; 
-	private int xpPerLevel;
+	private int xp;
 	
 	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
 	private Stat currentMana = new Stat(0), maximumMana = new Stat(0);
@@ -36,12 +40,13 @@ public class Enemy implements Serializable, Combatant {
 		int healthBase = 0, healthGrowth = 0;
 		double attackBase = 0, defenseBase = 0, magicBase = 0, magDefenseBase = 0;
 		double attackGrowth = 0, defenseGrowth = 0, magicGrowth = 0, magDefenseGrowth = 0;
+		int xpPerLevel = 0;
 		
 		switch (type)	{
 		case GIANT_RAT:
 			name = "Giant Rat";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
-			width = 100; height = 150;
+			width = 150; height = 150;
 			xpPerLevel = 40;
 			
 			minLevel = 1;       maxLevel = 3;
@@ -51,7 +56,7 @@ public class Enemy implements Serializable, Combatant {
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 1.2;   magDefenseGrowth = 0.3;
 			
-			healthBase = 30;    healthGrowth = 5;
+			healthBase = 0;    healthGrowth = 5;
 			
 			break;
 		case RAZORCLAW_CRAB:
@@ -67,13 +72,13 @@ public class Enemy implements Serializable, Combatant {
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 2.2;   magDefenseGrowth = 0.7;
 			
-			healthBase = 35;    healthGrowth = 6;
+			healthBase = 5;    healthGrowth = 6;
 			
 			break;
 		case DEATHSTALKER_CROW:
 			name = "Deathstalker Crow";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
-			width = 100; height = 150;
+			width = 150; height = 150;
 			xpPerLevel = 45;
 			
 			minLevel = 3;       maxLevel = 3;
@@ -83,7 +88,7 @@ public class Enemy implements Serializable, Combatant {
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 1.6;   magDefenseGrowth = 0.4;
 			
-			healthBase = 25;    healthGrowth = 5;
+			healthBase = 5;    healthGrowth = 5;
 			
 			break;
 		}
@@ -101,9 +106,12 @@ public class Enemy implements Serializable, Combatant {
 		magDefense.setBase((int) (magDefenseBase + (magDefenseGrowth * level)));
 		
 		maximumHealth.setBase((int) (healthBase + (healthGrowth * level)));
+		currentHealth.setBase(maximumHealth.getActual());
 		
+		xp = xpPerLevel * level;
 	}
-	
+
+
 	public String getName()	{
 		return name;
 	}
@@ -141,7 +149,7 @@ public class Enemy implements Serializable, Combatant {
 		return defense;
 	}
 	public int getXP()	{
-		return xpPerLevel * level;
+		return xp;
 	}
 	public Stat getCurrentHealth()	{
 		return currentHealth;
@@ -172,5 +180,17 @@ public class Enemy implements Serializable, Combatant {
 	}
 	public void modCurrentHealth(int health) {
 		currentHealth.modifyBase(health);
+	}
+	public boolean aliveEh()	{
+		return alive;
+	}
+	public boolean justDiedEh()	{
+		return justDied;
+	}
+	public void setAlive(boolean b)	{
+		alive = b;
+	}
+	public void setJustDied(boolean b)	{
+		justDied = b;
 	}
 }

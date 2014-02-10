@@ -285,11 +285,19 @@ public class DialogueBox extends JPanel{
 	 * @param instantWrite Whether or not the text will come one letter at a time or all at once
 	 */
 	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
-		restoreState = data.getGameState();
-		
 		this.dialogue = dialogue;
 		this.instantWrite = instantWrite;
 		startDialogue();
+	}
+	
+	/**
+	 * Add a message to the current dialogue box's messages. Instant write will be turned off
+	 * 
+	 * @param str The message to be added
+	 */
+	public void addDialogue(String str)	{
+		dialogue.add(str);
+		instantWrite = false;
 	}
 	/**
 	 * Uses the text box to show what item has just been looted.
@@ -311,7 +319,14 @@ public class DialogueBox extends JPanel{
 		this.instantWrite = false;
 		startDialogue();
 	}
-	private void startDialogue()	{
+	/**
+	 * Will start the dialogue that the sign has been provided. This is automatically called
+	 * when "setDialogue()" is invoked. Use this only when you have manually added dialogue
+	 * via the "addDialogue" method.
+	 */
+	public void startDialogue()	{
+		restoreState = data.getGameState();
+		
 		setVisible(true);
 		data.setGameState(GAME_STATE.TALK);
 		advanceDialogue();
@@ -348,7 +363,7 @@ public class DialogueBox extends JPanel{
 	/**
 	 * @return Whether or not the text box has more information to give
 	 */
-	private boolean hasNextLine()	{
+	public boolean hasNextLine()	{
 		if (dialogue.size() > 0)
 			return true;
 		else

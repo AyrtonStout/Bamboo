@@ -23,8 +23,26 @@ public class Encounter implements Serializable {
 		}
 	}
 	
+	
 	public ArrayList<Enemy> toArrayList()	{
 		return enemies;
+	}
+	
+	public boolean defeatedEh()	{
+		for (int i = 0; i < enemies.size(); i++)	{
+			if (enemies.get(i).getCurrentHealth().getActual() > 0)	{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int earnedXP()	{
+		int total = 0;
+		for (int i = 0; i < enemies.size(); i++)	{
+			total += enemies.get(i).getXP();
+		}
+		return total;
 	}
 	
 	public void drawEnemies(Graphics g)	{

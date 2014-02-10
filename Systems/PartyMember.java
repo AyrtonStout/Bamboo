@@ -64,6 +64,9 @@ public class PartyMember implements Serializable, Combatant {
 	private int height = 48;
 	private int offsetX;
 	
+	private boolean alive = true;
+	private boolean justDied = false;
+	
 	private ImageIcon current;
 	private ImageIcon portrait;
 	private ImageIcon left, up, right, down;
@@ -697,6 +700,26 @@ public class PartyMember implements Serializable, Combatant {
 	
 	public void setOrigin(Point origin)	{
 		this.origin = origin;
+	}
+
+	@Override
+	public boolean aliveEh() {
+		return alive;
+	}
+
+	@Override
+	public boolean justDiedEh() {
+		return justDied;
+	}
+
+	@Override
+	public void setAlive(boolean b) {
+		alive = b;
+	}
+
+	@Override
+	public void setJustDied(boolean b) {
+		justDied = b;
 	}
 		
 }

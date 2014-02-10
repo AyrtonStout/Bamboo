@@ -151,7 +151,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 					int random = rand.nextInt(100);
 					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random))	{
 						data.getBattleScreen().enterBattle(
-								data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEnemy(random));
+								data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEncounter(random));
 						queuedMove = false;
 					}
 				}

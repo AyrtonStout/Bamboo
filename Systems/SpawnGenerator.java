@@ -3,14 +3,18 @@ package Systems;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import Systems.Enums.MONSTER;
+
 public class SpawnGenerator implements Serializable {
+
+	private static final long serialVersionUID = -3440878875373516134L;
 	
-	ArrayList<Encounter> encounters;
+	ArrayList<ArrayList<MONSTER>> enemies;
 	ArrayList<Integer> spawnChances;
 	int spawnProbability;
 	
-	public SpawnGenerator(ArrayList<Encounter> encounters, ArrayList<Integer> spawnChance, int spawnProbability)	{
-		this.encounters = encounters;
+	public SpawnGenerator(ArrayList<ArrayList<MONSTER>> enemies, ArrayList<Integer> spawnChance, int spawnProbability)	{
+		this.enemies = enemies;
 		this.spawnChances = spawnChance;
 		this.spawnProbability = spawnProbability;
 		
@@ -30,12 +34,16 @@ public class SpawnGenerator implements Serializable {
 		return false;
 	}
 	
-	public Encounter spawnEnemy(int random)	{
+	public Encounter spawnEncounter(int random)	{
 		random = (int) 100.0 / spawnProbability * random;
 		
 		for (int i = spawnChances.size() - 1; i >= 0; i--)	{
 			if (random < spawnChances.get(i))	{
-				return encounters.get(i);
+				ArrayList<Enemy> mobs = new ArrayList<Enemy>();
+				for (int index = 0; index < enemies.get(i).size(); index++)	{
+					mobs.add(new Enemy(enemies.get(i).get(index)));
+				}
+				return new Encounter(mobs);
 			}
 			else	{
 				random -= spawnChances.get(i);

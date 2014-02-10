@@ -44,10 +44,10 @@ public class BattleScreen extends JPanel {
 	private final int SELECT = 1;
 	private final int WAIT = 2;
 	private final int ATTACK = 3;
+	private final int END = 4;
 	
-	private final int ANIM_ATTACK = 4;
-	private final int ANIM_RECOIL = 5;
-	private int animationSteps;
+	private final int ANIM_ATTACK = 5;
+	private final int ANIM_RECOIL = 6;
 	
 	private PartyMember activeMember;
 	private Enemy activeEnemy;
@@ -67,16 +67,11 @@ public class BattleScreen extends JPanel {
 		
 		try {
 			stream = new BufferedInputStream(
-					new FileInputStream("GUI/Resources/Font_Inventory.ttf"));
+					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			damageFont = baseFont.deriveFont(Font.PLAIN, 36);
 			healingFont = baseFont.deriveFont(Font.ITALIC, 48);
 			
-
-			stream = new BufferedInputStream(
-					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
-			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
-
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Use your words!! Font not found");
 			e.printStackTrace();
@@ -98,6 +93,7 @@ public class BattleScreen extends JPanel {
 		menu.erase();
 		menu.update();
 		data.setGameState(GAME_STATE.BATTLE);
+		state = MAIN;
 		data.getMenu().setVisible(true);         //Needed for some unknown stupid reason
 		data.getMenu().setVisible(false);
 		data.getMenu().shrink();
@@ -113,8 +109,8 @@ public class BattleScreen extends JPanel {
 		data.getGameBoard().add(this);
 		activeMember = data.getParty()[0];
 
-
 		this.enemies = enemies;
+		
 	}
 
 	public void leaveBattle()	{
@@ -221,6 +217,7 @@ public class BattleScreen extends JPanel {
 	}
 	
 	public void update()	{
+		System.out.println(enemies.toArrayList().get(0).getCurrentHealth().getActual() + "  " + state);
 		battleArea.update();
 		if (state == ANIM_ATTACK)	{
 			boolean turnOverEh = true;
@@ -231,13 +228,34 @@ public class BattleScreen extends JPanel {
 				}
 			}
 			if (turnOverEh)	{
+				for (int i = 0; i < enemies.toArrayList().size(); i++)	{
+					if (enemies.toArrayList().get(i).justDiedEh())	{
+						dialogue.addDialogue("Something just died!");
+					}
+				}
 				state = MAIN;
+				
+				if (enemies.defeatedEh())	{
+					dialogue.addDialogue("Your party earned " + enemies.earnedXP() + " XP!");
+					state = END;
+				}
+			}
+			
+		}
+		else if (state == MAIN || state == END)	{
+			if (dialogue.hasNextLine()){
+				if (data.getGameState() != GAME_STATE.TALK)	{
+					switchToTalk();
+					dialogue.startDialogue();
+				}
+			}
+			else if (state == END)	{
+				leaveBattle();
 			}
 		}
 	}
 	
 	private void startAttack()	{
-		animationSteps = 80;
 		state = ANIM_ATTACK;
 		activeMember.attackTarget(enemies.toArrayList().get(battleArea.enemyCursorPosition));
 	}
@@ -264,8 +282,6 @@ public class BattleScreen extends JPanel {
 		private ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
 		private ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
 
-		private int animationOffset;
-		
 
 		public BattleArea()	{
 			Dimension screenSize = new Dimension(600, 400);
@@ -283,6 +299,8 @@ public class BattleScreen extends JPanel {
 					}
 				}
 			}
+			
+			
 		}
 
 		@Override
@@ -327,9 +345,15 @@ public class BattleScreen extends JPanel {
 			
 			public BattleText(String str, Combatant target)	{
 				text = str;
-				this.x = target.getOrigin().x + target.getWidth() / 2 + 25;
+				
+				//Single + 15
+				//Double + 5
+				//Triple - 5
+				//Quadup - 15
+				
+				this.x = target.getOrigin().x + (target.getWidth() / 2) + (25 - 10 * text.length());
 				this.y = target.getOrigin().y + 10;
-				duration = 45;
+				duration = 55;
 			}
 			
 		}

@@ -25,7 +25,19 @@ public class Combat {
 		if (!missEh())	{
 			
 		}
-		data.getBattleScreen().addBattleText(damageDealt(), victim);
+		int painBrought = damageDealt(aggressor, victim);
+		
+		data.getBattleScreen().addBattleText(painBrought, victim);
+		victim.modCurrentHealth(-painBrought);
+		if (victim.getCurrentHealth().getActual() < 1)	{
+			victim.setJustDied(true);
+			victim.setAlive(false);
+		}
+
+		
+		if (aggressor.getClass() == PartyMember.class)	{
+			((PartyMember) aggressor).increaseDamageDealt(painBrought);
+		}
 	}
 	
 	public boolean missEh()	{
@@ -34,12 +46,13 @@ public class Combat {
 	public boolean critEh()	{
 		return false;
 	}
-	public int damageDealt()	{
+	public int damageDealt(Combatant aggressor, Combatant victim)	{
 		if (critEh())	{
 			return 0;
 		}
 		else	{
-			return 20;
+			return (aggressor.getAttack() - victim.getArmor().getActual() < 1) ? 
+					1 : aggressor.getAttack() - victim.getArmor().getActual();
 		}
 	}
 

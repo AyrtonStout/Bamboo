@@ -15,5 +15,9 @@ public interface Combatant {
 	public void modCurrentHealth(int health);
 	public int getWidth();
 	public int getHeight();
+	public boolean aliveEh();
+	public boolean justDiedEh();
+	public void setAlive(boolean b);
+	public void setJustDied(boolean b);
 
 }

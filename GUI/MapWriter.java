@@ -218,20 +218,20 @@ public class MapWriter {
 	 */
 	public static Map test1()	{
 		
-		ArrayList<Encounter> encounters = new ArrayList<Encounter>();
+		ArrayList<ArrayList<MONSTER>> encounters = new ArrayList<ArrayList<MONSTER>>();
 		ArrayList<Integer> spawnChances = new ArrayList<Integer>();
 		int spawnProbability = 20;
 		
-		ArrayList<Enemy> encounter1 = new ArrayList<Enemy>(4);
-		encounter1.add(new Enemy(MONSTER.GIANT_RAT));
-		ArrayList<Enemy> encounter2 = new ArrayList<Enemy>(4);
-		encounter2.add(new Enemy(MONSTER.RAZORCLAW_CRAB));
-		ArrayList<Enemy> encounter3 = new ArrayList<Enemy>(4);
-		encounter3.add(new Enemy(MONSTER.DEATHSTALKER_CROW));
+		ArrayList<MONSTER> encounter1 = new ArrayList<MONSTER>(4);
+		encounter1.add(MONSTER.GIANT_RAT);
+		ArrayList<MONSTER> encounter2 = new ArrayList<MONSTER>(4);
+		encounter2.add(MONSTER.RAZORCLAW_CRAB);
+		ArrayList<MONSTER> encounter3 = new ArrayList<MONSTER>(4);
+		encounter3.add(MONSTER.DEATHSTALKER_CROW);
 		
-		encounters.add(new Encounter(encounter1));
-		encounters.add(new Encounter(encounter2));
-		encounters.add(new Encounter(encounter3));
+		encounters.add(encounter1);
+		encounters.add(encounter2);
+		encounters.add(encounter3);
 		
 		spawnChances.add(50);
 		spawnChances.add(30);
