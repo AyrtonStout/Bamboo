@@ -390,6 +390,9 @@ public class PartyMember implements Serializable, Combatant {
 		currentHealth.modifyBase(health);
 	}
 
+	public double getHealthPercentage()	{
+		return (double) currentHealth.getActual() / maximumHealth.getActual();
+	}
 	
 	public Stat getMaxMana() {
 		return maximumMana;
@@ -406,7 +409,10 @@ public class PartyMember implements Serializable, Combatant {
 	public void setCurrentMana(Stat currentMana) {
 		this.currentMana = currentMana;
 	}
-
+	
+	public double getManaPercentage()	{
+		return (double) currentMana.getActual() / maximumMana.getActual();
+	}
 	
 	public Stat getStrength()	{
 		return strength;

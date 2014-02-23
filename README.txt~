@@ -16,12 +16,6 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
-v0.33
--Fixed several bugs with monsters. They now are new monsters every time instead of spawning the same one
--Basic attack now works and a basic damage indicator is available
--Text box will properly share certain information such as the XP from an enemy's death
--Battle properly exits upon an enemy dying though XP is not yet properly awarded
-
 v0.32
 -Arrows now appear and disappear at more logical times
 -Friendly and enemy targetting arrows

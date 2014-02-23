@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,7 +44,7 @@ public class BattleScreen extends JPanel {
 	private final int MAIN = 0;
 	private final int SELECT = 1;
 	private final int WAIT = 2;
-	private final int ATTACK = 3;
+	private final int ATTACK_SELECTION = 3;
 	private final int END = 4;
 	
 	private final int ANIM_ATTACK = 5;
@@ -55,7 +56,7 @@ public class BattleScreen extends JPanel {
 
 	private int state = MAIN;
 	
-	private Font damageFont, healingFont;
+	private Font floatingTextFont;
 	
 
 	public BattleScreen(GameData data)	{
@@ -69,8 +70,7 @@ public class BattleScreen extends JPanel {
 			stream = new BufferedInputStream(
 					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
-			damageFont = baseFont.deriveFont(Font.PLAIN, 36);
-			healingFont = baseFont.deriveFont(Font.ITALIC, 48);
+			floatingTextFont = baseFont.deriveFont(Font.PLAIN, 36);
 			
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Use your words!! Font not found");
@@ -150,7 +150,7 @@ public class BattleScreen extends JPanel {
 				switch (menu.cursorPosition)	{
 				case 0:
 					battleArea.targetAlly = false;
-					state = ATTACK; 
+					state = ATTACK_SELECTION; 
 					break;
 				case 1:
 					switchToTalk(); 
@@ -162,7 +162,7 @@ public class BattleScreen extends JPanel {
 				case 2:
 					break;
 				case 3:
-					leaveBattle(); 
+					attemptToRun();
 					break;
 				}
 			}
@@ -170,7 +170,7 @@ public class BattleScreen extends JPanel {
 		else if (state == SELECT)	{
 
 		}
-		else if (state == ATTACK)	{
+		else if (state == ATTACK_SELECTION)	{
 			if (e.getKeyCode() == KeyEvent.VK_UP)	{
 				if (battleArea.targetAlly)	{
 					if (battleArea.friendlyCursorPosition > 0)	{
@@ -209,6 +209,41 @@ public class BattleScreen extends JPanel {
 			}
 		}
 	}
+	
+	private void attemptToRun()	{
+		double partyEscape = calculatePartyEscapeScore();
+		double enemyAggro = enemies.calculateAggressionScore();
+		
+		System.out.println(partyEscape);
+		System.out.println(enemyAggro+"\n");
+		
+		Random rand = new Random();
+		partyEscape *= ((0.7 + rand.nextDouble()) / 2);
+		enemyAggro *= ((0.5 + rand.nextDouble()) / 2);
+		
+		System.out.println(partyEscape);
+		System.out.println(enemyAggro);
+		System.out.println();
+		
+		if (partyEscape > enemyAggro)	{
+			leaveBattle(); 
+		}
+	}
+	
+	private double calculatePartyEscapeScore()	{
+		double aggressionScore = 0;
+		int highestLevel = 0;
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null && data.getParty()[i].aliveEh())	{
+				aggressionScore += (data.getParty()[i].getLevel() / 2.0) * data.getParty()[i].getHealthPercentage();
+				if (data.getParty()[i].getLevel() > highestLevel)	{
+					highestLevel = data.getParty()[i].getLevel();
+				}
+			}
+		}
+		aggressionScore += highestLevel / 2.0;
+		return aggressionScore;
+	}
 
 	private void switchToTalk()	{
 		this.remove(menu);
@@ -221,35 +256,15 @@ public class BattleScreen extends JPanel {
 	}
 	
 	public void update()	{
-		System.out.println(enemies.toArrayList().get(0).getCurrentHealth().getActual() + "  " + state);
+//		System.out.println(enemies.toArrayList().get(0).getCurrentHealth().getActual());
 		battleArea.update();
 		if (state == ANIM_ATTACK)	{
-			boolean turnOverEh = true;
-			for (int i = 0; i < data.getParty().length; i++)	{
-				if (data.getParty()[i] != null && data.getParty()[i].getAction() != COMBAT_ACTION.IDLE)	{
-					turnOverEh = false;
-					break;
-				}
-			}
-			if (turnOverEh)	{
-				for (int i = 0; i < enemies.toArrayList().size(); i++)	{
-					if (enemies.toArrayList().get(i).justDiedEh())	{
-						dialogue.addDialogue(enemies.toArrayList().get(i).getName() + " has been killed!");
-					}
-				}
+			if (turnOverEh())	{
+				checkForDeaths();
 				state = MAIN;
-				
-				if (enemies.defeatedEh())	{
-					dialogue.addDialogue("Your party earned " + enemies.earnedXP() + " XP!");
-					enemies.giveXP(data.getParty());
-					for (int i = 0; i < data.getParty().length; i++)	{
-						if (data.getParty()[i] != null && data.getParty()[i].levelUpEh())	{
-							while (data.getParty()[i].levelUpEh())	{
-								data.getParty()[i].levelUp();
-							}
-							dialogue.addDialogue(data.getParty()[i].getName() + " is now level " + data.getParty()[i].getLevel() + "!");
-						}
-					}
+				if (enemies.allDefeated())	{
+					awardXP();
+					checkForLevelUps();
 					state = END;
 				}
 			}
@@ -264,6 +279,40 @@ public class BattleScreen extends JPanel {
 			}
 			else if (state == END)	{
 				leaveBattle();
+			}
+		}
+	}
+	
+	private boolean turnOverEh()	{
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null && data.getParty()[i].getAction() != COMBAT_ACTION.IDLE)	{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private void checkForDeaths()	{
+		for (int i = 0; i < enemies.toArrayList().size(); i++)	{
+			if (enemies.toArrayList().get(i).justDiedEh())	{
+				dialogue.addDialogue(enemies.toArrayList().get(i).getName() + " has been killed!");
+				enemies.toArrayList().get(i).setJustDied(false);
+			}
+		}
+	}
+	
+	private void awardXP()	{
+		dialogue.addDialogue("Your party earned " + enemies.earnedXP() + " XP!");
+		enemies.giveXP(data.getParty());
+	}
+	
+	private void checkForLevelUps()	{
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null && data.getParty()[i].levelUpEh())	{
+				while (data.getParty()[i].levelUpEh())	{
+					data.getParty()[i].levelUp();
+				}
+				dialogue.addDialogue(data.getParty()[i].getName() + " is now level " + data.getParty()[i].getLevel() + "!");
 			}
 		}
 	}
@@ -312,14 +361,21 @@ public class BattleScreen extends JPanel {
 					}
 				}
 			}
-			
-			
 		}
 
 		@Override
 		protected void paintComponent(Graphics g)	{
+			drawBattleText(g);
+			drawParty(g);
+			enemies.drawEnemies(g);
+			if (state == ATTACK_SELECTION)	{
+				drawTargetCursor(g);
+			}
+		}
+		
+		private void drawBattleText(Graphics g)	{
 			g.setColor(Color.RED);
-			g.setFont(damageFont);
+			g.setFont(floatingTextFont);
 			for (int i = 0; i < battleText.size(); i++)	{
 				g.drawString(battleText.get(i).text, battleText.get(i).x, battleText.get(i).y);
 				battleText.get(i).duration--;
@@ -327,21 +383,23 @@ public class BattleScreen extends JPanel {
 					battleText.remove(i);
 				}
 			}
+		}
+		private void drawParty(Graphics g)	{
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] != null)	{
 					data.getParty()[i].drawSelf(g);
 				}
 			}
-			enemies.drawEnemies(g);
-			if (state == ATTACK)	{
-				if (!targetAlly)	{
-					Enemy target = enemies.toArrayList().get(enemyCursorPosition);
-					g.drawImage(enemyCursor.getImage(), target.getOrigin().x - 10, 
-							target.getOrigin().y + target.getHeight() / 2 + 10, null);
-				}
-				else	{
-					g.drawImage(friendlyCursor.getImage(), 110, 105 + 80 * friendlyCursorPosition, null);
-				}
+		}
+		
+		private void drawTargetCursor(Graphics g)	{
+			if (!targetAlly)	{
+				Enemy target = enemies.toArrayList().get(enemyCursorPosition);
+				g.drawImage(enemyCursor.getImage(), target.getOrigin().x - 10, 
+						target.getOrigin().y + target.getHeight() / 2 + 10, null);
+			}
+			else	{
+				g.drawImage(friendlyCursor.getImage(), 110, 105 + 80 * friendlyCursorPosition, null);
 			}
 		}
 		
@@ -358,12 +416,6 @@ public class BattleScreen extends JPanel {
 			
 			public BattleText(String str, Combatant target)	{
 				text = str;
-				
-				//Single + 15
-				//Double + 5
-				//Triple - 5
-				//Quadup - 15
-				
 				this.x = target.getOrigin().x + (target.getWidth() / 2) + (25 - 10 * text.length());
 				this.y = target.getOrigin().y + 10;
 				duration = 55;
@@ -384,6 +436,12 @@ public class BattleScreen extends JPanel {
 			this.setMinimumSize(screenSize);
 
 			this.setBackground(Color.BLUE);
+		}
+		
+		private class TurnIcon extends JPanel	{
+			
+//			private 
+			
 		}
 
 	}
@@ -529,9 +587,9 @@ public class BattleScreen extends JPanel {
 
 			private static final long serialVersionUID = 7766824167479673649L;
 
-			JLabel name = new JLabel("Name");
-			JLabel health = new JLabel("100/100");
-			JLabel mana = new JLabel("50/50");
+			JLabel name = new JLabel();
+			JLabel health = new JLabel();
+			JLabel mana = new JLabel();
 
 			public partyStatus()	{
 				this.setPreferredSize(new Dimension(320, 30));

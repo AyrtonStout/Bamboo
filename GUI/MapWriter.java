@@ -11,8 +11,6 @@ import Quests.TEvent;
 import Quests.Trigger;
 import Quests.Enums.*;
 import Systems.Consumable;
-import Systems.Encounter;
-import Systems.Enemy;
 import Systems.Enums.MACE;
 import Systems.Enums.MONSTER;
 import Systems.Enums.POTION;

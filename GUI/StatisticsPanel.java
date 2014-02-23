@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -69,7 +68,6 @@ public class StatisticsPanel extends JPanel {
 		JPanel inner = new JPanel();
 		private boolean visible = true;
 		private ImageIcon cursor = new ImageIcon("GUI/Resources/Icon_RedArrow.png");
-		private ImageIcon background = new ImageIcon("GUI/Resources/Inventory_HeaderBackground.png");
 		private int cursorPosition = 0;
 		JLabel[] party = new JLabel[] {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel(), 
 				new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
@@ -102,7 +100,6 @@ public class StatisticsPanel extends JPanel {
 		@Override
 		protected void paintComponent(Graphics g) {
 			if (visible)	{
-//				g.drawImage(background.getImage(), 0, 0, null);
 				g.drawImage(cursor.getImage(), 37 + (50 * cursorPosition), 66, null);
 			}
 		}

@@ -28,7 +28,7 @@ public class Encounter implements Serializable {
 		return enemies;
 	}
 	
-	public boolean defeatedEh()	{
+	public boolean allDefeated()	{
 		for (int i = 0; i < enemies.size(); i++)	{
 			if (enemies.get(i).getCurrentHealth().getActual() > 0)	{
 				return false;
@@ -63,6 +63,21 @@ public class Encounter implements Serializable {
 		for (int i = 0; i < partySize; i++)	{
 			party[i].giveXP(earnedXP() / partySize);
 		}
+	}
+	
+	public double calculateAggressionScore()	{
+		double aggressionScore = 0;
+		int highestLevel = 0;
+		for (int i = 0; i < enemies.size(); i++)	{
+			if (enemies.get(i).aliveEh())	{
+				aggressionScore += (enemies.get(i).getLevel() / 2.0) * enemies.get(i).getHealthPercentage();
+				if (enemies.get(i).getLevel() > highestLevel)	{	
+					highestLevel = enemies.get(i).getLevel();
+				}
+			}
+		}
+		aggressionScore += highestLevel / 2.0;
+		return aggressionScore;
 	}
 
 }

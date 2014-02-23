@@ -219,10 +219,6 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			updateCoordinate(action, true);
 		}
 	}
-	
-	private void continueMovement()	{
-		
-	}
 
 	/**
 	 * @param action The player's queued move

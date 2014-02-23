@@ -157,11 +157,23 @@ public class Enemy implements Serializable, Combatant {
 	public int getMaximumHealth()	{
 		return maximumHealth.getActual();
 	}
+	/**
+	 * @return A double between 0 and 1
+	 */
+	public double getHealthPercentage()	{
+		return (double) currentHealth.getActual() / maximumHealth.getActual();
+	}
 	public int getCurrentMana()	{
 		return currentMana.getActual();
 	}
 	public int getMaximumMana()	{
 		return maximumMana.getActual();
+	}
+	/**
+	 * @return A number between 0 and 1
+	 */
+	public double getManaPercentage()	{
+		return (double) currentMana.getActual() / maximumMana.getActual();
 	}
 	public int getWidth()	{
 		return width;
