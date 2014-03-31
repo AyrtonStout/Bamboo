@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -27,6 +28,7 @@ import Systems.Combatant;
 import Systems.Encounter;
 import Systems.Enemy;
 import Systems.Enums.COMBAT_ACTION;
+import Systems.Enums.COMBAT_START;
 import Systems.GameData;
 import Systems.PartyMember;
 
@@ -35,9 +37,10 @@ public class BattleScreen extends JPanel {
 	private static final long serialVersionUID = 9019740276603325359L;
 	private GameData data;
 	private Encounter enemies;
+	private COMBAT_START startCondition;
 
 	private BattleArea battleArea = new BattleArea();
-	private TurnOrder turns = new TurnOrder();
+	private TurnOrder turnOrder = new TurnOrder();
 	private Menu menu = new Menu();
 	private DialogueBox dialogue;
 
@@ -84,7 +87,7 @@ public class BattleScreen extends JPanel {
 
 		this.setLayout(new BorderLayout());
 		this.add(battleArea, BorderLayout.NORTH);
-		this.add(turns, BorderLayout.CENTER);
+		this.add(turnOrder, BorderLayout.CENTER);
 		this.add(menu, BorderLayout.SOUTH);
 
 	}
@@ -99,6 +102,8 @@ public class BattleScreen extends JPanel {
 		data.getMenu().shrink();
 		data.getDialogueBox().shrink();
 		
+		startCondition = COMBAT_START.NORMAL;
+		
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null)	{
 				data.getParty()[i].setCurrent(data.getParty()[i].getRight());
@@ -111,6 +116,8 @@ public class BattleScreen extends JPanel {
 
 		this.enemies = enemies;
 		
+		turnOrder.initialize();
+		
 	}
 
 	public void leaveBattle()	{
@@ -120,6 +127,7 @@ public class BattleScreen extends JPanel {
 		data.getDialogueBox().restore();
 		data.getGameBoard().remove(this);
 		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
+		turnOrder.clear();
 //		data.getDialogueBox().setVisible(true);
 //		data.getDialogueBox().restore();
 	}
@@ -242,6 +250,7 @@ public class BattleScreen extends JPanel {
 			}
 		}
 		aggressionScore += highestLevel / 2.0;
+		aggressionScore += 1; //buffer to make earlier levels easy to escape
 		return aggressionScore;
 	}
 
@@ -256,7 +265,6 @@ public class BattleScreen extends JPanel {
 	}
 	
 	public void update()	{
-//		System.out.println(enemies.toArrayList().get(0).getCurrentHealth().getActual());
 		battleArea.update();
 		if (state == ANIM_ATTACK)	{
 			if (turnOverEh())	{
@@ -267,6 +275,8 @@ public class BattleScreen extends JPanel {
 					checkForLevelUps();
 					state = END;
 				}
+				turnOrder.calculateTurnOrder();
+				
 			}
 			
 		}
@@ -428,7 +438,14 @@ public class BattleScreen extends JPanel {
 	private class TurnOrder extends JPanel	{
 
 		private static final long serialVersionUID = -4464976184980976130L;
-
+		private ArrayList<Combatant> turns = new ArrayList<Combatant>();
+		private ArrayList<ImageIcon> turnIcons = new ArrayList<ImageIcon>();
+		
+		private int baseTurnMaximum = 0;
+		private final int PREDICTIVE_SIZE = 12;
+		
+		ArrayList<Combatant> combatants = new ArrayList<Combatant>();
+		
 		public TurnOrder()	{
 			Dimension screenSize = new Dimension(600, 50);
 			this.setPreferredSize(screenSize);
@@ -436,12 +453,102 @@ public class BattleScreen extends JPanel {
 			this.setMinimumSize(screenSize);
 
 			this.setBackground(Color.BLUE);
+					
 		}
 		
-		private class TurnIcon extends JPanel	{
+		public void initialize()	{
+			for (int i = 0; i < PREDICTIVE_SIZE; i++)	{
+				turnIcons.add(new ImageIcon());
+			}
+			for (int i = 0; i < data.getParty().length; i++)	{
+				if (data.getParty()[i] != null)	{
+					combatants.add(data.getParty()[i]);
+					if (data.getParty()[i].getSpeed().getActual() > baseTurnMaximum)	{
+						baseTurnMaximum = data.getParty()[i].getSpeed().getActual();
+					}
+				}
+			}
+			for (int i = 0; i < enemies.toArrayList().size(); i++)	{
+				combatants.add(enemies.toArrayList().get(i));
+				if (enemies.toArrayList().get(i).getSpeed().getActual() > baseTurnMaximum)	{
+					baseTurnMaximum = enemies.toArrayList().get(i).getSpeed().getActual();
+				}
+			}
 			
-//			private 
+			for (int i = 0; i < combatants.size(); i++)	{
+				combatants.get(i).setTurnMaximum(2 * baseTurnMaximum - combatants.get(i).getSpeed().getActual());
+				if (startCondition == COMBAT_START.AMBUSH)	{
+					if (combatants.get(i).getClass() == PartyMember.class)	{
+						combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum());
+					}
+					else if (combatants.get(i).getClass() == Enemy.class)	{
+						combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/5);
+					}
+				}
+				else if (startCondition == COMBAT_START.NORMAL)	{
+					combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/2);
+				}
+				else if (startCondition == COMBAT_START.PREEMPTIVE)	{
+					if (combatants.get(i).getClass() == PartyMember.class)	{
+						combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/5);
+					}
+					else if (combatants.get(i).getClass() == Enemy.class)	{
+						combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum());
+					}
+				}
+			}
+			calculateTurnOrder();
+		}
+		
+		public void clear()	{
+			int size = combatants.size();
+			for (int i = 0; i < size; i++)	{
+				combatants.remove(0);
+			}
+			baseTurnMaximum = 0;
+			for (int i = 0; i < PREDICTIVE_SIZE; i++)	{
+				turnIcons.remove(0);
+			}
+		}
+		
+		public void updateImages()	{
+			for (int i = 0; i < turnIcons.size(); i++)	{
+				turnIcons.set(i, turns.get(i).getBattlePicture());
+			}
+		}
+		
+		private void calculateTurnOrder()	{
+			int size = turns.size();
+			for (int i = 0; i < size; i++)	{
+				turns.remove(0);
+			}
 			
+			for (int i = 0; i < PREDICTIVE_SIZE; i++)	{
+				Combatant fastest = null;
+				for (int j = 0; j < combatants.size(); j++)	{
+					if (combatants.get(j).aliveEh())	{
+						Combatant compare = combatants.get(j);
+						if (fastest == null || compare.getPredictiveSpeed() < fastest.getPredictiveSpeed())	{
+							System.out.println(compare.getName() + "  " + compare.getPredictiveSpeed() + "/" + 
+									compare.getTurnMaximum());
+							fastest = compare;
+						}
+					}
+				}
+				fastest.incrementTurnPrediction();
+				turns.add(fastest);
+			}
+			for (int i = 0; i < combatants.size(); i++)	{
+				combatants.get(i).clearTurnPrediction();
+			}
+			updateImages();
+		}
+		
+		@Override
+		protected void paintComponent(Graphics g)	{
+			for (int i = 0; i < turnIcons.size(); i++)	{
+				g.drawImage(turnIcons.get(i).getImage(), i * 50, 0, null);
+			}
 		}
 
 	}

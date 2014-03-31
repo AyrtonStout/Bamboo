@@ -14,6 +14,10 @@ public class Enums {
 		
 	}
 	
+	public enum COMBAT_START	{
+		PREEMPTIVE, NORMAL, AMBUSH;
+	}
+	
 	/*
 	 * Weapon enums
 	 */

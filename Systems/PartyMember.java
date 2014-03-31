@@ -64,6 +64,11 @@ public class PartyMember implements Serializable, Combatant {
 	private int height = 48;
 	private int offsetX;
 	
+	private int turnPriority = 0;
+	private int turnMaximum = 0;
+	private int turnPrediction = 0; //This is the number of turns in advance that the BattleScreen is using to calculate turn order
+	                                //When the BattleScreen isn't calculating this is always 0
+	
 	private boolean alive = true;
 	private boolean justDied = false;
 	
@@ -95,6 +100,8 @@ public class PartyMember implements Serializable, Combatant {
 			luck = new Stat(7);
 			stamina = new Stat(8);
 			
+			speed = new Stat(9);
+			
 			partialStr = 3;
 			partialAgi = 6;
 			partialInt = 4;
@@ -115,6 +122,8 @@ public class PartyMember implements Serializable, Combatant {
 			intellect = new Stat(8);
 			luck = new Stat(8);
 			stamina = new Stat(7);
+			
+			speed = new Stat(8);
 			
 			partialStr = 6;
 			partialAgi = 6;
@@ -139,6 +148,7 @@ public class PartyMember implements Serializable, Combatant {
 		
 		actionIMG = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
 		leap = new ImageIcon("GUI/Resources/Characters/" + name + " - Leap.gif");
+//		battlePicture = new ImageIcon("GUI/Resources/Characters/" + name + " - Battle.png");
 		
 		refresh();
 	}
@@ -277,6 +287,10 @@ public class PartyMember implements Serializable, Combatant {
 	//--------------------------------------
 	public ImageIcon getPortrait()	{
 		return portrait;
+	}
+	
+	public ImageIcon getBattlePicture()	{
+		return actionIMG;
 	}
 	
 	public ImageIcon getLeft()	{
@@ -550,7 +564,40 @@ public class PartyMember implements Serializable, Combatant {
 		return height;
 	}
 	
+	public int getTurnPriority()	{
+		return turnPriority;
+	}
 	
+	public void setTurnPriority(int newPrio)	{
+		turnPriority = newPrio;
+	}
+	
+	public int getTurnMaximum()	{
+		return turnMaximum;
+	}
+	
+	public void setTurnMaximum(int newMax)	{
+		turnMaximum = newMax;
+	}
+	
+	public int getTurnPrediction()	{
+		return turnPrediction;
+	}
+	
+	@Override
+	public void incrementTurnPrediction()	{
+		turnPrediction++;
+	}
+	
+	@Override
+	public void clearTurnPrediction()	{
+		turnPrediction = 0;
+	}
+	
+	@Override
+	public int getPredictiveSpeed()	{
+		return turnPriority + turnPrediction * (turnMaximum/2);
+	}
 	//-------------------------------------------
 	public void incrementKills()	{
 		kills++;

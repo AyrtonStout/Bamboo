@@ -13,7 +13,7 @@ public class Enemy implements Serializable, Combatant {
 	private static final long serialVersionUID = 8656364136085883106L;
 	
 	private String name;
-	private ImageIcon picture;
+	private ImageIcon picture, battlePicture;
 	private int width, height;            //Dimensions of the artwork for the enemy
 	private Point origin;                 //The point that the enemy is drawn to on the battle screen
 	private boolean alive = true;
@@ -31,6 +31,10 @@ public class Enemy implements Serializable, Combatant {
 	private int level; 
 	private int xp;
 	
+	private int turnPriority = 0;
+	private int turnMaximum = 0;
+	private int turnPrediction = 0;
+	
 	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
 	private Stat currentMana = new Stat(0), maximumMana = new Stat(0);
 	
@@ -40,12 +44,15 @@ public class Enemy implements Serializable, Combatant {
 		int healthBase = 0, healthGrowth = 0;
 		double attackBase = 0, defenseBase = 0, magicBase = 0, magDefenseBase = 0;
 		double attackGrowth = 0, defenseGrowth = 0, magicGrowth = 0, magDefenseGrowth = 0;
+		double speedBase = 0;
+		double speedGrowth = 0;
 		int xpPerLevel = 0;
 		
 		switch (type)	{
 		case GIANT_RAT:
 			name = "Giant Rat";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
 			width = 150; height = 150;
 			xpPerLevel = 40;
 			
@@ -55,6 +62,7 @@ public class Enemy implements Serializable, Combatant {
 			defenseBase = 3.6;      defenseGrowth = 0.9;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 1.2;   magDefenseGrowth = 0.3;
+			speedBase = 5; speedGrowth = 0.4;
 			
 			healthBase = 0;    healthGrowth = 5;
 			
@@ -62,6 +70,7 @@ public class Enemy implements Serializable, Combatant {
 		case RAZORCLAW_CRAB:
 			name = "Razorclaw Crab";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
 			width = 150; height = 150;
 			xpPerLevel = 45;
 			
@@ -71,6 +80,7 @@ public class Enemy implements Serializable, Combatant {
 			defenseBase = 4.8;      defenseGrowth = 1.9;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 2.2;   magDefenseGrowth = 0.7;
+			speedBase = 3; speedGrowth = 0.3;
 			
 			healthBase = 5;    healthGrowth = 6;
 			
@@ -78,6 +88,7 @@ public class Enemy implements Serializable, Combatant {
 		case DEATHSTALKER_CROW:
 			name = "Deathstalker Crow";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
+			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
 			width = 150; height = 150;
 			xpPerLevel = 45;
 			
@@ -87,6 +98,7 @@ public class Enemy implements Serializable, Combatant {
 			defenseBase = 2.6;      defenseGrowth = 0.7;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 1.6;   magDefenseGrowth = 0.4;
+			speedBase = 9; speedGrowth = 0.5;
 			
 			healthBase = 5;    healthGrowth = 5;
 			
@@ -104,6 +116,7 @@ public class Enemy implements Serializable, Combatant {
 		defense.setBase((int) (defenseBase + (defenseGrowth * level)));
 		magic.setBase((int) (magicBase + (magicGrowth * level)));
 		magDefense.setBase((int) (magDefenseBase + (magDefenseGrowth * level)));
+		speed.setBase((int) (speedBase + (speedGrowth * level)));
 		
 		maximumHealth.setBase((int) (healthBase + (healthGrowth * level)));
 		currentHealth.setBase(maximumHealth.getActual());
@@ -117,6 +130,9 @@ public class Enemy implements Serializable, Combatant {
 	}
 	public ImageIcon getPicture()	{
 		return picture;
+	}
+	public ImageIcon getBattlePicture()	{
+		return battlePicture;
 	}
 	public int getLevel()	{
 		return level;
@@ -133,8 +149,8 @@ public class Enemy implements Serializable, Combatant {
 	public int getMagDefense()	{
 		return magDefense.getActual();
 	}
-	public int getSpeed()	{
-		return speed.getActual();
+	public Stat getSpeed()	{
+		return speed;
 	}
 	public Stat getCritChance() {
 		return critChance;
@@ -193,16 +209,52 @@ public class Enemy implements Serializable, Combatant {
 	public void modCurrentHealth(int health) {
 		currentHealth.modifyBase(health);
 	}
+	@Override
 	public boolean aliveEh()	{
 		return alive;
 	}
+	@Override
 	public boolean justDiedEh()	{
 		return justDied;
 	}
+	@Override
 	public void setAlive(boolean b)	{
 		alive = b;
 	}
+	@Override
 	public void setJustDied(boolean b)	{
 		justDied = b;
+	}
+	@Override
+	public int getTurnPriority()	{
+		return turnPriority;
+	}
+	@Override
+	public void setTurnPriority(int newPrio)	{
+		turnPriority = newPrio;
+	}
+	@Override
+	public int getTurnMaximum()	{
+		return turnMaximum;
+	}
+	@Override
+	public void setTurnMaximum(int newMax)	{
+		turnMaximum = newMax;
+	}
+	@Override
+	public int getTurnPrediction() {
+		return turnPrediction;
+	}
+	@Override
+	public void incrementTurnPrediction() {
+		turnPrediction++;
+	}
+	@Override
+	public void clearTurnPrediction() {
+		turnPrediction = 0;
+	}
+	@Override
+	public int getPredictiveSpeed()	{
+		return turnPriority + turnPrediction * (turnMaximum/2);
 	}
 }
