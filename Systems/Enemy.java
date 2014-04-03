@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import Systems.Enums.COMBAT_ACTION;
 import Systems.Enums.MONSTER;
 
 public class Enemy implements Serializable, Combatant {
@@ -15,6 +16,7 @@ public class Enemy implements Serializable, Combatant {
 	private String name;
 	private ImageIcon picture, battlePicture;
 	private int width, height;            //Dimensions of the artwork for the enemy
+	private int offsetX;                  //Used for animating attack
 	private Point origin;                 //The point that the enemy is drawn to on the battle screen
 	private boolean alive = true;
 	private boolean justDied = false;
@@ -37,6 +39,10 @@ public class Enemy implements Serializable, Combatant {
 	
 	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
 	private Stat currentMana = new Stat(0), maximumMana = new Stat(0);
+	
+	private COMBAT_ACTION combatAction = COMBAT_ACTION.IDLE;
+	private int animationSteps = 0;
+	private Combatant target;
 	
 	public Enemy (MONSTER type)	{
 		Random rand = new Random();
@@ -124,6 +130,49 @@ public class Enemy implements Serializable, Combatant {
 		xp = xpPerLevel * level;
 	}
 
+	public void attackTarget(Combatant target)	{
+		combatAction = COMBAT_ACTION.ATTACK;
+		animationSteps = 80;
+		this.target = target;
+	}
+	
+	public void update()	{
+		switch (combatAction)	{
+		case IDLE:
+			break;
+		case ATTACK:
+			if (animationSteps == 75)	{
+				animationSteps -= 1;
+			}
+			else if (animationSteps > 40)	{
+				animationSteps -= 1;
+			}
+			else if (animationSteps == 40)	{
+				combatAction = COMBAT_ACTION.IMPACT;
+				animationSteps -= 1;
+			}
+			else if (animationSteps > 20)	{
+				offsetX -= 6;
+				animationSteps -= 4;
+			}
+			else if (animationSteps > 0)	{
+				offsetX += 6;
+				animationSteps -= 4;
+			}
+			else {
+				combatAction = COMBAT_ACTION.IDLE;
+			}
+			break;
+		case IMPACT:
+			combatAction = COMBAT_ACTION.ATTACK;
+		}
+	}
+	
+	public void takeAction(PartyMember[] party)	{
+		target = party[0];
+		combatAction = COMBAT_ACTION.ATTACK;
+		animationSteps = 100;
+	}
 
 	public String getName()	{
 		return name;
@@ -133,6 +182,9 @@ public class Enemy implements Serializable, Combatant {
 	}
 	public ImageIcon getBattlePicture()	{
 		return battlePicture;
+	}
+	public int getOffsetX()	{
+		return offsetX;
 	}
 	public int getLevel()	{
 		return level;
@@ -256,5 +308,13 @@ public class Enemy implements Serializable, Combatant {
 	@Override
 	public int getPredictiveSpeed()	{
 		return turnPriority + turnPrediction * (turnMaximum/2);
+	}
+	@Override
+	public Combatant getTarget()	{
+		return target;
+	}
+	@Override
+	public COMBAT_ACTION getCombatAction()	{
+		return combatAction;
 	}
 }

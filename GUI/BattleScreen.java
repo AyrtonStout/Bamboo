@@ -45,7 +45,7 @@ public class BattleScreen extends JPanel {
 	private BattleMenu menu;
 	private DialogueBox dialogue;
 
-	private PartyMember activeMember;
+	private Combatant activeMember;
 	private Enemy activeEnemy;
 	private boolean playerMove = true;
 
@@ -90,12 +90,10 @@ public class BattleScreen extends JPanel {
 		}
 		
 		data.getGameBoard().add(this);
-		activeMember = data.getParty()[0];
-
 		this.enemies = enemies;
 		
 		turnOrder.initialize();
-		
+		activeMember = turnOrder.getActiveCombatant();		
 	}
 
 	public void leaveBattle()	{
@@ -217,6 +215,9 @@ public class BattleScreen extends JPanel {
 	public void update()	{
 		battleArea.update();
 		if (state == BATTLE_STATE.ANIM_ATTACK)	{
+			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
+				data.getCombat().attack(activeMember, activeMember.getTarget());
+			}
 			if (turnOverEh())	{
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
@@ -225,12 +226,16 @@ public class BattleScreen extends JPanel {
 					checkForLevelUps();
 					state = BATTLE_STATE.END;
 				}
-				turnOrder.calculateTurnOrder();
-				
+				turnOrder.endCombatantTurn(1);
+				activeMember = turnOrder.getActiveCombatant();
+				if (activeMember.getClass() == Enemy.class)	{
+					((Enemy) activeMember).takeAction(data.getParty());
+					state = BATTLE_STATE.ANIM_ATTACK;
+				}
 			}
 			
 		}
-		else if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END)	{
+		else if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END || state == BATTLE_STATE.ENEMY_MOVE)	{
 			if (dialogue.hasNextLine()){
 				if (data.getGameState() != GAME_STATE.TALK)	{
 					switchToTalk();
@@ -246,6 +251,11 @@ public class BattleScreen extends JPanel {
 	private boolean turnOverEh()	{
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null && data.getParty()[i].getAction() != COMBAT_ACTION.IDLE)	{
+				return false;
+			}
+		}
+		for (int i = 0; i < enemies.toArrayList().size(); i++)	{
+			if (enemies.toArrayList().get(i).getCombatAction() != COMBAT_ACTION.IDLE)	{
 				return false;
 			}
 		}
@@ -286,11 +296,6 @@ public class BattleScreen extends JPanel {
 		battleArea.addBattleText(damage, target);
 	}
 
-	@Override
-	protected void paintComponent(Graphics g)	{
-		super.paintComponent(g);
-	}
-	
 	public BATTLE_STATE getState() {
 		return state;
 	}
@@ -303,4 +308,10 @@ public class BattleScreen extends JPanel {
 	public boolean playerMoveEh()	{
 		return playerMove;
 	}
+	
+	@Override
+	protected void paintComponent(Graphics g)	{
+		super.paintComponent(g);
+	}
+	
 }

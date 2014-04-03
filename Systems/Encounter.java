@@ -48,7 +48,7 @@ public class Encounter implements Serializable {
 	public void drawEnemies(Graphics g)	{
 		for (int i = 0; i < enemies.size(); i++)	{
 			Enemy enemy = enemies.get(i);
-			g.drawImage(enemy.getPicture().getImage(), enemy.getOrigin().x, enemy.getOrigin().y, null);
+			g.drawImage(enemy.getPicture().getImage(), enemy.getOrigin().x + enemy.getOffsetX(), enemy.getOrigin().y, null);
 		}
 	}
 

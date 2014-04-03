@@ -62,13 +62,19 @@ public class BattleArea extends JPanel	{
 	}
 
 	public void update()	{
-		if (battleScreen.playerMoveEh())	{
+//		if (battleScreen.playerMoveEh())	{
 			for (int i = 0; i < data.getParty().length; i++)	{
 				if (data.getParty()[i] != null)	{
 					data.getParty()[i].update();
 				}
 			}
-		}
+//		}
+//		else	{
+			ArrayList<Enemy> enemies = battleScreen.getEnemies().toArrayList();
+			for (int i = 0; i < enemies.size(); i++)	{
+				enemies.get(i).update();
+			}
+//		}
 	}
 
 	@Override

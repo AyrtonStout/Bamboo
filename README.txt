@@ -16,6 +16,12 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.34
+-Enemies now fight back, though are limited to attacking the first party member
+-Party members and enemies now attack more frequently relative to their speed
+-This turn order is visible, and predictive
+-Battles support multiple party members
+
 v0.33
 -Fixed several bugs with monsters. They now are new monsters every time instead of spawning the same one
 -Basic attack now works and a basic damage indicator is available

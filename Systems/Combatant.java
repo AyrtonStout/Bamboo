@@ -4,6 +4,8 @@ import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
+import Systems.Enums.COMBAT_ACTION;
+
 public interface Combatant {
 	
 	public String getName();
@@ -29,6 +31,9 @@ public interface Combatant {
 	public int getTurnMaximum();
 	public void setTurnMaximum(int maximum);
 	public int getTurnPrediction();
+	public void attackTarget(Combatant target);
+	public COMBAT_ACTION getCombatAction();
+	public Combatant getTarget();
 	
 	/**
 	 * This is used to calculate the turn order of the combatants in advance. This integer saves the prediction

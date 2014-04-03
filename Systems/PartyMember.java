@@ -267,7 +267,7 @@ public class PartyMember implements Serializable, Combatant {
 			else if (animationSteps == 40)	{
 				current = leap;
 				animationSteps -= 1;
-				data.getCombat().attack(this, target);
+				combatAction = COMBAT_ACTION.IMPACT;
 			}
 			else if (animationSteps > 20)	{
 				offsetX += 4;
@@ -281,7 +281,10 @@ public class PartyMember implements Serializable, Combatant {
 				current = right;
 				combatAction = COMBAT_ACTION.IDLE;
 			}
-		}
+			break;
+		case IMPACT:
+			combatAction = COMBAT_ACTION.ATTACK;
+		}	
 	}
 	
 	//--------------------------------------
@@ -760,7 +763,7 @@ public class PartyMember implements Serializable, Combatant {
 	}
 	
 	public void setCombatState(COMBAT_ACTION action)	{
-		
+		combatAction = action;
 	}
 	
 	public void setOrigin(Point origin)	{
@@ -785,6 +788,14 @@ public class PartyMember implements Serializable, Combatant {
 	@Override
 	public void setJustDied(boolean b) {
 		justDied = b;
+	}
+	@Override
+	public Combatant getTarget()	{
+		return target;
+	}
+	@Override
+	public COMBAT_ACTION getCombatAction()	{
+		return combatAction;
 	}
 
 	

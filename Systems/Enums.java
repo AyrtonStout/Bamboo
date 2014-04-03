@@ -10,7 +10,7 @@ public class Enums {
 	
 	public enum COMBAT_ACTION	{
 		
-		IDLE, ATTACK;
+		IDLE, ATTACK, IMPACT;
 		
 	}
 	
