@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -91,7 +93,7 @@ public class BattleArea extends JPanel	{
 		g.setColor(Color.RED);
 		g.setFont(floatingTextFont);
 		for (int i = 0; i < battleText.size(); i++)	{
-			g.drawString(battleText.get(i).text, battleText.get(i).x, battleText.get(i).y);
+			g.drawString(battleText.get(i).text, battleText.get(i).xCoordinate, battleText.get(i).yCoordinate);
 			battleText.get(i).duration--;
 			if (battleText.get(i).duration == 0)	{
 				battleText.remove(i);
@@ -119,22 +121,6 @@ public class BattleArea extends JPanel	{
 
 	public void addBattleText(int damage, Combatant target)	{
 		battleText.add(new BattleText(Integer.toString(damage), target));
-	}
-
-	private class BattleText	{
-
-		private String text;
-		private int x;
-		private int y;
-		private int duration;
-
-		public BattleText(String str, Combatant target)	{
-			text = str;
-			this.x = target.getOrigin().x + (target.getWidth() / 2) + (25 - 10 * text.length());
-			this.y = target.getOrigin().y + 10;
-			duration = 55;
-		}
-
 	}
 
 	public void setTargetAlly(boolean b)	{
@@ -176,5 +162,27 @@ public class BattleArea extends JPanel	{
 
 	public int getEnemyCursorPosition() {
 		return enemyCursorPosition;
+	}
+	
+	
+	
+	private class BattleText	{
+
+		private String text;
+		private int xCoordinate;
+		private int yCoordinate;
+		private int duration;
+
+		private static final int TEXT_SIZE = 20;
+		
+		public BattleText(String str, Combatant target)	{
+			
+			text = str;
+			this.xCoordinate = target.getOrigin().x + (target.getWidth() / 2) - ((TEXT_SIZE * text.length()) / 2);
+			this.yCoordinate = target.getOrigin().y - 10;
+			duration = 65;
+			
+		}
+
 	}
 }

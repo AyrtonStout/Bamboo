@@ -25,8 +25,10 @@ public class BattleTurnOrder extends JPanel	{
 	private int baseTurnMaximum = 0;
 	private final int PREDICTIVE_SIZE = 12;
 
-	ArrayList<Combatant> combatants = new ArrayList<Combatant>();
+	private ArrayList<Combatant> combatants = new ArrayList<Combatant>();
 
+	private boolean visible = true;
+	
 	public BattleTurnOrder(GameData data, BattleScreen screen)	{
 		this.data = data;
 		battleScreen = screen;
@@ -170,14 +172,24 @@ public class BattleTurnOrder extends JPanel	{
 
 	@Override
 	protected void paintComponent(Graphics g)	{
-		for (int i = 0; i < turnIcons.size(); i++)	{
-			if (turns.get(i).getClass() == PartyMember.class)	{
-				g.drawImage(turnIcons.get(i).getImage(), 10 + (i * 50), 0, null);
-			}
-			else	{
-				g.drawImage(turnIcons.get(i).getImage(), i * 50, 0, null);
+		if (visible)	{
+			for (int i = 0; i < turnIcons.size(); i++)	{
+				if (turns.get(i).getClass() == PartyMember.class)	{
+					g.drawImage(turnIcons.get(i).getImage(), 10 + (i * 50), 0, null);
+				}
+				else	{
+					g.drawImage(turnIcons.get(i).getImage(), i * 50, 0, null);
+				}
 			}
 		}
+	}
+	
+	public boolean visibleEh()	{
+		return visible;
+	}
+	
+	public void setVisible(boolean b)	{
+		visible = b;
 	}
 
 }

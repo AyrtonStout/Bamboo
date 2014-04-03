@@ -16,6 +16,11 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.35
+-Turn prediction now hides itself after combat is over and xp is being awarded
+-Floating combat text is now properly aligned to all actors
+-Trimmed crab's transparent pixels and fixed its dimensions
+
 v0.34
 -Enemies now fight back, though are limited to attacking the first party member
 -Party members and enemies now attack more frequently relative to their speed

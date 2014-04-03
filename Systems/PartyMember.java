@@ -202,9 +202,6 @@ public class PartyMember implements Serializable, Combatant {
 		
 		updateStats();
 		
-		currentHealth = maximumHealth;
-		
-		
 	}
 	
 	public void updateStats()	{

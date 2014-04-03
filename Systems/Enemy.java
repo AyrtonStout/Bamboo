@@ -59,7 +59,7 @@ public class Enemy implements Serializable, Combatant {
 			name = "Giant Rat";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
 			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
-			width = 150; height = 150;
+			width = 162; height = 151;
 			xpPerLevel = 40;
 			
 			minLevel = 1;       maxLevel = 3;
@@ -77,7 +77,7 @@ public class Enemy implements Serializable, Combatant {
 			name = "Razorclaw Crab";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
 			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
-			width = 150; height = 150;
+			width = 162; height = 151;
 			xpPerLevel = 45;
 			
 			minLevel = 2;       maxLevel = 4;
@@ -95,7 +95,7 @@ public class Enemy implements Serializable, Combatant {
 			name = "Deathstalker Crow";
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
 			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
-			width = 150; height = 150;
+			width = 162; height = 151;
 			xpPerLevel = 45;
 			
 			minLevel = 3;       maxLevel = 3;

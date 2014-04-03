@@ -93,6 +93,7 @@ public class BattleScreen extends JPanel {
 		this.enemies = enemies;
 		
 		turnOrder.initialize();
+		turnOrder.setVisible(true);
 		activeMember = turnOrder.getActiveCombatant();		
 	}
 
@@ -102,6 +103,7 @@ public class BattleScreen extends JPanel {
 		data.getDialogueBox().restore();
 		data.getGameBoard().remove(this);
 		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
+		menu.modifyCursorPosition(-menu.getCursorPosition());
 		turnOrder.clear();
 	}
 
@@ -212,16 +214,20 @@ public class BattleScreen extends JPanel {
 		this.add(menu, BorderLayout.SOUTH);
 	}
 	
+	
+	
 	public void update()	{
 		battleArea.update();
 		if (state == BATTLE_STATE.ANIM_ATTACK)	{
 			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
 				data.getCombat().attack(activeMember, activeMember.getTarget());
+				menu.update();
 			}
 			if (turnOverEh())	{
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
 				if (enemies.allDefeated())	{
+					turnOrder.setVisible(false);
 					awardXP();
 					checkForLevelUps();
 					state = BATTLE_STATE.END;
@@ -247,6 +253,8 @@ public class BattleScreen extends JPanel {
 			}
 		}
 	}
+	
+	
 	
 	private boolean turnOverEh()	{
 		for (int i = 0; i < data.getParty().length; i++)	{
