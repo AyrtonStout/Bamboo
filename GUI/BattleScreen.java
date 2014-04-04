@@ -36,6 +36,8 @@ import Systems.PartyMember;
 public class BattleScreen extends JPanel {
 
 	private static final long serialVersionUID = 9019740276603325359L;
+	private ImageIcon background = new ImageIcon("GUI/Resources/Backgrounds/Grassland.png");
+
 	private GameData data;
 	private Encounter enemies;
 	private COMBAT_START startCondition;
@@ -46,8 +48,10 @@ public class BattleScreen extends JPanel {
 	private DialogueBox dialogue;
 
 	private Combatant activeMember;
-	private Enemy activeEnemy;
 	private boolean playerMove = true;
+	
+	private final int PARTY_BUFFER = 140;        //Distance between the top of the screen and the first drawn party member
+	private final int PARTY_WIDTH = 65;         //Distance between the party members
 
 	private BATTLE_STATE state = BATTLE_STATE.MAIN;
 	
@@ -67,7 +71,7 @@ public class BattleScreen extends JPanel {
 		this.add(battleArea, BorderLayout.NORTH);
 		this.add(turnOrder, BorderLayout.CENTER);
 		this.add(menu, BorderLayout.SOUTH);
-
+		
 	}
 
 	public void enterBattle(Encounter enemies)	{
@@ -85,7 +89,7 @@ public class BattleScreen extends JPanel {
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null)	{
 				data.getParty()[i].setCurrent(data.getParty()[i].getRight());
-				data.getParty()[i].setOrigin(new Point(80, 90 + 80 * i));
+				data.getParty()[i].setOrigin(new Point(80, PARTY_BUFFER + PARTY_WIDTH * i));
 			}
 		}
 		
@@ -93,7 +97,7 @@ public class BattleScreen extends JPanel {
 		this.enemies = enemies;
 		
 		turnOrder.initialize();
-		turnOrder.setVisible(true);
+		turnOrder.setViewable(true);
 		activeMember = turnOrder.getActiveCombatant();		
 	}
 
@@ -227,7 +231,7 @@ public class BattleScreen extends JPanel {
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
 				if (enemies.allDefeated())	{
-					turnOrder.setVisible(false);
+					turnOrder.setViewable(false);
 					awardXP();
 					checkForLevelUps();
 					state = BATTLE_STATE.END;
@@ -320,6 +324,7 @@ public class BattleScreen extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g)	{
 		super.paintComponent(g);
+		g.drawImage(background.getImage(), 0, 0, null);
 	}
 	
 }

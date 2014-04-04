@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ public class BattleTurnOrder extends JPanel	{
 	private static final long serialVersionUID = -4464976184980976130L;
 	private GameData data;
 	private BattleScreen battleScreen;
+	
+	private ImageIcon friendlyBackground = new ImageIcon("GUI/Resources/TurnOrder_Friendly.png");
+	private ImageIcon enemyBackground = new ImageIcon("GUI/Resources/TurnOrder_Enemy.png");
 
 	private ArrayList<Combatant> turns = new ArrayList<Combatant>();
 	private ArrayList<ImageIcon> turnIcons = new ArrayList<ImageIcon>();
@@ -33,10 +37,11 @@ public class BattleTurnOrder extends JPanel	{
 		this.data = data;
 		battleScreen = screen;
 
-		Dimension screenSize = new Dimension(600, 50);
+		Dimension screenSize = new Dimension(600, 70);
 		this.setPreferredSize(screenSize);
 		this.setMaximumSize(screenSize);
-		this.setMinimumSize(screenSize);		
+		this.setMinimumSize(screenSize);
+		this.setOpaque(false);
 	}
 
 	public void initialize()	{
@@ -116,8 +121,6 @@ public class BattleTurnOrder extends JPanel	{
 				if (combatants.get(j).aliveEh())	{
 					Combatant compare = combatants.get(j);
 					if (fastest == null || compare.getPredictiveSpeed() < fastest.getPredictiveSpeed())	{
-						//						System.out.println(compare.getName() + "  " + compare.getPredictiveSpeed() + "/" + 
-						//								compare.getTurnMaximum());
 						fastest = compare;
 					}
 				}
@@ -172,13 +175,16 @@ public class BattleTurnOrder extends JPanel	{
 
 	@Override
 	protected void paintComponent(Graphics g)	{
+//		super.paintComponent(g);
 		if (visible)	{
 			for (int i = 0; i < turnIcons.size(); i++)	{
 				if (turns.get(i).getClass() == PartyMember.class)	{
-					g.drawImage(turnIcons.get(i).getImage(), 10 + (i * 50), 0, null);
+					g.drawImage(friendlyBackground.getImage(), i * 50, 18, null);
+					g.drawImage(turnIcons.get(i).getImage(), 10 + (i * 50), 21, null);
 				}
 				else	{
-					g.drawImage(turnIcons.get(i).getImage(), i * 50, 0, null);
+					g.drawImage(enemyBackground.getImage(), i * 50, 18, null);
+					g.drawImage(turnIcons.get(i).getImage(), 1 + i * 50, 21, null);
 				}
 			}
 		}
@@ -188,7 +194,7 @@ public class BattleTurnOrder extends JPanel	{
 		return visible;
 	}
 	
-	public void setVisible(boolean b)	{
+	public void setViewable(boolean b)	{
 		visible = b;
 	}
 

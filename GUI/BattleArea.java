@@ -21,6 +21,7 @@ import GUI.Enums.BATTLE_STATE;
 import Systems.Combatant;
 import Systems.Enemy;
 import Systems.GameData;
+import Systems.PartyMember;
 
 public class BattleArea extends JPanel	{
 
@@ -36,7 +37,7 @@ public class BattleArea extends JPanel	{
 	private ArrayList<BattleText> battleText = new ArrayList<BattleText>();
 	private ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
 	private ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
-
+	private final int ARROW_HEIGHT = 20;
 
 	private InputStream stream;
 	private Font baseFont;
@@ -45,7 +46,7 @@ public class BattleArea extends JPanel	{
 		this.data = data;
 		this.battleScreen = screen;
 
-		Dimension screenSize = new Dimension(600, 400);
+		Dimension screenSize = new Dimension(600, 380);
 		this.setPreferredSize(screenSize);
 		this.setMaximumSize(screenSize);
 		this.setMinimumSize(screenSize);
@@ -111,11 +112,13 @@ public class BattleArea extends JPanel	{
 	private void drawTargetCursor(Graphics g)	{
 		if (!targetAlly)	{
 			Enemy target = battleScreen.getEnemies().toArrayList().get(enemyCursorPosition);
-			g.drawImage(enemyCursor.getImage(), target.getOrigin().x - 10, 
-					target.getOrigin().y + target.getHeight() / 2 + 10, null);
+			g.drawImage(enemyCursor.getImage(), target.getOrigin().x - (ARROW_HEIGHT / 2), 
+					target.getOrigin().y + target.getHeight() / 2 - 10, null);
 		}
 		else	{
-			g.drawImage(friendlyCursor.getImage(), 110, 105 + 80 * friendlyCursorPosition, null);
+			PartyMember target = data.getParty()[friendlyCursorPosition];
+			g.drawImage(friendlyCursor.getImage(), target.getOrigin().x + target.getWidth(), 
+					target.getOrigin().y + target.getHeight() / 2 - (ARROW_HEIGHT / 2), null);
 		}
 	}
 

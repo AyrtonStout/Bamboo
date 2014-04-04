@@ -19,7 +19,7 @@ public class Encounter implements Serializable {
 	public Encounter(ArrayList<Enemy> enemies)	{
 		this.enemies = enemies;
 		if (enemies.size() == 1)	{
-			enemies.get(0).setOrigin(new Point(350, 115));
+			enemies.get(0).setOrigin(new Point(350, 155));
 		}
 	}
 	

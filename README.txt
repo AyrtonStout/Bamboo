@@ -17,9 +17,14 @@ I and P will directly access inventory and party panels
 Changelog-
 
 v0.35
--Turn prediction now hides itself after combat is over and xp is being awarded
+-Turn prediction now hides itself after combat is over when xp is being awarded
 -Floating combat text is now properly aligned to all actors
 -Trimmed crab's transparent pixels and fixed its dimensions
+-Turn prediction now has a color coded border around the actor's turn indicators
+-Targetting arrows are now more intelligent at finding their target
+-A placeholder background is now in use because I got sick of staring at grey
+ +This makes seeing the floating damage text somewhat difficult for the time being
+  (sacrifices had to be made)
 
 v0.34
 -Enemies now fight back, though are limited to attacking the first party member

@@ -82,8 +82,8 @@ public class Enemy implements Serializable, Combatant {
 			
 			minLevel = 2;       maxLevel = 4;
 			
-			attackBase = 2.4;       attackGrowth = 0.5;
-			defenseBase = 4.8;      defenseGrowth = 1.9;
+			attackBase = 2.4;       attackGrowth = 0.7;
+			defenseBase = 3.8;      defenseGrowth = 1.7;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 2.2;   magDefenseGrowth = 0.7;
 			speedBase = 3; speedGrowth = 0.3;
