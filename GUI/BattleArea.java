@@ -46,7 +46,7 @@ public class BattleArea extends JPanel	{
 		this.data = data;
 		this.battleScreen = screen;
 
-		Dimension screenSize = new Dimension(600, 380);
+		Dimension screenSize = new Dimension(600, 320);
 		this.setPreferredSize(screenSize);
 		this.setMaximumSize(screenSize);
 		this.setMinimumSize(screenSize);
@@ -130,7 +130,7 @@ public class BattleArea extends JPanel	{
 		targetAlly = b;
 	}
 
-	public void respondToInput(KeyEvent e) {
+	public void respondToInput(KeyEvent e, BattleInfo info) {
 		if (e.getKeyCode() == KeyEvent.VK_UP)	{
 			if (targetAlly)	{
 				if (friendlyCursorPosition > 0)	{
@@ -161,10 +161,23 @@ public class BattleArea extends JPanel	{
 		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
 			targetAlly = false;
 		}
+		if (targetAlly)	{
+			info.setTarget(data.getParty()[friendlyCursorPosition]);
+		}
+		else	{
+			info.setTarget(battleScreen.getEnemies().toArrayList().get(enemyCursorPosition));
+		}
 	}
 
 	public int getEnemyCursorPosition() {
 		return enemyCursorPosition;
+	}
+	
+	public void clear()	{
+		int size = battleText.size();
+		for (int i = 0; i < size; i++)	{
+			battleText.remove(0);
+		}
 	}
 	
 	

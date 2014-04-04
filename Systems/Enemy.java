@@ -222,8 +222,8 @@ public class Enemy implements Serializable, Combatant {
 	public Stat getCurrentHealth()	{
 		return currentHealth;
 	}
-	public int getMaximumHealth()	{
-		return maximumHealth.getActual();
+	public Stat getMaxHealth()	{
+		return maximumHealth;
 	}
 	/**
 	 * @return A double between 0 and 1
@@ -231,11 +231,11 @@ public class Enemy implements Serializable, Combatant {
 	public double getHealthPercentage()	{
 		return (double) currentHealth.getActual() / maximumHealth.getActual();
 	}
-	public int getCurrentMana()	{
-		return currentMana.getActual();
+	public Stat getCurrentMana()	{
+		return currentMana;
 	}
-	public int getMaximumMana()	{
-		return maximumMana.getActual();
+	public Stat getMaxMana()	{
+		return maximumMana;
 	}
 	/**
 	 * @return A number between 0 and 1

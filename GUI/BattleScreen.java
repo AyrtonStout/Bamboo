@@ -45,6 +45,7 @@ public class BattleScreen extends JPanel {
 	private BattleArea battleArea;
 	private BattleTurnOrder turnOrder;
 	private BattleMenu menu;
+	private BattleInfo info;
 	private DialogueBox dialogue;
 
 	private Combatant activeMember;
@@ -61,6 +62,7 @@ public class BattleScreen extends JPanel {
 		menu = new BattleMenu(data);
 		turnOrder = new BattleTurnOrder(data, this);
 		battleArea = new BattleArea(data, this);
+		info = new BattleInfo();
 		
 		Dimension screenSize = new Dimension(600, 600);
 		this.setPreferredSize(screenSize);
@@ -68,8 +70,12 @@ public class BattleScreen extends JPanel {
 		this.setMinimumSize(screenSize);
 
 		this.setLayout(new BorderLayout());
-		this.add(battleArea, BorderLayout.NORTH);
-		this.add(turnOrder, BorderLayout.CENTER);
+		this.add(info, BorderLayout.NORTH);
+		
+		JPanel center = new JPanel();
+		center.add(battleArea); center.add(turnOrder);
+		center.setOpaque(false);
+		this.add(center, BorderLayout.CENTER);
 		this.add(menu, BorderLayout.SOUTH);
 		
 	}
@@ -109,6 +115,7 @@ public class BattleScreen extends JPanel {
 		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
 		menu.modifyCursorPosition(-menu.getCursorPosition());
 		turnOrder.clear();
+		battleArea.clear();
 	}
 
 	public void respondToInput(KeyEvent e)	{
@@ -137,7 +144,9 @@ public class BattleScreen extends JPanel {
 				switch (menu.getCursorPosition())	{
 				case 0:
 					battleArea.setTargetAlly(false);
-					state = BATTLE_STATE.ATTACK_SELECTION; 
+					state = BATTLE_STATE.ATTACK_SELECTION;
+					info.setTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
+					info.setVisible(true);
 					break;
 				case 1:
 					switchToTalk(); 
@@ -160,13 +169,14 @@ public class BattleScreen extends JPanel {
 		else if (state == BATTLE_STATE.ATTACK_SELECTION)	{
 			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
 					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
-				battleArea.respondToInput(e);	
+				battleArea.respondToInput(e, info);	
 			}
 			
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 				startAttack();
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				info.setVisible(false);
 				state = BATTLE_STATE.MAIN;
 			}
 		}
@@ -300,6 +310,7 @@ public class BattleScreen extends JPanel {
 	}
 	
 	private void startAttack()	{
+		info.setVisible(false);
 		state = BATTLE_STATE.ANIM_ATTACK;
 		activeMember.attackTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
 	}

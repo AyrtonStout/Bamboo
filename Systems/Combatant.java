@@ -18,7 +18,10 @@ public interface Combatant {
 	public int getAttack();
 	public Stat getArmor();
 	public Stat getCurrentHealth();
+	public Stat getMaxHealth();
 	public void modCurrentHealth(int health);
+	public Stat getCurrentMana();
+	public Stat getMaxMana();
 	public int getWidth();
 	public int getHeight();
 	public boolean aliveEh();
