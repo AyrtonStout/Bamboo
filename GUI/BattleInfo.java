@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -18,6 +17,11 @@ import javax.swing.JPanel;
 
 import Systems.Combatant;
 
+/**
+ * @author mobius
+ * This is the bar that appears on the top of the battle screen that displays additional information about
+ * the combatant. The bar is not visible when a combatant is not selected.
+ */
 public class BattleInfo extends JPanel {
 	
 	private static final long serialVersionUID = 5837665613319006998L;
@@ -30,7 +34,7 @@ public class BattleInfo extends JPanel {
 	
 	private ImageIcon background = new ImageIcon("GUI/Resources/BattleInfo_Background.png");
 	
-	private Combatant target;
+//	private Combatant target;
 	
 	private Font infoFont;
 	
@@ -114,7 +118,7 @@ public class BattleInfo extends JPanel {
 	}
 	
 	public void setTarget(Combatant target)	{
-		this.target = target;
+//		this.target = target;
 		
 		level.setText("L:" + target.getLevel());
 		name.setText(target.getName());

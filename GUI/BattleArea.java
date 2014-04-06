@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,6 +21,11 @@ import Systems.Enemy;
 import Systems.GameData;
 import Systems.PartyMember;
 
+/**
+ * @author mobius
+ * Represents the area on the battle screen where the combat actually takes place. This is the region of the screen
+ * where the party and the enemies are displayed; as well this class also handles the appearance of the battle text
+ */
 public class BattleArea extends JPanel	{
 
 	private static final long serialVersionUID = 1081923729370436576L;

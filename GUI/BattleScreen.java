@@ -1,26 +1,14 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import GUI.Enums.BATTLE_STATE;
@@ -31,8 +19,14 @@ import Systems.Enemy;
 import Systems.Enums.COMBAT_ACTION;
 import Systems.Enums.COMBAT_START;
 import Systems.GameData;
-import Systems.PartyMember;
 
+/**
+ * @author mobius
+ * 
+ * The screen that the player conducts combat in. Combines the other smaller battle classes together, 
+ * controls the keyboard input during battle, controls large scale events like the player entering or
+ * leaving the battle, and controls the flow of each battle turn.
+ */
 public class BattleScreen extends JPanel {
 
 	private static final long serialVersionUID = 9019740276603325359L;
@@ -52,7 +46,7 @@ public class BattleScreen extends JPanel {
 	private boolean playerMove = true;
 	
 	private final int PARTY_BUFFER = 140;        //Distance between the top of the screen and the first drawn party member
-	private final int PARTY_WIDTH = 65;         //Distance between the party members
+	private final int PARTY_WIDTH = 65;          //Distance between the party members
 
 	private BATTLE_STATE state = BATTLE_STATE.MAIN;
 	
@@ -282,7 +276,7 @@ public class BattleScreen extends JPanel {
 	
 	private boolean turnOverEh()	{
 		for (int i = 0; i < data.getParty().length; i++)	{
-			if (data.getParty()[i] != null && data.getParty()[i].getAction() != COMBAT_ACTION.IDLE)	{
+			if (data.getParty()[i] != null && data.getParty()[i].getCombatAction() != COMBAT_ACTION.IDLE)	{
 				return false;
 			}
 		}

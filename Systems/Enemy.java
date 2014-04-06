@@ -1,6 +1,5 @@
 package Systems;
 
-import java.awt.Point;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -9,44 +8,15 @@ import javax.swing.ImageIcon;
 import Systems.Enums.COMBAT_ACTION;
 import Systems.Enums.MONSTER;
 
-public class Enemy implements Serializable, Combatant {
+/**
+ * @author mobius
+ * Any kind of combatant that the player can fight. Has most of the same stats as the player's characters
+ * but generally more simplified. 
+ */
+public class Enemy extends Combatant implements Serializable {
 	
 	private static final long serialVersionUID = 8656364136085883106L;
-	
-	private String name;
-	private ImageIcon picture, battlePicture;
-	private int width, height;            //Dimensions of the artwork for the enemy
-	private int offsetX;                  //Used for animating attack
-	private Point origin;                 //The point that the enemy is drawn to on the battle screen
-	private boolean alive = true;
-	private boolean justDied = false;
-	
-	private Stat attack = new Stat(0);
-	private Stat defense = new Stat(0);
-	private Stat magic = new Stat(0);
-	private Stat magDefense = new Stat(0);
-	private Stat speed = new Stat(0);
-	private Stat hit = new Stat(0);
-	private Stat critChance = new Stat(0);
-	private Stat critDamage = new Stat(0);
-	private Stat dodge = new Stat(0);
-	private int level; 
-	private int xp;
-	
-	private int turnPriority = 0;
-	private int turnMaximum = 0;
-	
-	private int turnPrediction = 0;	
-	private int turnPriorityPrediction = 0;
-	private int turnMaximumPrediction = 0;
-
-	
-	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
-	private Stat currentMana = new Stat(0), maximumMana = new Stat(0);
-	
-	private COMBAT_ACTION combatAction = COMBAT_ACTION.IDLE;
-	private int animationSteps = 0;
-	private Combatant target;
+	private int xpReward;
 	
 	public Enemy (MONSTER type)	{
 		Random rand = new Random();
@@ -87,7 +57,7 @@ public class Enemy implements Serializable, Combatant {
 			minLevel = 2;       maxLevel = 4;
 			
 			attackBase = 2.4;       attackGrowth = 0.7;
-			defenseBase = 3.3;      defenseGrowth = 1.6;
+			defenseBase = 3.3;      defenseGrowth = 1.3;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 2.2;   magDefenseGrowth = 0.7;
 			speedBase = 3; speedGrowth = 0.3;
@@ -122,22 +92,16 @@ public class Enemy implements Serializable, Combatant {
 		else	{
 			level = Math.abs(rand.nextInt()) % variance + minLevel;
 		}
-		attack.setBase((int) (attackBase + (attackGrowth * level)));
+		attackPower.setBase((int) (attackBase + (attackGrowth * level)));
 		defense.setBase((int) (defenseBase + (defenseGrowth * level)));
-		magic.setBase((int) (magicBase + (magicGrowth * level)));
-		magDefense.setBase((int) (magDefenseBase + (magDefenseGrowth * level)));
+		spellPower.setBase((int) (magicBase + (magicGrowth * level)));
+		resist.setBase((int) (magDefenseBase + (magDefenseGrowth * level)));
 		speed.setBase((int) (speedBase + (speedGrowth * level)));
 		
 		maximumHealth.setBase((int) (healthBase + (healthGrowth * level)));
 		currentHealth.setBase(maximumHealth.getActual());
 		
-		xp = xpPerLevel * level;
-	}
-
-	public void attackTarget(Combatant target)	{
-		combatAction = COMBAT_ACTION.ATTACK;
-		animationSteps = 80;
-		this.target = target;
+		xpReward = xpPerLevel * level;
 	}
 	
 	public void update()	{
@@ -172,195 +136,25 @@ public class Enemy implements Serializable, Combatant {
 		}
 	}
 	
+	public int getXpReward()	{
+		return xpReward;
+	}
+	
+	public void attackTarget(Combatant target)	{
+		combatAction = COMBAT_ACTION.ATTACK;
+		animationSteps = 80;
+		this.target = target;
+	}
+	
 	public void takeAction(PartyMember[] party)	{
 		target = party[0];
 		combatAction = COMBAT_ACTION.ATTACK;
 		animationSteps = 100;
 	}
 
-	public String getName()	{
-		return name;
-	}
-	public ImageIcon getPicture()	{
-		return picture;
-	}
-	public ImageIcon getBattlePicture()	{
-		return battlePicture;
-	}
-	public int getOffsetX()	{
-		return offsetX;
-	}
-	public int getLevel()	{
-		return level;
-	}
-	public int getAttack()	{
-		return attack.getActual();
-	}
-	public int getDefense()	{
-		return defense.getActual();
-	}
-	public int getMagic()	{
-		return magic.getActual();
-	}
-	public int getMagDefense()	{
-		return magDefense.getActual();
-	}
-	public Stat getSpeed()	{
-		return speed;
-	}
-	public Stat getCritChance() {
-		return critChance;
-	}
-	public Stat getCritDamage() {
-		return critDamage;
-	}
-	public Stat getDodge() {
-		return dodge;
-	}
-	public Stat getArmor() {
-		return defense;
-	}
-	public int getXP()	{
-		return xp;
-	}
-	public Stat getCurrentHealth()	{
-		return currentHealth;
-	}
-	public Stat getMaxHealth()	{
-		return maximumHealth;
-	}
-	/**
-	 * @return A double between 0 and 1
-	 */
-	public double getHealthPercentage()	{
-		return (double) currentHealth.getActual() / maximumHealth.getActual();
-	}
-	public Stat getCurrentMana()	{
-		return currentMana;
-	}
-	public Stat getMaxMana()	{
-		return maximumMana;
-	}
-	/**
-	 * @return A number between 0 and 1
-	 */
-	public double getManaPercentage()	{
-		return (double) currentMana.getActual() / maximumMana.getActual();
-	}
-	public int getWidth()	{
-		return width;
-	}
-	public int getHeight()	{
-		return height;
-	}
-	public void setOrigin(Point origin)	{
-		this.origin = origin;
-	}
-	public Point getOrigin()	{
-		return origin;
-	}
-	public Stat getHit() {
-		return hit;
-	}
-	public void modCurrentHealth(int health) {
-		currentHealth.modifyBase(health);
-	}
 	@Override
-	public boolean aliveEh()	{
-		return alive;
-	}
-	@Override
-	public boolean justDiedEh()	{
-		return justDied;
-	}
-	@Override
-	public void setAlive(boolean b)	{
-		alive = b;
-	}
-	@Override
-	public void setJustDied(boolean b)	{
-		justDied = b;
-	}
-	@Override
-	public int getTurnPriority()	{
-		return turnPriority;
-	}
-	public int getTurnPriorityPrediction()	{
-		return turnPriorityPrediction;
-	}
-	@Override
-	public void setTurnPriority(int newPrio)	{
-		turnPriority = newPrio;
-	}
-	@Override
-	public int getTurnMaximum()	{
-		return turnMaximum;
-	}
-	public int getTurnMaximumPrediction()	{
-		return turnMaximumPrediction;
-	}
-	@Override
-	public void setTurnMaximum(int newMax)	{
-		turnMaximum = newMax;
-	}
-	@Override
-	public int getTurnPrediction() {
-		return turnPrediction;
-	}
-	@Override
-	public void incrementTurnPrediction() {
-		turnPrediction++;
-	}
-	@Override
-	public void clearTurnPrediction() {
-		turnPrediction = 0;
-	}
-	@Override
-	public int getPredictiveSpeedMod()	{
-		return turnPriorityPrediction + turnPrediction * (turnMaximumPrediction/2);
-	}
-	@Override
-	public int getPredictiveSpeedTrue()	{
-		return turnPriority + turnPrediction * (turnMaximum/2);
-	}
-	public void clearTurnPriorityPrediction()	{
-		turnPriorityPrediction = 0;
-	}
-	public void clearTurnMaximumPrediction()	{
-		turnMaximumPrediction = 0;
-	}
-	public void setTurnPriorityPrediction(int i)	{
-		if (i == 0)	{
-			turnPriorityPrediction = turnMaximumPrediction / 4;
-		}
-		else if (i == 1)	{
-			turnPriorityPrediction = turnMaximumPrediction / 2;
-		}
-		else if (i == 2)	{
-			turnPriorityPrediction = turnMaximumPrediction;
-		}
-		else	{
-			turnPriorityPrediction = turnPriority;
-		}
-	}
-	public void setTurnMaximumPrediction(int i)	{
-		if (i == 0)	{
-			turnMaximumPrediction /= 2;
-		}
-		else if (i == 1)	{
-			turnMaximumPrediction = turnMaximum;
-		}
-		else if (i == 2)	{
-			turnMaximumPrediction *= 2;
-		}
-	}
-
-	@Override
-	public Combatant getTarget()	{
-		return target;
-	}
-	@Override
-	public COMBAT_ACTION getCombatAction()	{
-		return combatAction;
+	public int getAttack() {
+		return super.attackPower.getActual();
 	}
 }
+

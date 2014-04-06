@@ -1,7 +1,6 @@
 package Systems;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -9,7 +8,13 @@ import javax.swing.ImageIcon;
 import GUI.Enums.NAMED_NPC;
 import Systems.Enums.COMBAT_ACTION;
 
-public class PartyMember implements Serializable, Combatant {
+/**
+ * @author mobius
+ * A playable character in the player's party. Has specific overridden methods for certain combat
+ * characteristics, contains its own equipment inventory, and has extra pictures that are needed
+ * in order to make the character walk around on the map screen
+ */
+public class PartyMember extends Combatant implements Serializable {
 
 	private static final long serialVersionUID = -2547966350818847472L;
 	
@@ -28,60 +33,23 @@ public class PartyMember implements Serializable, Combatant {
 	
 	private Equipment equipment = new Equipment(this);
 
-	private String name;
 	private String gender;
-	private int level = 1;
 
 	private int xpThisLevel;
 	private int xpTotalEarned;
 	private int xpRequirement = 200;
 	
-	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
-	private Stat currentMana = new Stat(1), maximumMana = new Stat(1);
-	
 	private Stat strength, agility, intellect, spirit, luck, stamina;
 	//Partial stats are used primarily for leveling up. Once a value exceeds 10 it will increase the main stat by 1
 	private int partialStr, partialAgi, partialInt, partialSpi, partialLuck, partialSta;
 	
-	private Stat attackPower = new Stat(0);
-	private Stat spellPower = new Stat(0);
-	private Stat critChance = new Stat(5);
-	private Stat critDamage = new Stat(150);
-	private Stat hit = new Stat(0);
-	private Stat armorPen = new Stat(0);
-	private Stat dodge = new Stat(5);
-	private Stat resist = new Stat(0);
-	private Stat speed = new Stat(0);
-	
 	private int STAMINA_TO_HEALTH_RATIO = 10;
-	
-	private COMBAT_ACTION combatAction = COMBAT_ACTION.IDLE;
-	private int animationSteps;
-	private Combatant target;
-	private Point origin;
-	private int width = 32;
-	private int height = 48;
-	private int offsetX;
-	
-	private int turnPriority = 0;
-	private int turnMaximum = 0;
-	
-	private int turnPrediction = 0;           /* This is the number of turns in advance that the BattleScreen is using to 
-	                                           * calculate turn order. When the BattleScreen isn't calculating this it is always 0 */
-	private int turnPriorityPrediction = 0;   /* Changes the starting calculation point when deciding turn order
-	                                           * This is useful for moves that have a delay after they are used, or moves/actions
-	                                           * that are not intended to take up an entire full turn length */
-	private int turnMaximumPrediction = 0;    /* This changes the ending point calculation (making all moves either faster or slower)
-	                                           * Useful for semi-permanent speed changes like Haste or Slow */
-	
-	private boolean alive = true;
-	private boolean justDied = false;
-	
+
 	private ImageIcon current;
 	private ImageIcon portrait;
 	private ImageIcon left, up, right, down;
 	private ImageIcon walkLeft, walkUp, walkRight, walkDown;
-	private ImageIcon actionIMG, leap, death;
+	private ImageIcon leap, death;
 	
 	private int kills;
 	private int deaths;
@@ -151,9 +119,13 @@ public class PartyMember implements Serializable, Combatant {
 		walkRight = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Right).gif");
 		walkDown = new ImageIcon("GUI/Resources/Characters/" + name + " - Walk (Down).gif");
 		
-		actionIMG = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
+		battlePicture = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
 		leap = new ImageIcon("GUI/Resources/Characters/" + name + " - Leap.gif");
 		death = new ImageIcon("GUI/Resources/Characters/" + name + " - Dead.gif");
+		
+		level = 1;
+		width = 32;
+		height = 48;
 		
 		refresh();
 	}
@@ -258,7 +230,7 @@ public class PartyMember implements Serializable, Combatant {
 			break;
 		case ATTACK:
 			if (animationSteps == 75)	{
-				current = actionIMG;
+				current = battlePicture;
 				animationSteps -= 1;
 			}
 			else if (animationSteps > 40)	{
@@ -291,15 +263,9 @@ public class PartyMember implements Serializable, Combatant {
 	public ImageIcon getPortrait()	{
 		return portrait;
 	}
-	
-	public ImageIcon getBattlePicture()	{
-		return actionIMG;
-	}
-	
 	public ImageIcon getLeft()	{
 		return left;
 	}
-	
 	public ImageIcon getUp()	{
 		return up;
 	}
@@ -309,232 +275,103 @@ public class PartyMember implements Serializable, Combatant {
 	public ImageIcon getDown()	{
 		return down;
 	}
-	
 	public ImageIcon getRight()	{
 		return right;
 	}
-	
 	public ImageIcon getWalkLeft()	{
 		return walkLeft;
 	}
-	
 	public ImageIcon getWalkUp()	{
 		return walkUp;
 	}
-	
 	public ImageIcon getWalkRight()	{
 		return walkRight;
 	}
-	
 	public ImageIcon getWalkDown()	{
 		return walkDown;
 	}
-	
 	public ImageIcon getActionImage()	{
-		return actionIMG;
+		return battlePicture;
 	}
 	public ImageIcon getLeapImage()	{
 		return leap;
 	}
-	public ImageIcon getCurrent()	{
+	@Override
+	public ImageIcon getPicture()	{
 		return current;
 	}
 	public void setCurrent(ImageIcon icon)	{
 		current = icon;
 	}
-	public Point getOrigin()	{
-		return origin;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public int getLevel() {
-		return level;
-	}
-
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
 	public int getXpThisLevel() {
 		return xpThisLevel;
 	}
-
 	public void setXpThisLevel(int xp) {
 		this.xpThisLevel = xp;
 	}
-
 	public int getXpTotalEarned() {
 		return xpTotalEarned;
 	}
-
 	public void setXpTotalEarned(int xp) {
 		this.xpTotalEarned = xp;
 	}
-
 	public int getXpRequirement() {
 		return xpRequirement;
 	}
-
 	public void setXpRequirement(int xpToLevel) {
 		this.xpRequirement = xpToLevel;
 	}
-	
 	public void giveXP(int xp)	{
 		xpThisLevel += xp;
 		xpTotalEarned += xp;
 	}
 
-	public Stat getMaxHealth() {
-		return maximumHealth;
-	}
-
-	public void setMaximumHealth(Stat health) {
-		this.maximumHealth = health;
-	}
-
-	public Stat getCurrentHealth() {
-		return currentHealth;
-	}
-
-	public void modCurrentHealth(int health) {
-		currentHealth.modifyBase(health);
-	}
-
-	public double getHealthPercentage()	{
-		return (double) currentHealth.getActual() / maximumHealth.getActual();
-	}
-	
-	public Stat getMaxMana() {
-		return maximumMana;
-	}
-
-	public void setMaxMana(Stat mana) {
-		this.maximumMana = mana;
-	}
-
-	public Stat getCurrentMana() {
-		return currentMana;
-	}
-
-	public void setCurrentMana(Stat currentMana) {
-		this.currentMana = currentMana;
-	}
-	
-	public double getManaPercentage()	{
-		return (double) currentMana.getActual() / maximumMana.getActual();
-	}
-	
 	public Stat getStrength()	{
 		return strength;
 	}
-	
 	public void setStrength(Stat strength) {
 		this.strength = strength;
 	}
-
 	public Stat getAgility() {
 		return agility;
 	}
-
 	public void setAgility(Stat agility) {
 		this.agility = agility;
 	}
-
 	public Stat getIntellect() {
 		return intellect;
 	}
-
 	public void setIntellect(Stat intellect) {
 		this.intellect = intellect;
 	}
-
 	public Stat getSpirit() {
 		return spirit;
 	}
-
 	public void setSpirit(Stat spirit) {
 		this.spirit = spirit;
 	}
-	
 	public Stat getLuck()	{
 		return luck;
 	}
-	
 	public void setLuck(Stat luck)	{
 		this.luck = luck;
 	}
-
 	public Stat getStamina() {
 		return stamina;
 	}
-
 	public void setStamina(Stat stamina) {
 		this.stamina = stamina;
 	}
-
 	public Stat getAttackPower() {
 		return attackPower;
 	}
 
-	public void setAttackPower(Stat attackPower) {
-		this.attackPower = attackPower;
-	}
-
-	public Stat getSpellPower() {
-		return spellPower;
-	}
-
-	public void setSpellPower(Stat spellPower) {
-		this.spellPower = spellPower;
-	}
-
-	public Stat getCritChance() {
-		return critChance;
-	}
-
-	public void setCritChance(Stat critChance) {
-		this.critChance = critChance;
-	}
-
-	public Stat getCritDamage() {
-		return critDamage;
-	}
-
-	public void setCritDamage(Stat critDamage) {
-		this.critDamage = critDamage;
-	}
-
-	public Stat getHit() {
-		return hit;
-	}
-
-	public void setHit(Stat hit) {
-		this.hit = hit;
-	}
-
-	public Stat getArmorPen() {
-		return armorPen;
-	}
-
-	public void setArmorPen(Stat armorPen) {
-		this.armorPen = armorPen;
-	}
-	
-	public void setSpeed(Stat speed)	{
-		this.speed = speed;
-	}
-	
-	public Stat getSpeed()	{
-		return speed;
-	}
-	
 	public void setArmor()	{
 		//TODO THIS^
 	}
@@ -542,99 +379,6 @@ public class PartyMember implements Serializable, Combatant {
 	public Stat getArmor()	{
 		//TODO THIS^v
 		return new Stat(0);
-	}
-
-	public Stat getDodge() {
-		return dodge;
-	}
-
-	public void setDodge(Stat dodge) {
-		this.dodge = dodge;
-	}
-
-	public Stat getResist() {
-		return resist;
-	}
-
-	public void setResist(Stat resist) {
-		this.resist = resist;
-	}
-	
-	public int getWidth()	{
-		return width;
-	}
-	public int getHeight()	{
-		return height;
-	}
-	
-	
-	public int getTurnPriority()	{
-		return turnPriority;
-	}
-	public int getTurnPriorityPrediction()	{
-		return turnPriorityPrediction;
-	}
-	public void setTurnPriority(int newPrio)	{
-		turnPriority = newPrio;
-	}	
-	public int getTurnMaximum()	{
-		return turnMaximum;
-	}
-	public void setTurnMaximum(int newMax)	{
-		turnMaximum = newMax;
-	}
-	public int getTurnMaximumPrediction()	{
-		return turnMaximumPrediction;
-	}
-	public int getTurnPrediction()	{
-		return turnPrediction;
-	}
-	@Override
-	public void incrementTurnPrediction()	{
-		turnPrediction++;
-	}
-	@Override
-	public void clearTurnPrediction()	{
-		turnPrediction = 0;
-	}
-	@Override
-	public int getPredictiveSpeedTrue()	{
-		return turnPriority + turnPrediction * (turnMaximum/2);
-	}
-	@Override
-	public int getPredictiveSpeedMod()	{
-		return turnPriorityPrediction + turnPrediction * (turnMaximumPrediction/2);
-	}
-	public void clearTurnPriorityPrediction()	{
-		turnPriorityPrediction = 0;
-	}
-	public void clearTurnMaximumPrediction()	{
-		turnMaximumPrediction = 0;
-	}
-	public void setTurnPriorityPrediction(int i)	{
-		if (i == 0)	{
-			turnPriorityPrediction = turnMaximumPrediction / 4;
-		}
-		else if (i == 1)	{
-			turnPriorityPrediction = turnMaximumPrediction / 2;
-		}
-		else if (i == 2)	{
-			turnPriorityPrediction = turnMaximumPrediction;
-		}
-		else	{
-			turnPriorityPrediction = turnPriority;
-		}
-	}
-	public void setTurnMaximumPrediction(int i)	{
-		if (i == 0)	{
-			turnMaximumPrediction /= 2;
-		}
-		else if (i == 1)	{
-			turnMaximumPrediction = turnMaximum;
-		}
-		else if (i == 2)	{
-			turnMaximumPrediction *= 2;
-		}
 	}
 	
 	
@@ -760,11 +504,6 @@ public class PartyMember implements Serializable, Combatant {
 	public static void decrementPartySize()	{
 		PartyMember.partySize--;
 	}
-	
-	@Override
-	public String toString()	{
-		return name;
-	}
 	public Equipment getEquipment()	{
 		return equipment;
 	}
@@ -786,9 +525,7 @@ public class PartyMember implements Serializable, Combatant {
 	public int getAttack() {
 		return (strength.getActual());
 	}
-	public COMBAT_ACTION getAction()	{
-		return combatAction;
-	}
+
 	/**
 	 * Draws the character on the battle screen.
 	 * 
@@ -801,30 +538,6 @@ public class PartyMember implements Serializable, Combatant {
 		else	{
 			g.drawImage(current.getImage(), origin.x + offsetX, origin.y, null);	
 		}
-	}
-	
-	public void attackTarget(Combatant target)	{
-		combatAction = COMBAT_ACTION.ATTACK;
-		animationSteps = 80;
-		this.target = target;
-	}
-	
-	public void setCombatState(COMBAT_ACTION action)	{
-		combatAction = action;
-	}
-	
-	public void setOrigin(Point origin)	{
-		this.origin = origin;
-	}
-
-	@Override
-	public boolean aliveEh() {
-		return alive;
-	}
-
-	@Override
-	public boolean justDiedEh() {
-		return justDied;
 	}
 
 	@Override
@@ -841,20 +554,5 @@ public class PartyMember implements Serializable, Combatant {
 		}
 		
 	}
-
-	@Override
-	public void setJustDied(boolean b) {
-		justDied = b;
-	}
-	@Override
-	public Combatant getTarget()	{
-		return target;
-	}
-	@Override
-	public COMBAT_ACTION getCombatAction()	{
-		return combatAction;
-	}
-
-	
 		
 }

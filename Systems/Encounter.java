@@ -40,7 +40,7 @@ public class Encounter implements Serializable {
 	public int earnedXP()	{
 		int total = 0;
 		for (int i = 0; i < enemies.size(); i++)	{
-			total += enemies.get(i).getXP();
+			total += enemies.get(i).getXpReward();
 		}
 		return total;
 	}

@@ -20,6 +20,11 @@ import GUI.Enums.BATTLE_STATE;
 import Systems.GameData;
 import Systems.PartyMember;
 
+/**
+ * @author mobius
+ * The region of the battle screen where the party's HP is displayed and the battle options are
+ * presented to the player
+ */
 public class BattleMenu extends JPanel	{
 
 	private static final long serialVersionUID = 7952290532732938184L;
