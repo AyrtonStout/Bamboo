@@ -35,7 +35,11 @@ public class Enemy implements Serializable, Combatant {
 	
 	private int turnPriority = 0;
 	private int turnMaximum = 0;
-	private int turnPrediction = 0;
+	
+	private int turnPrediction = 0;	
+	private int turnPriorityPrediction = 0;
+	private int turnMaximumPrediction = 0;
+
 	
 	private Stat currentHealth = new Stat(1), maximumHealth = new Stat(1);
 	private Stat currentMana = new Stat(0), maximumMana = new Stat(0);
@@ -70,7 +74,7 @@ public class Enemy implements Serializable, Combatant {
 			magDefenseBase = 1.2;   magDefenseGrowth = 0.3;
 			speedBase = 5; speedGrowth = 0.4;
 			
-			healthBase = 0;    healthGrowth = 5;
+			healthBase = 3;    healthGrowth = 4;
 			
 			break;
 		case RAZORCLAW_CRAB:
@@ -83,12 +87,12 @@ public class Enemy implements Serializable, Combatant {
 			minLevel = 2;       maxLevel = 4;
 			
 			attackBase = 2.4;       attackGrowth = 0.7;
-			defenseBase = 3.8;      defenseGrowth = 1.7;
+			defenseBase = 3.3;      defenseGrowth = 1.6;
 			magicBase = 0;          magicGrowth = 0;
 			magDefenseBase = 2.2;   magDefenseGrowth = 0.7;
 			speedBase = 3; speedGrowth = 0.3;
 			
-			healthBase = 5;    healthGrowth = 6;
+			healthBase = 4;    healthGrowth = 5;
 			
 			break;
 		case DEATHSTALKER_CROW:
@@ -106,7 +110,7 @@ public class Enemy implements Serializable, Combatant {
 			magDefenseBase = 1.6;   magDefenseGrowth = 0.4;
 			speedBase = 9; speedGrowth = 0.5;
 			
-			healthBase = 5;    healthGrowth = 5;
+			healthBase = 3;    healthGrowth = 4;
 			
 			break;
 		}
@@ -281,6 +285,9 @@ public class Enemy implements Serializable, Combatant {
 	public int getTurnPriority()	{
 		return turnPriority;
 	}
+	public int getTurnPriorityPrediction()	{
+		return turnPriorityPrediction;
+	}
 	@Override
 	public void setTurnPriority(int newPrio)	{
 		turnPriority = newPrio;
@@ -288,6 +295,9 @@ public class Enemy implements Serializable, Combatant {
 	@Override
 	public int getTurnMaximum()	{
 		return turnMaximum;
+	}
+	public int getTurnMaximumPrediction()	{
+		return turnMaximumPrediction;
 	}
 	@Override
 	public void setTurnMaximum(int newMax)	{
@@ -306,9 +316,45 @@ public class Enemy implements Serializable, Combatant {
 		turnPrediction = 0;
 	}
 	@Override
-	public int getPredictiveSpeed()	{
+	public int getPredictiveSpeedMod()	{
+		return turnPriorityPrediction + turnPrediction * (turnMaximumPrediction/2);
+	}
+	@Override
+	public int getPredictiveSpeedTrue()	{
 		return turnPriority + turnPrediction * (turnMaximum/2);
 	}
+	public void clearTurnPriorityPrediction()	{
+		turnPriorityPrediction = 0;
+	}
+	public void clearTurnMaximumPrediction()	{
+		turnMaximumPrediction = 0;
+	}
+	public void setTurnPriorityPrediction(int i)	{
+		if (i == 0)	{
+			turnPriorityPrediction = turnMaximumPrediction / 4;
+		}
+		else if (i == 1)	{
+			turnPriorityPrediction = turnMaximumPrediction / 2;
+		}
+		else if (i == 2)	{
+			turnPriorityPrediction = turnMaximumPrediction;
+		}
+		else	{
+			turnPriorityPrediction = turnPriority;
+		}
+	}
+	public void setTurnMaximumPrediction(int i)	{
+		if (i == 0)	{
+			turnMaximumPrediction /= 2;
+		}
+		else if (i == 1)	{
+			turnMaximumPrediction = turnMaximum;
+		}
+		else if (i == 2)	{
+			turnMaximumPrediction *= 2;
+		}
+	}
+
 	@Override
 	public Combatant getTarget()	{
 		return target;

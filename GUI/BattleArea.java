@@ -82,12 +82,12 @@ public class BattleArea extends JPanel	{
 
 	@Override
 	protected void paintComponent(Graphics g)	{
-		drawBattleText(g);
 		drawParty(g);
 		battleScreen.getEnemies().drawEnemies(g);
 		if (battleScreen.getState() == BATTLE_STATE.ATTACK_SELECTION)	{
 			drawTargetCursor(g);
 		}
+		drawBattleText(g);
 	}
 
 	private void drawBattleText(Graphics g)	{
@@ -128,6 +128,10 @@ public class BattleArea extends JPanel	{
 
 	public void setTargetAlly(boolean b)	{
 		targetAlly = b;
+	}
+	
+	public boolean getTargetAlly()	{
+		return targetAlly;
 	}
 
 	public void respondToInput(KeyEvent e, BattleInfo info) {
@@ -171,6 +175,10 @@ public class BattleArea extends JPanel	{
 
 	public int getEnemyCursorPosition() {
 		return enemyCursorPosition;
+	}
+	
+	public int getFriendlyCursorPosition()	{
+		return friendlyCursorPosition;
 	}
 	
 	public void clear()	{

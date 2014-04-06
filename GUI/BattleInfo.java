@@ -24,10 +24,13 @@ public class BattleInfo extends JPanel {
 	private JLabel name = new JLabel();
 	private JLabel health = new JLabel();
 	private JLabel mana = new JLabel();
+	private JLabel level = new JLabel();
 	
 	private boolean visible = false;
 	
 	private ImageIcon background = new ImageIcon("GUI/Resources/BattleInfo_Background.png");
+	
+	private Combatant target;
 	
 	private Font infoFont;
 	
@@ -62,33 +65,42 @@ public class BattleInfo extends JPanel {
 		
 		buffer.setOpaque(false); middle.setOpaque(false); buffer2.setOpaque(false);
 		
+		JPanel levelWrapper = new JPanel();
 		JPanel nameWrapper = new JPanel();
 		JPanel healthWrapper = new JPanel();
 		JPanel manaWrapper = new JPanel();
 		
-		nameWrapper.setOpaque(false); healthWrapper.setOpaque(false); manaWrapper.setOpaque(false);
-		Dimension nameDimension = new Dimension(280, 40);
+		levelWrapper.setOpaque(false); nameWrapper.setOpaque(false); 
+		healthWrapper.setOpaque(false); manaWrapper.setOpaque(false);
+		
+		Dimension levelDimension = new Dimension(50, 40);
+		levelWrapper.setPreferredSize(levelDimension);
+		levelWrapper.setMaximumSize(levelDimension);
+		levelWrapper.setMinimumSize(levelDimension);
+		Dimension nameDimension = new Dimension(250, 40);
 		nameWrapper.setPreferredSize(nameDimension);
 		nameWrapper.setMaximumSize(nameDimension);
 		nameWrapper.setMinimumSize(nameDimension);
-		Dimension healthDimension = new Dimension(140, 40);
+		Dimension healthDimension = new Dimension(130, 40);
 		healthWrapper.setPreferredSize(healthDimension);
 		healthWrapper.setMaximumSize(healthDimension);
 		healthWrapper.setMinimumSize(healthDimension);
-		Dimension manaDimension = new Dimension(140, 40);
+		Dimension manaDimension = new Dimension(130, 40);
 		manaWrapper.setPreferredSize(manaDimension);
 		manaWrapper.setMaximumSize(manaDimension);
 		manaWrapper.setMinimumSize(manaDimension);
 		
-		name.setFont(infoFont); health.setFont(infoFont); mana.setFont(infoFont);
+		level.setFont(infoFont); name.setFont(infoFont); health.setFont(infoFont); mana.setFont(infoFont);
+		levelWrapper.setLayout(new BoxLayout(levelWrapper, BoxLayout.X_AXIS));
 		nameWrapper.setLayout(new BoxLayout(nameWrapper, BoxLayout.X_AXIS));
 		healthWrapper.setLayout(new BoxLayout(healthWrapper, BoxLayout.X_AXIS));
 		manaWrapper.setLayout(new BoxLayout(manaWrapper, BoxLayout.X_AXIS));
 		
-		nameWrapper.add(name); healthWrapper.add(health); manaWrapper.add(mana);
+		levelWrapper.add(level); nameWrapper.add(name); healthWrapper.add(health); manaWrapper.add(mana);
 		
 		middle.setLayout(new BoxLayout(middle, BoxLayout.X_AXIS));
 		middle.add(Box.createHorizontalStrut(10));
+		middle.add(levelWrapper);
 		middle.add(nameWrapper); 
 		middle.add(healthWrapper); 
 		middle.add(manaWrapper);
@@ -97,9 +109,14 @@ public class BattleInfo extends JPanel {
 		this.add(buffer);
 		this.add(middle);
 		this.add(buffer2);
+		
+		setVisible(false);
 	}
 	
 	public void setTarget(Combatant target)	{
+		this.target = target;
+		
+		level.setText("L:" + target.getLevel());
 		name.setText(target.getName());
 		health.setText(target.getCurrentHealth().getActual() + "/" + target.getMaxHealth().getActual() + "HP");
 		mana.setText(target.getCurrentMana().getActual() + "/" + target.getMaxMana().getActual() + "MP");
@@ -109,11 +126,15 @@ public class BattleInfo extends JPanel {
 		visible = b;
 		
 		if (b == true)	{
+			level.setVisible(true);
 			name.setVisible(true);
 			health.setVisible(true);
-			mana.setVisible(true);
+//			if (target.getMaxMana().getActual() > 0)	{
+				mana.setVisible(true);
+//			}
 		}
 		else	{
+			level.setVisible(false);
 			name.setVisible(false);
 			health.setVisible(false);
 			mana.setVisible(false);

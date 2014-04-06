@@ -120,6 +120,7 @@ public class BattleScreen extends JPanel {
 
 	public void respondToInput(KeyEvent e)	{
 		if (state == BATTLE_STATE.MAIN)	{
+			int startPos = menu.getCursorPosition();
 			if (e.getKeyCode() == KeyEvent.VK_UP)	{
 				if (menu.getCursorPosition() == 2 || menu.getCursorPosition() == 3)	{
 					menu.modifyCursorPosition(-2);
@@ -162,6 +163,12 @@ public class BattleScreen extends JPanel {
 					break;
 				}
 			}
+			if ((startPos == 1 || startPos == 2) && menu.getCursorPosition() == 3)	{
+				turnOrder.predictTurnOrder(0);
+			}
+			else if (startPos == 3 && (menu.getCursorPosition() == 1 || menu.getCursorPosition() == 2))	{
+				turnOrder.calculateTurnOrder();
+			}
 		}
 		else if (state == BATTLE_STATE.SELECT)	{
 
@@ -186,19 +193,19 @@ public class BattleScreen extends JPanel {
 		double partyEscape = calculatePartyEscapeScore();
 		double enemyAggro = enemies.calculateAggressionScore();
 		
-		System.out.println(partyEscape);
-		System.out.println(enemyAggro+"\n");
-		
 		Random rand = new Random();
 		partyEscape *= ((0.7 + rand.nextDouble()) / 2);
 		enemyAggro *= ((0.5 + rand.nextDouble()) / 2);
 		
-		System.out.println(partyEscape);
-		System.out.println(enemyAggro);
-		System.out.println();
-		
 		if (partyEscape > enemyAggro)	{
 			leaveBattle(); 
+		}
+		else	{
+			turnOrder.endCombatantTurn(0);
+			dialogue.addDialogue("Can't escape!");
+			switchToTalk();
+			dialogue.startDialogue();
+			activeMember = turnOrder.getActiveCombatant();
 		}
 	}
 	
@@ -214,7 +221,7 @@ public class BattleScreen extends JPanel {
 			}
 		}
 		aggressionScore += highestLevel / 2.0;
-		aggressionScore += 1.3; //buffer to make earlier levels easy to escape
+		aggressionScore -= 1.5; //buffer to make earlier levels easy to escape
 		return aggressionScore;
 	}
 
@@ -232,6 +239,13 @@ public class BattleScreen extends JPanel {
 	
 	public void update()	{
 		battleArea.update();
+		if (activeMember.getClass() == Enemy.class && state == BATTLE_STATE.MAIN)	{
+			state = BATTLE_STATE.ENEMY_MOVE;
+		}
+		if (state == BATTLE_STATE.ENEMY_MOVE)	{
+			((Enemy) activeMember).takeAction(data.getParty());
+			state = BATTLE_STATE.ANIM_ATTACK;
+		}
 		if (state == BATTLE_STATE.ANIM_ATTACK)	{
 			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
 				data.getCombat().attack(activeMember, activeMember.getTarget());
@@ -248,14 +262,10 @@ public class BattleScreen extends JPanel {
 				}
 				turnOrder.endCombatantTurn(1);
 				activeMember = turnOrder.getActiveCombatant();
-				if (activeMember.getClass() == Enemy.class)	{
-					((Enemy) activeMember).takeAction(data.getParty());
-					state = BATTLE_STATE.ANIM_ATTACK;
-				}
 			}
 			
 		}
-		else if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END || state == BATTLE_STATE.ENEMY_MOVE)	{
+		if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END || state == BATTLE_STATE.ENEMY_MOVE)	{
 			if (dialogue.hasNextLine()){
 				if (data.getGameState() != GAME_STATE.TALK)	{
 					switchToTalk();
@@ -291,6 +301,15 @@ public class BattleScreen extends JPanel {
 				enemies.toArrayList().get(i).setJustDied(false);
 			}
 		}
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null)	{
+				if (data.getParty()[i].justDiedEh())	{
+					dialogue.addDialogue(data.getParty()[i].getName() + " died!");
+					data.getParty()[i].setJustDied(false);
+					data.getParty()[i].setAlive(false);
+				}
+			}
+		}
 	}
 	
 	private void awardXP()	{
@@ -312,7 +331,12 @@ public class BattleScreen extends JPanel {
 	private void startAttack()	{
 		info.setVisible(false);
 		state = BATTLE_STATE.ANIM_ATTACK;
-		activeMember.attackTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
+		if (battleArea.getTargetAlly() == true)	{
+			activeMember.attackTarget(data.getParty()[battleArea.getFriendlyCursorPosition()]);
+		}
+		else	{
+			activeMember.attackTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
+		}
 	}
 	
 	public void addBattleText(int damage, Combatant target)	{

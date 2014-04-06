@@ -34,9 +34,17 @@ public interface Combatant {
 	public int getTurnMaximum();
 	public void setTurnMaximum(int maximum);
 	public int getTurnPrediction();
+	public void clearTurnPriorityPrediction();
+	public void clearTurnMaximumPrediction();
+	public void setTurnPriorityPrediction(int i);
+	public void setTurnMaximumPrediction(int i);
+	public int getPredictiveSpeedMod();
 	public void attackTarget(Combatant target);
 	public COMBAT_ACTION getCombatAction();
 	public Combatant getTarget();
+	public int getLevel();
+	public int getTurnPriorityPrediction();
+	public int getTurnMaximumPrediction();
 	
 	/**
 	 * This is used to calculate the turn order of the combatants in advance. This integer saves the prediction
@@ -49,6 +57,6 @@ public interface Combatant {
 	 * Used to reset turn order prediction to 0 after turn order calculations are made.
 	 */
 	public void clearTurnPrediction();
-	public int getPredictiveSpeed();
+	public int getPredictiveSpeedTrue();
 
 }

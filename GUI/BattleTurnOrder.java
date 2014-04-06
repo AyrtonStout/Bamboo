@@ -69,20 +69,25 @@ public class BattleTurnOrder extends JPanel	{
 			if (battleScreen.getStartingCondition() == COMBAT_START.AMBUSH)	{
 				if (combatants.get(i).getClass() == PartyMember.class)	{
 					combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum());
+					combatants.get(i).setTurnPriorityPrediction(combatants.get(i).getTurnMaximum());
 				}
 				else if (combatants.get(i).getClass() == Enemy.class)	{
 					combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/5);
+					combatants.get(i).setTurnPriorityPrediction(combatants.get(i).getTurnMaximum()/5);
 				}
 			}
 			else if (battleScreen.getStartingCondition() == COMBAT_START.NORMAL)	{
 				combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/2);
+				combatants.get(i).setTurnPriorityPrediction(combatants.get(i).getTurnMaximum()/2);
 			}
 			else if (battleScreen.getStartingCondition() == COMBAT_START.PREEMPTIVE)	{
 				if (combatants.get(i).getClass() == PartyMember.class)	{
 					combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum()/5);
+					combatants.get(i).setTurnPriorityPrediction(combatants.get(i).getTurnMaximum()/2);
 				}
 				else if (combatants.get(i).getClass() == Enemy.class)	{
 					combatants.get(i).setTurnPriority(combatants.get(i).getTurnMaximum());
+					combatants.get(i).setTurnPriorityPrediction(combatants.get(i).getTurnMaximum());
 				}
 			}
 		}
@@ -108,6 +113,45 @@ public class BattleTurnOrder extends JPanel	{
 			turnIcons.set(i, turns.get(i).getBattlePicture());
 		}
 	}
+	
+	public void predictTurnOrder(int prediction)	{
+		for (int i = 0; i < combatants.size(); i++)	{
+			combatants.get(i).setTurnMaximumPrediction(1);
+			combatants.get(i).setTurnPriorityPrediction(-1);
+		}
+		turns.get(0).setTurnPriorityPrediction(prediction);
+		
+		int size = turns.size();
+		for (int i = 0; i < size - 1; i++)	{
+			turns.remove(1);
+		}
+		
+
+		for (int i = 0; i < PREDICTIVE_SIZE - 1; i++)	{
+			Combatant fastest = null;
+			for (int j = 0; j < combatants.size(); j++)	{
+				if (combatants.get(j).aliveEh())	{
+					Combatant compare = combatants.get(j);
+					if (fastest == null || compare.getPredictiveSpeedMod() < fastest.getPredictiveSpeedMod())	{
+						fastest = compare;
+					}
+				}
+			}
+			fastest.incrementTurnPrediction();
+			turns.add(fastest);
+		}
+		for (int i = 0; i < 5; i++)	{
+			System.out.println(turns.get(i).getName() + "  " + turns.get(i).getTurnPriorityPrediction() + "/" + 
+					turns.get(i).getTurnMaximumPrediction());
+			
+		}
+		for (int i = 0; i < combatants.size(); i++)	{
+			combatants.get(i).clearTurnPrediction();
+		}
+		
+		updateImages();
+
+	}
 
 	public void calculateTurnOrder()	{
 		int size = turns.size();
@@ -120,13 +164,18 @@ public class BattleTurnOrder extends JPanel	{
 			for (int j = 0; j < combatants.size(); j++)	{
 				if (combatants.get(j).aliveEh())	{
 					Combatant compare = combatants.get(j);
-					if (fastest == null || compare.getPredictiveSpeed() < fastest.getPredictiveSpeed())	{
+					if (fastest == null || compare.getPredictiveSpeedTrue() < fastest.getPredictiveSpeedTrue())	{
 						fastest = compare;
 					}
 				}
 			}
 			fastest.incrementTurnPrediction();
 			turns.add(fastest);
+		}
+		for (int i = 0; i < 5; i++)	{
+			System.out.println(turns.get(i).getName() + "  " + turns.get(i).getTurnPriority() + "/" + 
+					turns.get(i).getTurnMaximum());
+			
 		}
 		for (int i = 0; i < combatants.size(); i++)	{
 			combatants.get(i).clearTurnPrediction();

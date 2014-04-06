@@ -66,8 +66,14 @@ public class PartyMember implements Serializable, Combatant {
 	
 	private int turnPriority = 0;
 	private int turnMaximum = 0;
-	private int turnPrediction = 0; //This is the number of turns in advance that the BattleScreen is using to calculate turn order
-	                                //When the BattleScreen isn't calculating this is always 0
+	
+	private int turnPrediction = 0;           /* This is the number of turns in advance that the BattleScreen is using to 
+	                                           * calculate turn order. When the BattleScreen isn't calculating this it is always 0 */
+	private int turnPriorityPrediction = 0;   /* Changes the starting calculation point when deciding turn order
+	                                           * This is useful for moves that have a delay after they are used, or moves/actions
+	                                           * that are not intended to take up an entire full turn length */
+	private int turnMaximumPrediction = 0;    /* This changes the ending point calculation (making all moves either faster or slower)
+	                                           * Useful for semi-permanent speed changes like Haste or Slow */
 	
 	private boolean alive = true;
 	private boolean justDied = false;
@@ -76,7 +82,7 @@ public class PartyMember implements Serializable, Combatant {
 	private ImageIcon portrait;
 	private ImageIcon left, up, right, down;
 	private ImageIcon walkLeft, walkUp, walkRight, walkDown;
-	private ImageIcon actionIMG, leap;
+	private ImageIcon actionIMG, leap, death;
 	
 	private int kills;
 	private int deaths;
@@ -149,6 +155,7 @@ public class PartyMember implements Serializable, Combatant {
 		actionIMG = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
 		leap = new ImageIcon("GUI/Resources/Characters/" + name + " - Leap.gif");
 //		battlePicture = new ImageIcon("GUI/Resources/Characters/" + name + " - Battle.png");
+		death = new ImageIcon("GUI/Resources/Characters/" + name + " - Dead.gif");
 		
 		refresh();
 	}
@@ -564,40 +571,77 @@ public class PartyMember implements Serializable, Combatant {
 		return height;
 	}
 	
+	
 	public int getTurnPriority()	{
 		return turnPriority;
 	}
-	
+	public int getTurnPriorityPrediction()	{
+		return turnPriorityPrediction;
+	}
 	public void setTurnPriority(int newPrio)	{
 		turnPriority = newPrio;
-	}
-	
+	}	
 	public int getTurnMaximum()	{
 		return turnMaximum;
 	}
-	
 	public void setTurnMaximum(int newMax)	{
 		turnMaximum = newMax;
 	}
-	
+	public int getTurnMaximumPrediction()	{
+		return turnMaximumPrediction;
+	}
 	public int getTurnPrediction()	{
 		return turnPrediction;
 	}
-	
 	@Override
 	public void incrementTurnPrediction()	{
 		turnPrediction++;
 	}
-	
 	@Override
 	public void clearTurnPrediction()	{
 		turnPrediction = 0;
 	}
-	
 	@Override
-	public int getPredictiveSpeed()	{
+	public int getPredictiveSpeedTrue()	{
 		return turnPriority + turnPrediction * (turnMaximum/2);
 	}
+	@Override
+	public int getPredictiveSpeedMod()	{
+		return turnPriorityPrediction + turnPrediction * (turnMaximumPrediction/2);
+	}
+	public void clearTurnPriorityPrediction()	{
+		turnPriorityPrediction = 0;
+	}
+	public void clearTurnMaximumPrediction()	{
+		turnMaximumPrediction = 0;
+	}
+	public void setTurnPriorityPrediction(int i)	{
+		if (i == 0)	{
+			turnPriorityPrediction = turnMaximumPrediction / 4;
+		}
+		else if (i == 1)	{
+			turnPriorityPrediction = turnMaximumPrediction / 2;
+		}
+		else if (i == 2)	{
+			turnPriorityPrediction = turnMaximumPrediction;
+		}
+		else	{
+			turnPriorityPrediction = turnPriority;
+		}
+	}
+	public void setTurnMaximumPrediction(int i)	{
+		if (i == 0)	{
+			turnMaximumPrediction /= 2;
+		}
+		else if (i == 1)	{
+			turnMaximumPrediction = turnMaximum;
+		}
+		else if (i == 2)	{
+			turnMaximumPrediction *= 2;
+		}
+	}
+	
+	
 	//-------------------------------------------
 	public void incrementKills()	{
 		kills++;
@@ -749,8 +793,18 @@ public class PartyMember implements Serializable, Combatant {
 	public COMBAT_ACTION getAction()	{
 		return combatAction;
 	}
+	/**
+	 * Draws the character on the battle screen.
+	 * 
+	 * Uses different coordinates for the death image to correct for its different dimensions
+	 */
 	public void drawSelf(Graphics g)	{
-		g.drawImage(current.getImage(), origin.x + offsetX, origin.y, null);
+		if (current == death)	{
+			g.drawImage(current.getImage(), origin.x - 11, origin.y + 14, null);
+		}
+		else	{
+			g.drawImage(current.getImage(), origin.x + offsetX, origin.y, null);	
+		}
 	}
 	
 	public void attackTarget(Combatant target)	{
@@ -780,6 +834,16 @@ public class PartyMember implements Serializable, Combatant {
 	@Override
 	public void setAlive(boolean b) {
 		alive = b;
+		
+		if (alive)	{
+			current = right;
+		}
+		else	{
+			if (combatAction == COMBAT_ACTION.IDLE)	{
+				current = death;
+			}
+		}
+		
 	}
 
 	@Override

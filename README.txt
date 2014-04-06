@@ -16,6 +16,14 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.36
+-Player can now target their own party members for attacks
+-Party members now change appearance when they are dead
+-Floating combat text is now drawn above other combat elements
+-Fixed a bug causing dialogue to not play before an enemy's turn
+-Running now causes only a partial use of the turn to be used
+ +This is reflected in the turn order prediction
+
 v0.35
 -Turn prediction now hides itself after combat is over when xp is being awarded
 -Floating combat text is now properly aligned to all actors
