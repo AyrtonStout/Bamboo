@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -14,6 +13,12 @@ import Systems.GameData;
 import Systems.PartyMember;
 import Systems.Enums.COMBAT_START;
 
+/**
+ * @author mobius
+ * 
+ * This is the component on the battle screen that calculates and draws the order that the characters
+ * take their turn during combat
+ */
 public class BattleTurnOrder extends JPanel	{
 
 	private static final long serialVersionUID = -4464976184980976130L;
@@ -44,6 +49,10 @@ public class BattleTurnOrder extends JPanel	{
 		this.setOpaque(false);
 	}
 
+	/**
+	 * Prepares the turn order for a new battle. Calculates the relative speed of all participants and places
+	 * them in order
+	 */
 	public void initialize()	{
 		for (int i = 0; i < PREDICTIVE_SIZE; i++)	{
 			turnIcons.add(new ImageIcon());
@@ -97,6 +106,9 @@ public class BattleTurnOrder extends JPanel	{
 
 	}
 
+	/**
+	 * Resets the information to zero after a battle has concluded
+	 */
 	public void clear()	{
 		int size = combatants.size();
 		for (int i = 0; i < size; i++)	{
@@ -108,12 +120,26 @@ public class BattleTurnOrder extends JPanel	{
 		}
 	}
 
-	public void updateImages()	{
+	/**
+	 * Updates the displayed images to reflect the calculated turn order
+	 */
+	private void updateImages()	{
 		for (int i = 0; i < turnIcons.size(); i++)	{
 			turnIcons.set(i, turns.get(i).getBattlePicture());
 		}
 	}
 	
+	/**
+	 * Calculates the turn order given that the current character takes a particular
+	 * action. For example, a character attempting to run from battle, or a character using a "quick hit"
+	 * type ability should not use up their full turn. This method should be used to show the correct
+	 * result in the turn bar.\n
+	 * 
+	 * A parameter of 1 predicts turn order as if the character uses a normal move, meaning that the
+	 * calculateTurnOrder() method should be used instead.
+	 * 
+	 * @param prediction 0 for a quick action, 1 for a normal action, and 2 for a long action
+	 */
 	public void predictTurnOrder(int prediction)	{
 		for (int i = 0; i < combatants.size(); i++)	{
 			combatants.get(i).setTurnMaximumPrediction(1);
@@ -126,7 +152,6 @@ public class BattleTurnOrder extends JPanel	{
 			turns.remove(1);
 		}
 		
-
 		for (int i = 0; i < PREDICTIVE_SIZE - 1; i++)	{
 			Combatant fastest = null;
 			for (int j = 0; j < combatants.size(); j++)	{
@@ -140,11 +165,6 @@ public class BattleTurnOrder extends JPanel	{
 			fastest.incrementTurnPrediction();
 			turns.add(fastest);
 		}
-		for (int i = 0; i < 5; i++)	{
-			System.out.println(turns.get(i).getName() + "  " + turns.get(i).getTurnPriorityPrediction() + "/" + 
-					turns.get(i).getTurnMaximumPrediction());
-			
-		}
 		for (int i = 0; i < combatants.size(); i++)	{
 			combatants.get(i).clearTurnPrediction();
 		}
@@ -153,6 +173,10 @@ public class BattleTurnOrder extends JPanel	{
 
 	}
 
+	/**
+	 * Calculates the turn order of all combatants as if they use normal priority moves and updates the screen
+	 * to reflect the new order.
+	 */
 	public void calculateTurnOrder()	{
 		int size = turns.size();
 		for (int i = 0; i < size; i++)	{
@@ -172,11 +196,6 @@ public class BattleTurnOrder extends JPanel	{
 			fastest.incrementTurnPrediction();
 			turns.add(fastest);
 		}
-		for (int i = 0; i < 5; i++)	{
-			System.out.println(turns.get(i).getName() + "  " + turns.get(i).getTurnPriority() + "/" + 
-					turns.get(i).getTurnMaximum());
-			
-		}
 		for (int i = 0; i < combatants.size(); i++)	{
 			combatants.get(i).clearTurnPrediction();
 		}
@@ -184,12 +203,24 @@ public class BattleTurnOrder extends JPanel	{
 
 	}
 
+	/**
+	 * Returns the first combatant in the turn queue
+	 * 
+	 * @return The combatant who is taking their turn
+	 */
 	public Combatant getActiveCombatant()	{
 		return turns.get(0);
 	}
 
-	//TODO probably rewrite this to be more specific
+
+	/**
+	 * To be used whenever a combatant completes its turn. This method then updates the target's turn priority and moves
+	 * the turn on to the next combatant in the queue
+	 * 
+	 * @param priority The speed of the move the combatant used. 0 for a fast move, 1 for a normal move, and 2 for a slow move
+	 */
 	public void endCombatantTurn(int priority)	{
+		//TODO probably rewrite this to be more specific
 		if (priority == 0)	{
 			turns.get(0).setTurnPriority(turns.get(0).getTurnMaximum() / 4);
 		}
@@ -224,7 +255,6 @@ public class BattleTurnOrder extends JPanel	{
 
 	@Override
 	protected void paintComponent(Graphics g)	{
-//		super.paintComponent(g);
 		if (visible)	{
 			for (int i = 0; i < turnIcons.size(); i++)	{
 				if (turns.get(i).getClass() == PartyMember.class)	{
@@ -239,11 +269,15 @@ public class BattleTurnOrder extends JPanel	{
 		}
 	}
 	
+	/**
+	 * @return Whether or not this component is visible
+	 */
 	public boolean visibleEh()	{
 		return visible;
 	}
 	
-	public void setViewable(boolean b)	{
+	@Override
+	public void setVisible(boolean b)	{
 		visible = b;
 	}
 

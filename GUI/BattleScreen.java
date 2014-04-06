@@ -103,7 +103,7 @@ public class BattleScreen extends JPanel {
 		this.enemies = enemies;
 		
 		turnOrder.initialize();
-		turnOrder.setViewable(true);
+		turnOrder.setVisible(true);
 		activeMember = turnOrder.getActiveCombatant();		
 	}
 
@@ -255,7 +255,7 @@ public class BattleScreen extends JPanel {
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
 				if (enemies.allDefeated())	{
-					turnOrder.setViewable(false);
+					turnOrder.setVisible(false);
 					awardXP();
 					checkForLevelUps();
 					state = BATTLE_STATE.END;

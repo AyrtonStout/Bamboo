@@ -27,8 +27,7 @@ public class PartyMember implements Serializable, Combatant {
 	private static int partySize = 1;
 	
 	private Equipment equipment = new Equipment(this);
-	private GameData data;
-	
+
 	private String name;
 	private String gender;
 	private int level = 1;
@@ -154,7 +153,6 @@ public class PartyMember implements Serializable, Combatant {
 		
 		actionIMG = new ImageIcon("GUI/Resources/Characters/" + name + " - Action.gif");
 		leap = new ImageIcon("GUI/Resources/Characters/" + name + " - Leap.gif");
-//		battlePicture = new ImageIcon("GUI/Resources/Characters/" + name + " - Battle.png");
 		death = new ImageIcon("GUI/Resources/Characters/" + name + " - Dead.gif");
 		
 		refresh();
@@ -241,8 +239,6 @@ public class PartyMember implements Serializable, Combatant {
 	}
 	
 	public void initialize(GameData data)	{
-		
-		this.data = data;
 		
 		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
 		up= new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
