@@ -198,7 +198,7 @@ public class BattleScreen extends JPanel {
 			}
 		}
 		aggressionScore += highestLevel / 2.0;
-		aggressionScore -= 1.5; //buffer to make earlier levels easy to escape
+		aggressionScore += 1.5; //buffer to make earlier levels easy to escape
 		return aggressionScore;
 	}
 

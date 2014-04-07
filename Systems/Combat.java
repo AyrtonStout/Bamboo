@@ -25,7 +25,7 @@ public class Combat {
 	 */
 	public void attack(Combatant aggressor, Combatant victim)	{
 		if (missEh(aggressor, victim))	{
-			data.getBattleScreen().getBattleArea().addBattleText("MISS", victim, crit);
+			data.getBattleScreen().getBattleArea().addBattleText("MISS", victim, false);
 		}
 		else	{
 			int painBrought = damageDealt(aggressor, victim);
