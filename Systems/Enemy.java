@@ -34,7 +34,7 @@ public class Enemy extends Combatant implements Serializable {
 			picture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw.png");
 			battlePicture = new ImageIcon("GUI/Resources/Enemies/Crab_RazorClaw-Small.png");
 			width = 162; height = 151;
-			xpPerLevel = 40;
+			xpPerLevel = 45;
 			
 			minLevel = 1;       maxLevel = 3;
 			
@@ -54,7 +54,7 @@ public class Enemy extends Combatant implements Serializable {
 			width = 162; height = 151;
 			xpPerLevel = 45;
 			
-			minLevel = 2;       maxLevel = 4;
+			minLevel = 2;       maxLevel = 3;
 			
 			attackBase = 2.4;       attackGrowth = 0.7;
 			defenseBase = 3.3;      defenseGrowth = 1.3;

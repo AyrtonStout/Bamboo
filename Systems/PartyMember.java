@@ -71,7 +71,7 @@ public class PartyMember extends Combatant implements Serializable {
 			spirit = new Stat(5);
 			intellect = new Stat(4);
 			luck = new Stat(7);
-			stamina = new Stat(8);
+			stamina = new Stat(6);
 			
 			speed = new Stat(9);
 			
@@ -94,7 +94,7 @@ public class PartyMember extends Combatant implements Serializable {
 			spirit = new Stat(6);
 			intellect = new Stat(8);
 			luck = new Stat(8);
-			stamina = new Stat(7);
+			stamina = new Stat(5);
 			
 			speed = new Stat(8);
 			
@@ -532,8 +532,8 @@ public class PartyMember extends Combatant implements Serializable {
 	 * Uses different coordinates for the death image to correct for its different dimensions
 	 */
 	public void drawSelf(Graphics g)	{
-		if (current == death)	{
-			g.drawImage(current.getImage(), origin.x - 11, origin.y + 14, null);
+		if (!alive)	{
+			g.drawImage(death.getImage(), origin.x - 11, origin.y + 14, null);
 		}
 		else	{
 			g.drawImage(current.getImage(), origin.x + offsetX, origin.y, null);	

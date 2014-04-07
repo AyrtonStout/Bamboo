@@ -290,8 +290,18 @@ public class BattleScreen extends JPanel {
 	}
 	
 	private void awardXP()	{
-		dialogue.addDialogue("Your party earned " + enemies.earnedXP() + " XP!");
-		enemies.giveXP(data.getParty());
+		int partySize = 0;
+		for (int i = 0; i < data.getParty().length; i++)	{
+			if (data.getParty()[i] != null && data.getParty()[i].aliveEh())	{
+				partySize++;
+			}
+		}
+		int xpEarned = (int) Math.round((double) enemies.getEarnedXP() / partySize);
+		for (int i = 0; i < partySize; i++)	{
+			data.getParty()[i].giveXP(xpEarned);
+		}
+		
+		dialogue.addDialogue("Your party earned " + xpEarned + " XP!");
 	}
 	
 	private void checkForLevelUps()	{

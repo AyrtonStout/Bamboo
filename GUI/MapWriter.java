@@ -337,10 +337,12 @@ public class MapWriter {
 		
 		ArrayList<Trigger> triggers = new ArrayList<Trigger>();
 		
-		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), new TAction(TACTION.SPAWN_NPC, spawnGhost));
-		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
+		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), 
+				new TAction(TACTION.SPAWN_NPC, spawnGhost));
+		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), 
+				new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
 		addToParty.addAction(new TAction(TACTION.REMOVE_NPC_FROM_MAP, terra));
-		
+
 		triggers.add(spawnNPC);
 		triggers.add(addToParty);
 		

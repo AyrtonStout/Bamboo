@@ -1,6 +1,7 @@
 package Systems;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
@@ -11,7 +12,9 @@ import Systems.Enums.COMBAT_ACTION;
  * A participant in combat. Contains the images, stats, and dimensional information needed to carry out
  * all battle calculations as well as to draw themselves. 
  */
-public abstract class Combatant {
+public abstract class Combatant implements Serializable {
+	
+	private static final long serialVersionUID = -4377832170734598608L;
 	
 	protected String name;
 	protected ImageIcon picture, battlePicture;

@@ -23,6 +23,8 @@ v0.37
 -Critical hits now have a shaking effect on the combat text
 -Characters are now able to miss with a base miss chance of 15%
 -Missed attacks are reflected in white text
+-Characters that are dead now stay drawn dead at the start of a new battle
+-Dead party members no longer receive XP
 
 v0.36
 -Player can now target their own party members for attacks

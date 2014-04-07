@@ -37,7 +37,7 @@ public class Encounter implements Serializable {
 		return true;
 	}
 	
-	public int earnedXP()	{
+	public int getEarnedXP()	{
 		int total = 0;
 		for (int i = 0; i < enemies.size(); i++)	{
 			total += enemies.get(i).getXpReward();
@@ -52,18 +52,6 @@ public class Encounter implements Serializable {
 		}
 	}
 
-
-	public void giveXP(PartyMember[] party) {
-		int partySize = 0;
-		for (int i = 0; i < party.length; i++)	{
-			if (party[i] != null)	{
-				partySize++;
-			}
-		}
-		for (int i = 0; i < partySize; i++)	{
-			party[i].giveXP(earnedXP() / partySize);
-		}
-	}
 	
 	public double calculateAggressionScore()	{
 		double aggressionScore = 0;
