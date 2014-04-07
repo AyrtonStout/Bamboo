@@ -1,4 +1,4 @@
-package GUI;
+package Battle;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,7 +11,7 @@ import Systems.Combatant;
 import Systems.Enemy;
 import Systems.GameData;
 import Systems.PartyMember;
-import Systems.Enums.COMBAT_START;
+import Battle.Enums.COMBAT_START;
 
 /**
  * @author mobius

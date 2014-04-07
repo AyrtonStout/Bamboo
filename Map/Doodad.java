@@ -1,4 +1,4 @@
-package GUI;
+package Map;
 
 import java.awt.Image;
 import java.io.Serializable;

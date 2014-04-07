@@ -1,4 +1,4 @@
-package GUI;
+package Map;
 
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
@@ -6,7 +6,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.ACTION;
+import Map.Enums.ACTION;
 import Systems.GameData;
 import Systems.PartyMember;
 

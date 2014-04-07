@@ -1,4 +1,4 @@
-package GUI;
+package Battle;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -11,13 +11,14 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import GUI.Enums.BATTLE_STATE;
-import GUI.Enums.GAME_STATE;
+import GUI.DialogueBox;
+import Battle.Enums.BATTLE_STATE;
+import Systems.Enums.GAME_STATE;
 import Systems.Combatant;
 import Systems.Encounter;
 import Systems.Enemy;
-import Systems.Enums.COMBAT_ACTION;
-import Systems.Enums.COMBAT_START;
+import Battle.Enums.COMBAT_ACTION;
+import Battle.Enums.COMBAT_START;
 import Systems.GameData;
 
 /**

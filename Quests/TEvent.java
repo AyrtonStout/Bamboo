@@ -3,7 +3,7 @@ package Quests;
 import java.awt.Point;
 import java.io.Serializable;
 
-import GUI.NPC;
+import Map.NPC;
 import Quests.Enums.TEVENT;
 import Systems.GameData;
 

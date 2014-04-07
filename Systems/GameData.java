@@ -5,17 +5,17 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import GUI.BattleScreen;
-import GUI.Board;
+import Battle.BattleScreen;
 import GUI.DialogueBox;
 import GUI.InventoryPanel;
-import GUI.Map;
 import GUI.Menu;
 import GUI.PartyPanel;
-import GUI.PlayerAvatar;
-import GUI.Enums.GAME_STATE;
-import GUI.Enums.NAMED_NPC;
+import Systems.Enums.GAME_STATE;
 import GUI.StatisticsPanel;
+import Map.Board;
+import Map.Map;
+import Map.PlayerAvatar;
+import Map.Enums.NAMED_NPC;
 
 /**
  * @author mobius

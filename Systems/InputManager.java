@@ -5,11 +5,11 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
-import GUI.Chest;
-import GUI.NPC;
-import GUI.Sign;
-import GUI.Tile;
-import GUI.Enums.GAME_STATE;
+import Systems.Enums.GAME_STATE;
+import Map.Chest;
+import Map.NPC;
+import Map.Sign;
+import Map.Tile;
 
 public class InputManager extends JPanel {
 

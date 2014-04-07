@@ -1,11 +1,11 @@
-package GUI;
+package Map;
 
 import java.awt.Point;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import GUI.Enums.*;
+import Map.Enums.*;
 import Quests.TAction;
 import Quests.TEvent;
 import Quests.Trigger;

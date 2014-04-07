@@ -1,10 +1,10 @@
-package GUI;
+package Map;
 
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.*;
+import Map.Enums.*;
 
 /**
  * @author mobius

@@ -1,4 +1,5 @@
-package GUI;
+package Battle;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -17,7 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import GUI.Enums.BATTLE_STATE;
+import Battle.Enums.BATTLE_STATE;
 import Systems.GameData;
 import Systems.PartyMember;
 

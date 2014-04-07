@@ -1,4 +1,4 @@
-package GUI;
+package Battle;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import GUI.Enums.BATTLE_STATE;
+import Battle.Enums.BATTLE_STATE;
 import Systems.Combatant;
 import Systems.Enemy;
 import Systems.GameData;

@@ -2,21 +2,18 @@ package Systems;
 
 public class Enums {
 	
+	public enum GAME_STATE	{
+		
+		WALK, TALK, MENU, INVENTORY_OUTER, INVENTORY_INNER, PARTY_PANEL, STATISTICS_PANEL, BATTLE;
+		
+	}
+	
 	public enum TIME	{
 		
 		MORNING, DAY, NIGHT;
 	
 	}
 	
-	public enum COMBAT_ACTION	{
-		
-		IDLE, ATTACK, IMPACT;
-		
-	}
-	
-	public enum COMBAT_START	{
-		PREEMPTIVE, NORMAL, AMBUSH;
-	}
 	
 	/*
 	 * Weapon enums

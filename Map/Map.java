@@ -1,4 +1,4 @@
-package GUI;
+package Map;
 
 import java.io.Serializable;
 import java.util.ArrayList;

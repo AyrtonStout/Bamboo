@@ -2,9 +2,9 @@ package Quests;
 
 import java.io.Serializable;
 
-import GUI.Enums.GAME_STATE;
-import GUI.Map;
-import GUI.NPC;
+import Systems.Enums.GAME_STATE;
+import Map.Map;
+import Map.NPC;
 import Quests.Enums.TACTION;
 import Systems.GameData;
 import Systems.PartyMember;

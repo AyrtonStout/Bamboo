@@ -1,4 +1,4 @@
-package GUI;
+package Map;
 
 import java.awt.*;
 import java.awt.event.*;

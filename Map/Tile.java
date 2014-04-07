@@ -1,4 +1,4 @@
-package GUI;
+package Map;
 
 import java.awt.Image;
 import java.io.Serializable;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.*;
+import Map.Enums.*;
 import Systems.SpawnGenerator;
 
 /**

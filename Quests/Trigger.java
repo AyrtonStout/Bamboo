@@ -3,7 +3,7 @@ package Quests;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import GUI.Map;
+import Map.Map;
 import Systems.GameData;
 
 /**

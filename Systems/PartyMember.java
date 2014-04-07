@@ -5,8 +5,8 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.NAMED_NPC;
-import Systems.Enums.COMBAT_ACTION;
+import Map.Enums.NAMED_NPC;
+import Battle.Enums.COMBAT_ACTION;
 
 /**
  * @author mobius

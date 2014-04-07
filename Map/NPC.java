@@ -1,12 +1,11 @@
-package GUI;
+package Map;
 
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import GUI.Enums.ACTION;
-import GUI.Enums.*;
+import Map.Enums.*;
 
 /**
  * @author mobius

@@ -1,10 +1,10 @@
-package GUI;
+package Map;
 
 public class Enums {
 	
 	public enum ACTION {
 
-		LEFT, RIGHT, UP, DOWN, STAND, WANDER, ROTATE, RANDOM, PATROL,;
+		LEFT, RIGHT, UP, DOWN, STAND, WANDER, ROTATE, RANDOM, PATROL;
 		
 	}
 	
@@ -50,14 +50,5 @@ public class Enums {
 		
 	}
 	
-	public enum GAME_STATE	{
-		
-		WALK, TALK, MENU, INVENTORY_OUTER, INVENTORY_INNER, PARTY_PANEL, STATISTICS_PANEL, BATTLE;
-		
-	}
-	
-	public enum BATTLE_STATE	{
-		MAIN, SELECT, WAIT, ENEMY_MOVE, ATTACK_SELECTION, END, ANIM_ATTACK, ANIM_RECOIL;
-	}
 
 }

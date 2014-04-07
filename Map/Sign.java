@@ -1,11 +1,11 @@
-package GUI;
+package Map;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-import GUI.Enums.SIGN;
+import Map.Enums.SIGN;
 import Systems.PartyMember;
 
 /**
