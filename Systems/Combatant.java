@@ -27,7 +27,7 @@ public abstract class Combatant {
 	protected Stat resist = new Stat(0);
 	protected Stat speed = new Stat(0);
 	protected Stat hit = new Stat(0);
-	protected Stat critChance = new Stat(75);
+	protected Stat critChance = new Stat(50);
 	protected Stat critDamage = new Stat(150);
 	protected Stat dodge = new Stat(0);
 	protected Stat armorPen = new Stat(0);

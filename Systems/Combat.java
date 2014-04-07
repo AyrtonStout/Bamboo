@@ -11,6 +11,7 @@ public class Combat {
 	private GameData data;
 	private Random rand = new Random();
 	private boolean crit = false;
+	private final int BASE_HIT_CHANCE = 85;
 	
 	public Combat(GameData data)	{
 		this.data = data;
@@ -23,21 +24,23 @@ public class Combat {
 	 * @param victim The person being attacked
 	 */
 	public void attack(Combatant aggressor, Combatant victim)	{
-		if (!missEh())	{
-			
+		if (missEh(aggressor, victim))	{
+			data.getBattleScreen().getBattleArea().addBattleText("MISS", victim, crit);
 		}
-		int painBrought = damageDealt(aggressor, victim);
-		
-		data.getBattleScreen().getBattleArea().addBattleText(painBrought, victim, crit);
-		victim.modCurrentHealth(-painBrought);
-		if (victim.getCurrentHealth().getActual() < 1)	{
-			victim.setJustDied(true);
-			victim.setAlive(false);
-		}
+		else	{
+			int painBrought = damageDealt(aggressor, victim);
 
-		
-		if (aggressor.getClass() == PartyMember.class)	{
-			((PartyMember) aggressor).increaseDamageDealt(painBrought);
+			data.getBattleScreen().getBattleArea().addBattleText(Integer.toString(painBrought), victim, crit);
+			victim.modCurrentHealth(-painBrought);
+			if (victim.getCurrentHealth().getActual() < 1)	{
+				victim.setJustDied(true);
+				victim.setAlive(false);
+			}
+
+
+			if (aggressor.getClass() == PartyMember.class)	{
+				((PartyMember) aggressor).increaseDamageDealt(painBrought);
+			}
 		}
 	}
 	
@@ -46,8 +49,12 @@ public class Combat {
 	 * 
 	 * @return Whether or not the attack missed
 	 */
-	private boolean missEh()	{
-		return false;
+	private boolean missEh(Combatant aggressor, Combatant victim)	{
+		int chance = rand.nextInt(100);
+		if (chance < BASE_HIT_CHANCE + aggressor.getHit().getActual() - victim.getDodge().getActual())	{
+			return false;
+		}
+		return true;
 	}
 	/**
 	 * Used for a basic combat calculation to tell whether or not the attack was a critical strike
@@ -74,8 +81,8 @@ public class Combat {
 	 */
 	private int damageDealt(Combatant aggressor, Combatant victim)	{
 		if (critEh(aggressor))	{
-			return ((aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100 < 1) ? 
-					1 : (aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100;
+			return ((aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100 < 2) ? 
+					2 : (int) Math.round((aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100.0);
 		}
 		else	{
 			return (aggressor.getAttack() - victim.getArmor().getActual() < 1) ? 

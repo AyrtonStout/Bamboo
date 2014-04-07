@@ -21,6 +21,8 @@ v0.37
  (Crit chance has been increased to make this more easily seen)
 -Floating text from crits now appear in yellow text
 -Critical hits now have a shaking effect on the combat text
+-Characters are now able to miss with a base miss chance of 15%
+-Missed attacks are reflected in white text
 
 v0.36
 -Player can now target their own party members for attacks

@@ -104,7 +104,10 @@ public class BattleArea extends JPanel	{
 	private void drawBattleText(Graphics g)	{
 		g.setFont(floatingTextFont);
 		for (int i = 0; i < battleText.size(); i++)	{
-			if (battleText.get(i).crit == true)	{
+			if (battleText.get(i).text.compareTo("MISS") == 0)	{
+				g.setColor(Color.WHITE);
+			}
+			else if (battleText.get(i).crit == true)	{
 				g.setColor(Color.YELLOW);
 			}
 			else	{
@@ -151,8 +154,8 @@ public class BattleArea extends JPanel	{
 	 * @param damage The amount of damage the character took as well as the number that will appear
 	 * @param target The character that will have the number placed over their head
 	 */
-	public void addBattleText(int damage, Combatant target, boolean crit)	{
-		battleText.add(new BattleText(Integer.toString(damage), target, crit));
+	public void addBattleText(String damage, Combatant target, boolean crit)	{
+		battleText.add(new BattleText(damage, target, crit));
 	}
 
 	/**
