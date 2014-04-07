@@ -67,6 +67,11 @@ public class BattleArea extends JPanel	{
 		
 	}
 
+	/**
+	 * Updates all of the actors in the battle by calling their individual update() methods.
+	 * This is mostly used for animating purposes where the actors are told to modify their
+	 * position and redraw themselves.
+	 */
 	public void update()	{
 //		if (battleScreen.playerMoveEh())	{
 			for (int i = 0; i < data.getParty().length; i++)	{
@@ -93,17 +98,28 @@ public class BattleArea extends JPanel	{
 		drawBattleText(g);
 	}
 
+	/**
+	 * Draws all of the recent floating combat text
+	 */
 	private void drawBattleText(Graphics g)	{
-		g.setColor(Color.RED);
 		g.setFont(floatingTextFont);
 		for (int i = 0; i < battleText.size(); i++)	{
+			if (battleText.get(i).crit == true)	{
+				g.setColor(Color.YELLOW);
+			}
+			else	{
+				g.setColor(Color.RED);
+			}
 			g.drawString(battleText.get(i).text, battleText.get(i).xCoordinate, battleText.get(i).yCoordinate);
-			battleText.get(i).duration--;
+			battleText.get(i).update();
 			if (battleText.get(i).duration == 0)	{
 				battleText.remove(i);
 			}
 		}
 	}
+	/**
+	 * Tells all of the party members to draw themselves
+	 */
 	private void drawParty(Graphics g)	{
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null)	{
@@ -112,6 +128,10 @@ public class BattleArea extends JPanel	{
 		}
 	}
 
+	/**
+	 * Draws the targeting cursor for attacks and abilities. Cursor is red for targeting an enemy
+	 * and green when targeting a friendly.
+	 */
 	private void drawTargetCursor(Graphics g)	{
 		if (!targetAlly)	{
 			Enemy target = battleScreen.getEnemies().toArrayList().get(enemyCursorPosition);
@@ -125,18 +145,36 @@ public class BattleArea extends JPanel	{
 		}
 	}
 
-	public void addBattleText(int damage, Combatant target)	{
-		battleText.add(new BattleText(Integer.toString(damage), target));
+	/**
+	 * Adds battle text above the character that took damage
+	 * 
+	 * @param damage The amount of damage the character took as well as the number that will appear
+	 * @param target The character that will have the number placed over their head
+	 */
+	public void addBattleText(int damage, Combatant target, boolean crit)	{
+		battleText.add(new BattleText(Integer.toString(damage), target, crit));
 	}
 
+	/**
+	 * Sets whether or not the targeting cursor is targeting an ally or an enemy
+	 */
 	public void setTargetAlly(boolean b)	{
 		targetAlly = b;
 	}
 	
+	/**
+	 * @return Whether or not the targeting cursor is on an ally or enemy
+	 */
 	public boolean getTargetAlly()	{
 		return targetAlly;
 	}
 
+	/**
+	 * Controls the actions that can happen if a key is pressed while targeting characters
+	 * 
+	 * @param e The key pressed during selection
+	 * @param info The info bar that needs to be updated after a successful key press
+	 */
 	public void respondToInput(KeyEvent e, BattleInfo info) {
 		if (e.getKeyCode() == KeyEvent.VK_UP)	{
 			if (targetAlly)	{
@@ -168,6 +206,7 @@ public class BattleArea extends JPanel	{
 		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
 			targetAlly = false;
 		}
+		
 		if (targetAlly)	{
 			info.setTarget(data.getParty()[friendlyCursorPosition]);
 		}
@@ -176,14 +215,23 @@ public class BattleArea extends JPanel	{
 		}
 	}
 
+	/**
+	 * @return The position of the player's cursor on a group of enemies
+	 */
 	public int getEnemyCursorPosition() {
 		return enemyCursorPosition;
 	}
 	
+	/**
+	 * @return The position of the player's cursor on the friendly party
+	 */
 	public int getFriendlyCursorPosition()	{
 		return friendlyCursorPosition;
 	}
 	
+	/**
+	 * Removes all pending battle text
+	 */
 	public void clear()	{
 		int size = battleText.size();
 		for (int i = 0; i < size; i++)	{
@@ -193,23 +241,67 @@ public class BattleArea extends JPanel	{
 	
 	
 	
+	/**
+	 * The text that appears above a character when they take damage
+	 */
 	private class BattleText	{
 
 		private String text;
 		private int xCoordinate;
 		private int yCoordinate;
 		private int duration;
+		private boolean crit;
 
 		private static final int TEXT_SIZE = 20;
 		
-		public BattleText(String str, Combatant target)	{
+		public BattleText(String str, Combatant target, boolean crit)	{
 			
 			text = str;
 			this.xCoordinate = target.getOrigin().x + (target.getWidth() / 2) - ((TEXT_SIZE * text.length()) / 2);
 			this.yCoordinate = target.getOrigin().y - 10;
 			duration = 65;
+			this.crit = crit;
 			
 		}
-
+		
+		/**
+		 * Counts down the duration of the battle text and causes a shake if the text is a crit
+		 */
+		public void update()	{
+			if (crit)	{
+				if (duration > 63)	{
+					xCoordinate -= 2;
+					yCoordinate -= 2;
+				}
+				else if (duration > 61)	{
+					xCoordinate -= 2;
+					yCoordinate += 2;
+				}
+				else if (duration > 59)	{
+					xCoordinate += 4;
+					yCoordinate += 2;
+				}
+				else if (duration > 57)	{
+					xCoordinate += 2;
+					yCoordinate -= 4;
+				}
+				else if (duration > 55)	{
+					xCoordinate += 2;
+					yCoordinate += 2;
+				}
+				else if (duration > 53)	{
+					xCoordinate -= 4;
+				}
+				else if (duration > 51)	{
+					xCoordinate += 2;
+					yCoordinate += 2;
+				}
+				else if (duration > 49)	{
+					xCoordinate -= 2;
+					yCoordinate -= 2;
+				}
+			}
+			duration--;
+		}
 	}
 }

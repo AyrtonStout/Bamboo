@@ -75,7 +75,6 @@ public class BattleScreen extends JPanel {
 	}
 
 	public void enterBattle(Encounter enemies)	{
-		menu.erase();
 		menu.update();
 		data.setGameState(GAME_STATE.BATTLE);
 		state = BATTLE_STATE.MAIN;
@@ -107,7 +106,7 @@ public class BattleScreen extends JPanel {
 		data.getDialogueBox().restore();
 		data.getGameBoard().remove(this);
 		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
-		menu.modifyCursorPosition(-menu.getCursorPosition());
+		menu.clear();
 		turnOrder.clear();
 		battleArea.clear();
 	}
@@ -115,25 +114,9 @@ public class BattleScreen extends JPanel {
 	public void respondToInput(KeyEvent e)	{
 		if (state == BATTLE_STATE.MAIN)	{
 			int startPos = menu.getCursorPosition();
-			if (e.getKeyCode() == KeyEvent.VK_UP)	{
-				if (menu.getCursorPosition() == 2 || menu.getCursorPosition() == 3)	{
-					menu.modifyCursorPosition(-2);
-				}
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-				if (menu.getCursorPosition() == 0 || menu.getCursorPosition() == 2)	{
-					menu.modifyCursorPosition(1);
-				}
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-				if (menu.getCursorPosition() == 0 || menu.getCursorPosition() == 1)	{
-					menu.modifyCursorPosition(2);
-				}
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-				if (menu.getCursorPosition() == 1 || menu.getCursorPosition() == 3)	{
-					menu.modifyCursorPosition(-1);
-				}
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || 
+					e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				menu.modifyCursorPosition(e);
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 				switch (menu.getCursorPosition())	{
@@ -332,10 +315,7 @@ public class BattleScreen extends JPanel {
 			activeMember.attackTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
 		}
 	}
-	
-	public void addBattleText(int damage, Combatant target)	{
-		battleArea.addBattleText(damage, target);
-	}
+
 
 	public BATTLE_STATE getState() {
 		return state;
@@ -354,6 +334,10 @@ public class BattleScreen extends JPanel {
 	protected void paintComponent(Graphics g)	{
 		super.paintComponent(g);
 		g.drawImage(background.getImage(), 0, 0, null);
+	}
+	
+	public BattleArea getBattleArea()	{
+		return battleArea;
 	}
 	
 }

@@ -16,6 +16,12 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.37
+-Characters are now able to crit in combat
+ (Crit chance has been increased to make this more easily seen)
+-Floating text from crits now appear in yellow text
+-Critical hits now have a shaking effect on the combat text
+
 v0.36
 -Player can now target their own party members for attacks
 -Party members now change appearance when they are dead

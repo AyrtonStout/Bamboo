@@ -117,6 +117,11 @@ public class BattleInfo extends JPanel {
 		setVisible(false);
 	}
 	
+	/**
+	 * Sets the target that the info bar is displaying information on
+	 * 
+	 * @param target The new target of the info bar
+	 */
 	public void setTarget(Combatant target)	{
 //		this.target = target;
 		

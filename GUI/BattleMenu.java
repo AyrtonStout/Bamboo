@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -150,6 +151,9 @@ public class BattleMenu extends JPanel	{
 		}
 	}
 
+	/**
+	 * Updates the status of the party to reflect any changes that happened during combat
+	 */
 	public void update()	{
 		for (int i = 0; i < partyStatuses.length; i++)	{
 			if (data.getParty()[i] != null)	{
@@ -158,21 +162,58 @@ public class BattleMenu extends JPanel	{
 		}
 	}
 
-	public void erase()	{
+	/**
+	 * Zeroes out the information stored for the party in the battle screen and resets
+	 * the cursor to 0
+	 */
+	public void clear()	{
 		for (int i = 0; i < partyStatuses.length; i++)	{
 			partyStatuses[i].erase();
 		}
+		cursorPosition = 0;
 	}
 	
+	/**
+	 * Returns the position of the cursor in the battle menu. 0 for attack, 1 for items, 2 for magic, 3 for run.
+	 * 
+	 * @return The position of the menu's cursor.
+	 */
 	public int getCursorPosition()	{
 		return cursorPosition;
 	}
 	
-	public void modifyCursorPosition(int i)	{
-		cursorPosition += i;
+	/**
+	 * Moves the cursor around the screen given that it is a valid move
+	 * 
+	 * @param e Direction of the key press
+	 */
+	public void modifyCursorPosition(KeyEvent e)	{
+		if (e.getKeyCode() == KeyEvent.VK_UP)	{
+			if (cursorPosition == 2 || cursorPosition == 3)	{
+				cursorPosition -= 2;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
+			if (cursorPosition == 0 || cursorPosition == 2)	{
+				cursorPosition += 1;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+			if (cursorPosition == 0 || cursorPosition == 1)	{
+				cursorPosition += 2;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
+			if (cursorPosition == 1 || cursorPosition == 3)	{
+				cursorPosition -= 1;
+			}
+		}
 	}
 
 
+	/**
+	 * A label that displays basic information on the party members involved in the battle
+	 */
 	private class partyStatus extends JPanel	{
 
 		private static final long serialVersionUID = 7766824167479673649L;
@@ -214,6 +255,11 @@ public class BattleMenu extends JPanel	{
 
 		}
 
+		/**
+		 * Updates the label to reflect the party member's current 
+		 * 
+		 * @param member The party member getting their information updated
+		 */
 		public void update(PartyMember member)	{
 			name.setText(member.getName());
 			health.setText(member.getCurrentHealth().getActual() + "/" + member.getMaxHealth().getActual());
@@ -221,6 +267,9 @@ public class BattleMenu extends JPanel	{
 
 		}
 
+		/**
+		 * Clears all of the text on the label
+		 */
 		public void erase()	{
 			name.setText("");
 			health.setText("");

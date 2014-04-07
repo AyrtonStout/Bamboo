@@ -27,8 +27,8 @@ public abstract class Combatant {
 	protected Stat resist = new Stat(0);
 	protected Stat speed = new Stat(0);
 	protected Stat hit = new Stat(0);
-	protected Stat critChance = new Stat(0);
-	protected Stat critDamage = new Stat(0);
+	protected Stat critChance = new Stat(75);
+	protected Stat critDamage = new Stat(150);
 	protected Stat dodge = new Stat(0);
 	protected Stat armorPen = new Stat(0);
 	protected int level; 
@@ -98,9 +98,21 @@ public abstract class Combatant {
 	public void setSpeed(Stat speed)	{
 		this.speed = speed;
 	}
+	/**
+	 * Returns an integer representation of the combatant's crit chance. For example, for a crit chance of 
+	 * of 5%, this will return the integer value 5.
+	 * 
+	 * @return The critical strike chance as an integer
+	 */
 	public Stat getCritChance() {
 		return critChance;
 	}
+	/**
+	 * Returns an integer representation of the combatant's crit damage multiplier. For example, for the normal crit
+	 * multiplier of 150%, this will return the integer value 150. 
+	 * 
+	 * @return The critical damage multiplier as an integer
+	 */
 	public Stat getCritDamage() {
 		return critDamage;
 	}
