@@ -290,10 +290,13 @@ public class MapWriter {
 		ironSwordChest.setLoot(new Weapon(SWORD.IRON));
 		Chest ironDaggerChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
 		ironDaggerChest.setLoot(new Weapon(DAGGER.GOLD));
+		Chest potionChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		potionChest.setLoot(new Consumable(POTION.HEALTH_SMALL));
 		
 		tiles[9][12] = new Tile(TILE.GROUND_GRASS, ironSwordChest);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 		tiles[11][15] = new Tile(TILE.GROUND_GRASS, ironDaggerChest);
+		tiles[11][5] = new Tile(TILE.GROUND_GRASS, potionChest);
 		
 		for (int i = 0; i < tiles.length; i++)	{
 			tiles[i][0] = new Tile(TILE.WALL_CAVE);

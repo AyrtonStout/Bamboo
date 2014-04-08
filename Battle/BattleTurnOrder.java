@@ -233,6 +233,11 @@ public class BattleTurnOrder extends JPanel	{
 
 		calculateTurnOrder();
 		dropTurnPriority();
+		
+		//This will automatically predict the turn order for a Run command if the last command was a Run
+		if (battleScreen.getBattleMenu().getCursorPosition() == 3)	{
+			predictTurnOrder(0);
+		}
 	}
 
 	/**

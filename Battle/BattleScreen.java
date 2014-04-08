@@ -42,6 +42,7 @@ public class BattleScreen extends JPanel {
 	private BattleMenu menu;
 	private BattleInfo info;
 	private DialogueBox dialogue;
+	private BattleItemsScreen itemScreen;
 
 	private Combatant activeMember;
 	private boolean playerMove = true;
@@ -58,6 +59,7 @@ public class BattleScreen extends JPanel {
 		turnOrder = new BattleTurnOrder(data, this);
 		battleArea = new BattleArea(data, this);
 		info = new BattleInfo();
+		itemScreen = new BattleItemsScreen(data);
 		
 		Dimension screenSize = new Dimension(600, 600);
 		this.setPreferredSize(screenSize);
@@ -122,17 +124,10 @@ public class BattleScreen extends JPanel {
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 				switch (menu.getCursorPosition())	{
 				case 0:
-					battleArea.setTargetAlly(false);
-					state = BATTLE_STATE.ATTACK_SELECTION;
-					info.setTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
-					info.setVisible(true);
+					switchToAttack();
 					break;
 				case 1:
-					switchToTalk(); 
-					ArrayList<String> string = new ArrayList<String>();
-					string.add("Hi brozinsky!!! Words!!");
-					string.add("MORE WORDS");
-					dialogue.setDialogue(string, false); 
+					switchToItems();
 					break;
 				case 2:
 					break;
@@ -148,8 +143,15 @@ public class BattleScreen extends JPanel {
 				turnOrder.calculateTurnOrder();
 			}
 		}
-		else if (state == BATTLE_STATE.SELECT)	{
-
+		
+		else if (state == BATTLE_STATE.ITEM_SELECTION)	{
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
+					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				itemScreen.respondToKeyPress(e);
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				exitItemMenu();
+			}
 		}
 		else if (state == BATTLE_STATE.ATTACK_SELECTION)	{
 			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
@@ -210,6 +212,26 @@ public class BattleScreen extends JPanel {
 	}
 	public void switchToMain()	{
 		this.remove(dialogue);
+		this.add(menu, BorderLayout.SOUTH);
+	}
+	private void switchToAttack()	{
+		battleArea.setTargetAlly(false);
+		state = BATTLE_STATE.ATTACK_SELECTION;
+		info.setTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
+		info.setVisible(true);
+	}
+	private void switchToItems()	{
+		state = BATTLE_STATE.ITEM_SELECTION;
+		this.remove(menu);
+		this.add(itemScreen, BorderLayout.SOUTH);
+		itemScreen.setVisible(false);                  //Sigh
+		itemScreen.setVisible(true);
+		itemScreen.updateList();
+	}
+	private void exitItemMenu()	{
+		state = BATTLE_STATE.MAIN;
+		itemScreen.setVisible(false);
+		this.remove(itemScreen);
 		this.add(menu, BorderLayout.SOUTH);
 	}
 	
@@ -349,6 +371,9 @@ public class BattleScreen extends JPanel {
 	
 	public BattleArea getBattleArea()	{
 		return battleArea;
+	}
+	public BattleMenu getBattleMenu()	{
+		return menu;
 	}
 	
 }

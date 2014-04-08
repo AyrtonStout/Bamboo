@@ -16,6 +16,9 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.38
+-Item option now brings up a new panel that will crudely display consumables
+
 v0.37
 -Characters are now able to crit in combat
  (Crit chance has been increased to make this more easily seen)
@@ -25,6 +28,7 @@ v0.37
 -Missed attacks are reflected in white text
 -Characters that are dead now stay drawn dead at the start of a new battle
 -Dead party members no longer receive XP
+-Predictive turn ordering for fleeing now happens automatically after a failed attempt
 
 v0.36
 -Player can now target their own party members for attacks
