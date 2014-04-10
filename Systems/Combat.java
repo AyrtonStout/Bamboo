@@ -53,42 +53,33 @@ public class Combat {
 
 	public void usePotion(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (usedItem.getHealthRestore() > 0)	{
-			if (caster.getClass() == PartyMember.class)	{
-				((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
-			}
-
-			receiver.modCurrentHealth(usedItem.getHealthRestore());
-
-			if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
-				receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
-			}
-
+			healTarget(caster, receiver, usedItem);
 		}
-
 		if (usedItem.getManaRestore() > 0)	{
-
-			receiver.modCurrentMana(usedItem.getManaRestore());
-
-			if (receiver.getCurrentMana().getBase() > receiver.getMaxMana().getActual())	{
-				receiver.getCurrentMana().setBase(receiver.getMaxMana().getActual());
-			}
+			restoreMana(caster, receiver, usedItem);
 		}
-
-		if (usedItem.getHealthRestore() > 0)	{
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
-					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL);
-		}
-		else	{
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
-					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE);
-		}
+		addBattleText(receiver, usedItem);
 	}
 
-	public void useItem(Combatant user, Combatant target, Consumable usedItem)	{
+	/**
+	 * Uses a specified item on a targeted character. If the item is successfully used it will be consumed and the method
+	 * will return true. Else nothing will be executed and it will return false.
+	 * 
+	 * @param user The character who used the item.
+	 * @param target The character targeted by the item
+	 * @param usedItem The item being used on the target
+	 * @return Whether or not the item was successfully used
+	 */
+	public boolean useItem(Combatant user, Combatant target, Consumable usedItem)	{
 		if (usedItem.getConsumableType() == CONSUMABLE_TYPE.POTION)	{
-			usePotion(user, target, usedItem);
-			data.getInventory().removeItem(usedItem);
+			if ((usedItem.getHealthRestore() > 0 && validHealTargetEh(target)) || 
+					(usedItem.getManaRestore() > 0 && validManaRestoreTargetEh(target)))	{
+				usePotion(user, target, usedItem);
+				data.getInventory().removeItem(usedItem);
+				return true;
+			}
 		}
+		return false;
 	}
 
 	/**
@@ -134,6 +125,61 @@ public class Combat {
 		else	{
 			return (aggressor.getAttack() - victim.getArmor().getActual() < 1) ? 
 					1 : aggressor.getAttack() - victim.getArmor().getActual();
+		}
+	}
+	
+	private boolean validHealTargetEh(Combatant target)	{
+		if (target.getCurrentHealth().getActual() == target.getMaxHealth().getActual())	{
+			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is already at full health");
+			return false;
+		}
+		if (target.aliveEh() == false)	{
+			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is too dead to drink potions");
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean validManaRestoreTargetEh(Combatant target)	{
+		if (target.aliveEh() == false)	{
+			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is too dead to drink potions");
+			return false;
+		}
+		if (target.getCurrentMana().getActual() == target.getMaxMana().getActual())	{
+			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is already at full mana");
+			return false;
+		}
+		return true;
+	}
+	
+	private void healTarget(Combatant caster, Combatant receiver, Consumable usedItem)	{
+		if (caster.getClass() == PartyMember.class)	{
+			((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
+		}
+
+		receiver.modCurrentHealth(usedItem.getHealthRestore());
+
+		if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
+			receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
+		}
+	}
+	
+	private void restoreMana(Combatant caster, Combatant receiver, Consumable usedItem) {
+		receiver.modCurrentMana(usedItem.getManaRestore());
+
+		if (receiver.getCurrentMana().getBase() > receiver.getMaxMana().getActual())	{
+			receiver.getCurrentMana().setBase(receiver.getMaxMana().getActual());
+		}	
+	}
+	
+	private void addBattleText(Combatant receiver, Consumable usedItem)	{
+		if (usedItem.getHealthRestore() > 0)	{
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
+					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL);
+		}
+		else	{
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
+					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE);
 		}
 	}
 

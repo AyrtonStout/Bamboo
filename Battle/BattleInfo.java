@@ -30,11 +30,15 @@ public class BattleInfo extends JPanel {
 	private JLabel mana = new JLabel();
 	private JLabel level = new JLabel();
 	
+	private JLabel text = new JLabel();
+	
 	private boolean visible = false;
+	private boolean textMode = false;
+	
+	private JPanel normalModeContents = new JPanel();
+	private JPanel textModeContents = new JPanel();
 	
 	private ImageIcon background = new ImageIcon("GUI/Resources/BattleInfo_Background.png");
-	
-//	private Combatant target;
 	
 	private Font infoFont;
 	
@@ -60,14 +64,9 @@ public class BattleInfo extends JPanel {
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		JPanel buffer = new JPanel();
-		buffer.setPreferredSize(new Dimension(600, 5));
 		JPanel middle = new JPanel();
 		middle.setPreferredSize(new Dimension(600, 40));
-		JPanel buffer2 = new JPanel();
-		buffer2.setPreferredSize(new Dimension(600, 5));
-		
-		buffer.setOpaque(false); middle.setOpaque(false); buffer2.setOpaque(false);
+		middle.setOpaque(false);
 		
 		JPanel levelWrapper = new JPanel();
 		JPanel nameWrapper = new JPanel();
@@ -110,11 +109,41 @@ public class BattleInfo extends JPanel {
 		middle.add(manaWrapper);
 		middle.add(Box.createHorizontalStrut(30));
 		
-		this.add(buffer);
-		this.add(middle);
-		this.add(buffer2);
+		normalModeContents.setLayout(new BoxLayout(normalModeContents, BoxLayout.Y_AXIS));
+		normalModeContents.setOpaque(false);
+		Dimension fullDimension = new Dimension(600, 50);
+		normalModeContents.setPreferredSize(fullDimension);
+		normalModeContents.setMaximumSize(fullDimension);
+		normalModeContents.setMinimumSize(fullDimension);
 		
-		setVisible(false);
+		normalModeContents.add(Box.createVerticalStrut(5));
+		normalModeContents.add(middle);
+		normalModeContents.add(Box.createVerticalStrut(5));
+		
+		textModeContents.setLayout(new BoxLayout(textModeContents, BoxLayout.Y_AXIS));
+		textModeContents.setOpaque(false);
+		textModeContents.setPreferredSize(fullDimension);
+		textModeContents.setMaximumSize(fullDimension);
+		textModeContents.setMinimumSize(fullDimension);
+		
+		JPanel textWrapper = new JPanel();
+		textWrapper.setOpaque(false);
+		Dimension textDimension = new Dimension(600, 40);
+		textWrapper.setPreferredSize(textDimension);
+		textWrapper.setMaximumSize(textDimension);
+		textWrapper.setMinimumSize(textDimension);
+		textWrapper.setLayout(new BoxLayout(textWrapper, BoxLayout.X_AXIS));
+		textWrapper.add(Box.createHorizontalStrut(10));
+		text.setFont(infoFont);
+		textWrapper.add(text);
+		
+		textModeContents.add(Box.createVerticalStrut(5));
+		textModeContents.add(textWrapper);
+		textModeContents.add(Box.createVerticalStrut(5));
+		
+		this.add(normalModeContents);
+		this.setVisible(false);
+
 	}
 	
 	/**
@@ -123,12 +152,26 @@ public class BattleInfo extends JPanel {
 	 * @param target The new target of the info bar
 	 */
 	public void setTarget(Combatant target)	{
-//		this.target = target;
+		if (textMode)	{
+			this.remove(textModeContents);
+			this.add(normalModeContents);
+			textMode = false;
+		}
 		
 		level.setText("L:" + target.getLevel());
 		name.setText(target.getName());
 		health.setText(target.getCurrentHealth().getActual() + "/" + target.getMaxHealth().getActual() + "HP");
 		mana.setText(target.getCurrentMana().getActual() + "/" + target.getMaxMana().getActual() + "MP");
+	}
+	
+	public void setText(String str)	{
+
+		if (!textMode)	{
+			this.remove(normalModeContents);
+			this.add(textModeContents);
+			textMode = true;
+		}
+		text.setText(str);
 	}
 	
 	public void setVisible(boolean b)	{
@@ -138,15 +181,15 @@ public class BattleInfo extends JPanel {
 			level.setVisible(true);
 			name.setVisible(true);
 			health.setVisible(true);
-//			if (target.getMaxMana().getActual() > 0)	{
-				mana.setVisible(true);
-//			}
+			mana.setVisible(true);
+			text.setVisible(true);
 		}
 		else	{
 			level.setVisible(false);
 			name.setVisible(false);
 			health.setVisible(false);
 			mana.setVisible(false);
+			text.setVisible(false);
 		}
 	}
 	

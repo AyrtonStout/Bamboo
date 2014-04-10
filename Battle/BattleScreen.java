@@ -47,8 +47,8 @@ public class BattleScreen extends JPanel {
 	private Combatant activeMember;
 	private boolean playerMove = true;
 	
-	private final int PARTY_BUFFER = 140;        //Distance between the top of the screen and the first drawn party member
-	private final int PARTY_WIDTH = 65;          //Distance between the party members
+	private final int PARTY_BUFFER = 120;        //Distance between the top of the screen and the first drawn party member
+	private final int PARTY_WIDTH = 70;          //Distance between the party members
 
 	private BATTLE_STATE state = BATTLE_STATE.MAIN;
 	
@@ -153,6 +153,8 @@ public class BattleScreen extends JPanel {
 				if (data.getInventory().getCategorySize(3) > 0)	{
 					state = BATTLE_STATE.ITEM_USE_SELECTION;
 					battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
+					info.setTarget(battleArea.getTarget());
+					info.setVisible(true);
 				}
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
@@ -166,15 +168,7 @@ public class BattleScreen extends JPanel {
 				battleArea.respondToInput(e, info);	
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
-				data.getCombat().useItem(activeMember, battleArea.getTarget(), (Consumable) itemScreen.getSelectedItem());
-				turnOrder.endCombatantTurn(1);
-				itemScreen.resetItemCursor();
-				this.remove(itemScreen);
-				this.add(menu, BorderLayout.SOUTH);
-				menu.update();
-				state = BATTLE_STATE.MAIN;
-				activeMember = turnOrder.getActiveCombatant();
-				update();
+				useItem();
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				info.setVisible(false);
@@ -197,6 +191,49 @@ public class BattleScreen extends JPanel {
 			}
 		}
 	}
+
+	
+	public void update()	{
+		battleArea.update();
+		if (activeMember.getClass() == Enemy.class && state == BATTLE_STATE.MAIN)	{
+			state = BATTLE_STATE.ENEMY_MOVE;
+		}
+		if (state == BATTLE_STATE.ENEMY_MOVE)	{
+			((Enemy) activeMember).takeAction(data.getParty());
+			state = BATTLE_STATE.ANIM_ATTACK;
+		}
+		if (state == BATTLE_STATE.ANIM_ATTACK)	{
+			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
+				data.getCombat().attack(activeMember, activeMember.getTarget());
+				menu.update();
+			}
+			if (turnOverEh())	{
+				checkForDeaths();
+				state = BATTLE_STATE.MAIN;
+				if (enemies.allDefeated())	{
+					turnOrder.setVisible(false);
+					awardXP();
+					checkForLevelUps();
+					state = BATTLE_STATE.END;
+				}
+				turnOrder.endCombatantTurn(1);
+				activeMember = turnOrder.getActiveCombatant();
+			}
+			
+		}
+		if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END || state == BATTLE_STATE.ENEMY_MOVE)	{
+			if (dialogue.hasNextLine()){
+				if (data.getGameState() != GAME_STATE.TALK)	{
+					switchToTalk();
+					dialogue.startDialogue();
+				}
+			}
+			else if (state == BATTLE_STATE.END)	{
+				leaveBattle();
+			}
+		}
+	}
+	
 	
 	private void attemptToRun()	{
 		double partyEscape = calculatePartyEscapeScore();
@@ -263,49 +300,7 @@ public class BattleScreen extends JPanel {
 		this.remove(itemScreen);
 		this.add(menu, BorderLayout.SOUTH);
 	}
-	
-	
-	
-	public void update()	{
-		battleArea.update();
-		if (activeMember.getClass() == Enemy.class && state == BATTLE_STATE.MAIN)	{
-			state = BATTLE_STATE.ENEMY_MOVE;
-		}
-		if (state == BATTLE_STATE.ENEMY_MOVE)	{
-			((Enemy) activeMember).takeAction(data.getParty());
-			state = BATTLE_STATE.ANIM_ATTACK;
-		}
-		if (state == BATTLE_STATE.ANIM_ATTACK)	{
-			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
-				data.getCombat().attack(activeMember, activeMember.getTarget());
-				menu.update();
-			}
-			if (turnOverEh())	{
-				checkForDeaths();
-				state = BATTLE_STATE.MAIN;
-				if (enemies.allDefeated())	{
-					turnOrder.setVisible(false);
-					awardXP();
-					checkForLevelUps();
-					state = BATTLE_STATE.END;
-				}
-				turnOrder.endCombatantTurn(1);
-				activeMember = turnOrder.getActiveCombatant();
-			}
-			
-		}
-		if (state == BATTLE_STATE.MAIN || state == BATTLE_STATE.END || state == BATTLE_STATE.ENEMY_MOVE)	{
-			if (dialogue.hasNextLine()){
-				if (data.getGameState() != GAME_STATE.TALK)	{
-					switchToTalk();
-					dialogue.startDialogue();
-				}
-			}
-			else if (state == BATTLE_STATE.END)	{
-				leaveBattle();
-			}
-		}
-	}
+
 	
 	
 	
@@ -372,6 +367,23 @@ public class BattleScreen extends JPanel {
 		state = BATTLE_STATE.ANIM_ATTACK;
 		activeMember.attackTarget(battleArea.getTarget());
 	}
+	
+	private void useItem()	{
+		if (data.getCombat().useItem(activeMember, battleArea.getTarget(), (Consumable) itemScreen.getSelectedItem()) == true)	{
+			info.setVisible(false);
+			turnOrder.endCombatantTurn(1);
+			itemScreen.resetItemCursor();
+			this.remove(itemScreen);
+			this.add(menu, BorderLayout.SOUTH);
+			menu.update();
+			state = BATTLE_STATE.MAIN;
+			activeMember = turnOrder.getActiveCombatant();
+			update();	
+		}
+		else	{
+			
+		}
+	}
 
 
 	public BATTLE_STATE getState() {
@@ -398,6 +410,9 @@ public class BattleScreen extends JPanel {
 	}
 	public BattleMenu getBattleMenu()	{
 		return menu;
+	}
+	public BattleInfo getBattleInfo()	{
+		return info;
 	}
 	
 }

@@ -16,6 +16,12 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.39
+-Potions are now only usable on valid targets (targets that would benefit/ are alive)
+-Info panel now correctly displays during item targeting
+-Info panel now serves as a smaller text box that will display information
+
+
 v0.38
 -Item option now brings up a new panel that will display consumables
 -Items are displayed in two columns of 4 items each
