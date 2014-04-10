@@ -2,6 +2,7 @@ package Systems;
 
 import java.util.Random;
 
+import Battle.Enums.TEXT_TYPE;
 import Systems.Enums.CONSUMABLE_TYPE;
 
 /**
@@ -12,7 +13,7 @@ public class Combat {
 
 	private GameData data;
 	private Random rand = new Random();
-	private boolean crit = false;
+	private TEXT_TYPE crit;
 	private final int BASE_HIT_CHANCE = 85;
 
 	public Combat(GameData data)	{
@@ -27,12 +28,12 @@ public class Combat {
 	 */
 	public void attack(Combatant aggressor, Combatant victim)	{
 		if (missEh(aggressor, victim))	{
-			data.getBattleScreen().getBattleArea().addBattleText("MISS", victim, false);
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText("MISS", victim, TEXT_TYPE.MISS);
 		}
 		else	{
 			int painBrought = damageDealt(aggressor, victim);
 
-			data.getBattleScreen().getBattleArea().addBattleText(Integer.toString(painBrought), victim, crit);
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(Integer.toString(painBrought), victim, crit);
 			victim.modCurrentHealth(-painBrought);
 			if (victim.getCurrentHealth().getActual() < 1)	{
 				victim.setJustDied(true);
@@ -50,32 +51,43 @@ public class Combat {
 
 	}
 
-	public void heal(Combatant caster, Combatant receiver, Consumable usedItem)	{
+	public void usePotion(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (usedItem.getHealthRestore() > 0)	{
 			if (caster.getClass() == PartyMember.class)	{
 				((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
 			}
 
 			receiver.modCurrentHealth(usedItem.getHealthRestore());
-			
+
 			if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
 				receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
+			}
+
+		}
+
+		if (usedItem.getManaRestore() > 0)	{
+
+			receiver.modCurrentMana(usedItem.getManaRestore());
+
+			if (receiver.getCurrentMana().getBase() > receiver.getMaxMana().getActual())	{
+				receiver.getCurrentMana().setBase(receiver.getMaxMana().getActual());
 			}
 		}
-		
-		if (usedItem.getManaRestore() > 0)	{
-			
-			receiver.modCurrentMana(usedItem.getManaRestore());
-		
-			if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
-				receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
-			}
+
+		if (usedItem.getHealthRestore() > 0)	{
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
+					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL);
+		}
+		else	{
+			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
+					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE);
 		}
 	}
 
 	public void useItem(Combatant user, Combatant target, Consumable usedItem)	{
-		if (usedItem.getType() == CONSUMABLE_TYPE.POTION)	{
-			heal(user, target, usedItem);
+		if (usedItem.getConsumableType() == CONSUMABLE_TYPE.POTION)	{
+			usePotion(user, target, usedItem);
+			data.getInventory().removeItem(usedItem);
 		}
 	}
 
@@ -99,11 +111,11 @@ public class Combat {
 	private boolean critEh(Combatant aggressor)	{
 		int chance = rand.nextInt(100);
 		if (chance < aggressor.getCritChance().getActual())	{
-			crit = true;
+			crit = TEXT_TYPE.CRIT;
 			return true;
 		}
 		else	{
-			crit = false;
+			crit = TEXT_TYPE.DAMAGE;
 			return false;
 		}
 	}

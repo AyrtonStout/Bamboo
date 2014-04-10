@@ -143,7 +143,7 @@ public class InputManager extends JPanel {
 					data.getInventoryPanel().moveHeaderCursorRight();
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_Z)	{
-					if (data.getInventory().getCategory(data.getInventoryPanel().getCategoryCursorPosition()).size() > 0)	{
+					if (data.getInventory().getCategorySize(data.getInventoryPanel().getCategoryCursorPosition()) > 0)	{
 						data.setGameState(GAME_STATE.INVENTORY_INNER);
 						data.getInventoryPanel().setInnerActive(true);
 					}

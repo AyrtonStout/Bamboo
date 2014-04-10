@@ -17,7 +17,8 @@ public class Consumable implements Item, Serializable {
 	
 	private static final long serialVersionUID = -1162361705759888121L;
 	
-	private CONSUMABLE_TYPE type;
+	private CONSUMABLE_TYPE consumableType;
+	private POTION potionType;					//TODO Fix this class from being horrible
 	private String name;
 	private String description;
 	private ImageIcon icon;
@@ -31,7 +32,8 @@ public class Consumable implements Item, Serializable {
 	private boolean statChange = true;          //Prevents the getters from needlessly recalculating the text boxes every time
 	
 	public Consumable(POTION potion)	{
-		type = CONSUMABLE_TYPE.POTION;
+		consumableType = CONSUMABLE_TYPE.POTION;
+		potionType = potion;
 		switch (potion)	{
 		case HEALTH_SMALL:
 			name = "Lesser Health Potion";
@@ -87,7 +89,7 @@ public class Consumable implements Item, Serializable {
 	 * @return Whether or not the item is harmful.
 	 */
 	public boolean harmfulEh()	{
-		switch (type)	{
+		switch (consumableType)	{
 		case POTION:
 			return false;
 		case FOOD:
@@ -114,8 +116,12 @@ public class Consumable implements Item, Serializable {
 	/**
 	 * @return The type of consumable item this is (potion, food, etc)
 	 */
-	public CONSUMABLE_TYPE getType()	{
-		return type;
+	public CONSUMABLE_TYPE getConsumableType()	{
+		return consumableType;
+	}
+	
+	public POTION getPotionType()	{
+		return potionType;
 	}
 
 	@Override

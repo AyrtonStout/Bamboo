@@ -17,7 +17,14 @@ I and P will directly access inventory and party panels
 Changelog-
 
 v0.38
--Item option now brings up a new panel that will crudely display consumables
+-Item option now brings up a new panel that will display consumables
+-Items are displayed in two columns of 4 items each
+-Cursor will no longer travel to items that dont exist
+-Item screen will now give an indication if no usable items exist
+-Floating combat text made into its own class and enumeration for easy expansion
+-Started fixing the rather badly coded inventory class but chickened out after seeing
+ how much work it would end up being. Will return to it later
+-Health and mana potions now functional
 
 v0.37
 -Characters are now able to crit in combat

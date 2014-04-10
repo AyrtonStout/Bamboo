@@ -292,13 +292,13 @@ public class MapWriter {
 		ironDaggerChest.setLoot(new Weapon(DAGGER.GOLD));
 		
 		Chest potionChest1 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
-		potionChest1.setLoot(new Consumable(POTION.HEALTH_SMALL));
+		potionChest1.setLoot(new Consumable(POTION.MANA_SMALL));
 		Chest potionChest2 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
 		potionChest2.setLoot(new Consumable(POTION.HEALTH_LARGE));
 		Chest potionChest3 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
 		potionChest3.setLoot(new Consumable(POTION.MANA_SMALL));
 		Chest potionChest4 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
-		potionChest4.setLoot(new Consumable(POTION.MANA_LARGE));
+		potionChest4.setLoot(new Consumable(POTION.MANA_SMALL));
 		
 		
 		tiles[9][12] = new Tile(TILE.GROUND_GRASS, ironSwordChest);

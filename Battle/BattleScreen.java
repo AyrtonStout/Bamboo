@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -14,7 +13,6 @@ import javax.swing.JPanel;
 import GUI.DialogueBox;
 import Battle.Enums.BATTLE_STATE;
 import Systems.Consumable;
-import Systems.Enums.CONSUMABLE_TYPE;
 import Systems.Enums.GAME_STATE;
 import Systems.Combatant;
 import Systems.Encounter;
@@ -113,7 +111,7 @@ public class BattleScreen extends JPanel {
 		data.getGameBoard().add(data.getDialogueBox(), BorderLayout.SOUTH);
 		menu.clear();
 		turnOrder.clear();
-		battleArea.clear();
+		battleArea.getCombatText().clear();
 	}
 
 	public void respondToInput(KeyEvent e)	{
@@ -152,26 +150,38 @@ public class BattleScreen extends JPanel {
 				itemScreen.respondToKeyPress(e);
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
-				state = BATTLE_STATE.ITEM_USE_SELECTION;
-				battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
+				if (data.getInventory().getCategorySize(3) > 0)	{
+					state = BATTLE_STATE.ITEM_USE_SELECTION;
+					battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
+				}
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				exitItemMenu();
 			}
 		}
+		
 		else if (state == BATTLE_STATE.ITEM_USE_SELECTION)	{
 			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
 					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
 				battleArea.respondToInput(e, info);	
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
-				startAttack();
+				data.getCombat().useItem(activeMember, battleArea.getTarget(), (Consumable) itemScreen.getSelectedItem());
+				turnOrder.endCombatantTurn(1);
+				itemScreen.resetItemCursor();
+				this.remove(itemScreen);
+				this.add(menu, BorderLayout.SOUTH);
+				menu.update();
+				state = BATTLE_STATE.MAIN;
+				activeMember = turnOrder.getActiveCombatant();
+				update();
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				info.setVisible(false);
 				state = BATTLE_STATE.ITEM_SELECTION;
 			}
 		}
+		
 		else if (state == BATTLE_STATE.ATTACK_SELECTION)	{
 			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
 					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
@@ -360,12 +370,7 @@ public class BattleScreen extends JPanel {
 	private void startAttack()	{
 		info.setVisible(false);
 		state = BATTLE_STATE.ANIM_ATTACK;
-		if (battleArea.getTargetAlly() == true)	{
-			activeMember.attackTarget(data.getParty()[battleArea.getFriendlyCursorPosition()]);
-		}
-		else	{
-			activeMember.attackTarget(enemies.toArrayList().get(battleArea.getEnemyCursorPosition()));
-		}
+		activeMember.attackTarget(battleArea.getTarget());
 	}
 
 

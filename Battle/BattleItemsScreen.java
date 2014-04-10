@@ -200,8 +200,11 @@ public class BattleItemsScreen extends JPanel {
 		public void setItem(Item item)	{
 			itemName.setText(item.getName());
 			itemIcon = item.getIcon();
-			if (item.getClass() == Consumable.class && ((Consumable) item).getQuantity() > 1)	{
+			if (((Consumable) item).getQuantity() > 1)	{
 				itemQuantity.setText("x" + Integer.toString(((Consumable) item).getQuantity()));
+			}
+			else	{
+				itemQuantity.setText("");
 			}
 		}
 

@@ -1,15 +1,8 @@
 package Battle;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -32,18 +25,15 @@ public class BattleArea extends JPanel	{
 	private BattleScreen battleScreen;
 	private GameData data;
 
-	private Font floatingTextFont;
+	private FloatingCombatText battleText = new FloatingCombatText();
+	
 	private int enemyCursorPosition = 0;
 	private int friendlyCursorPosition = 0;
 	private boolean targetAlly = false;
 
-	private ArrayList<BattleText> battleText = new ArrayList<BattleText>();
 	private ImageIcon enemyCursor = new ImageIcon("GUI/Resources/Sideways_RedArrow.png");
 	private ImageIcon friendlyCursor = new ImageIcon("GUI/Resources/Sideways_GreenArrow.png");
 	private final int ARROW_HEIGHT = 20;
-
-	private InputStream stream;
-	private Font baseFont;
 
 	public BattleArea(GameData data, BattleScreen screen)	{
 		this.data = data;
@@ -54,17 +44,6 @@ public class BattleArea extends JPanel	{
 		this.setMaximumSize(screenSize);
 		this.setMinimumSize(screenSize);
 
-		try {
-			stream = new BufferedInputStream(
-					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
-			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
-			floatingTextFont = baseFont.deriveFont(Font.PLAIN, 36);
-
-		} catch (FontFormatException | IOException e) {
-			System.err.println("Use your words!! Font not found");
-			e.printStackTrace();
-		}
-		
 	}
 
 	/**
@@ -92,34 +71,12 @@ public class BattleArea extends JPanel	{
 	protected void paintComponent(Graphics g)	{
 		drawParty(g);
 		battleScreen.getEnemies().drawEnemies(g);
-		if (battleScreen.getState() == BATTLE_STATE.ATTACK_SELECTION)	{
+		if (battleScreen.getState() == BATTLE_STATE.ATTACK_SELECTION || battleScreen.getState() == BATTLE_STATE.ITEM_USE_SELECTION)	{
 			drawTargetCursor(g);
 		}
-		drawBattleText(g);
+		battleText.drawText(g);
 	}
 
-	/**
-	 * Draws all of the recent floating combat text
-	 */
-	private void drawBattleText(Graphics g)	{
-		g.setFont(floatingTextFont);
-		for (int i = 0; i < battleText.size(); i++)	{
-			if (battleText.get(i).text.compareTo("MISS") == 0)	{
-				g.setColor(Color.WHITE);
-			}
-			else if (battleText.get(i).crit == true)	{
-				g.setColor(Color.YELLOW);
-			}
-			else	{
-				g.setColor(Color.RED);
-			}
-			g.drawString(battleText.get(i).text, battleText.get(i).xCoordinate, battleText.get(i).yCoordinate);
-			battleText.get(i).update();
-			if (battleText.get(i).duration == 0)	{
-				battleText.remove(i);
-			}
-		}
-	}
 	/**
 	 * Tells all of the party members to draw themselves
 	 */
@@ -148,15 +105,6 @@ public class BattleArea extends JPanel	{
 		}
 	}
 
-	/**
-	 * Adds battle text above the character that took damage
-	 * 
-	 * @param damage The amount of damage the character took as well as the number that will appear
-	 * @param target The character that will have the number placed over their head
-	 */
-	public void addBattleText(String damage, Combatant target, boolean crit)	{
-		battleText.add(new BattleText(damage, target, crit));
-	}
 
 	/**
 	 * Sets whether or not the targeting cursor is targeting an ally or an enemy
@@ -170,6 +118,15 @@ public class BattleArea extends JPanel	{
 	 */
 	public boolean getTargetAlly()	{
 		return targetAlly;
+	}
+	
+	public Combatant getTarget()	{
+		if (targetAlly)	{
+			return data.getParty()[friendlyCursorPosition];
+		}
+		else	{
+			return battleScreen.getEnemies().toArrayList().get(enemyCursorPosition);
+		}
 	}
 
 	/**
@@ -232,79 +189,8 @@ public class BattleArea extends JPanel	{
 		return friendlyCursorPosition;
 	}
 	
-	/**
-	 * Removes all pending battle text
-	 */
-	public void clear()	{
-		int size = battleText.size();
-		for (int i = 0; i < size; i++)	{
-			battleText.remove(0);
-		}
+	public FloatingCombatText getCombatText()	{
+		return battleText;
 	}
 	
-	
-	
-	/**
-	 * The text that appears above a character when they take damage
-	 */
-	private class BattleText	{
-
-		private String text;
-		private int xCoordinate;
-		private int yCoordinate;
-		private int duration;
-		private boolean crit;
-
-		private static final int TEXT_SIZE = 20;
-		
-		public BattleText(String str, Combatant target, boolean crit)	{
-			
-			text = str;
-			this.xCoordinate = target.getOrigin().x + (target.getWidth() / 2) - ((TEXT_SIZE * text.length()) / 2);
-			this.yCoordinate = target.getOrigin().y - 10;
-			duration = 65;
-			this.crit = crit;
-			
-		}
-		
-		/**
-		 * Counts down the duration of the battle text and causes a shake if the text is a crit
-		 */
-		public void update()	{
-			if (crit)	{
-				if (duration > 63)	{
-					xCoordinate -= 2;
-					yCoordinate -= 2;
-				}
-				else if (duration > 61)	{
-					xCoordinate -= 2;
-					yCoordinate += 2;
-				}
-				else if (duration > 59)	{
-					xCoordinate += 4;
-					yCoordinate += 2;
-				}
-				else if (duration > 57)	{
-					xCoordinate += 2;
-					yCoordinate -= 4;
-				}
-				else if (duration > 55)	{
-					xCoordinate += 2;
-					yCoordinate += 2;
-				}
-				else if (duration > 53)	{
-					xCoordinate -= 4;
-				}
-				else if (duration > 51)	{
-					xCoordinate += 2;
-					yCoordinate += 2;
-				}
-				else if (duration > 49)	{
-					xCoordinate -= 2;
-					yCoordinate -= 2;
-				}
-			}
-			duration--;
-		}
-	}
 }
