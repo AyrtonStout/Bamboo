@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 
 import GUI.DialogueBox;
 import Battle.Enums.BATTLE_STATE;
+import Systems.Consumable;
+import Systems.Enums.CONSUMABLE_TYPE;
 import Systems.Enums.GAME_STATE;
 import Systems.Combatant;
 import Systems.Encounter;
@@ -149,8 +151,25 @@ public class BattleScreen extends JPanel {
 					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
 				itemScreen.respondToKeyPress(e);
 			}
+			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+				state = BATTLE_STATE.ITEM_USE_SELECTION;
+				battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
+			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				exitItemMenu();
+			}
+		}
+		else if (state == BATTLE_STATE.ITEM_USE_SELECTION)	{
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
+					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				battleArea.respondToInput(e, info);	
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+				startAttack();
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				info.setVisible(false);
+				state = BATTLE_STATE.ITEM_SELECTION;
 			}
 		}
 		else if (state == BATTLE_STATE.ATTACK_SELECTION)	{

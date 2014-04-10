@@ -1,5 +1,6 @@
 package Battle;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,6 +22,7 @@ public class BattleItemsScreen extends JPanel {
 	private static final int CONSUMABLES = 3;
 
 	private GameData data;
+	private final int LIST_LENGTH = 4;
 
 	private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 	private ImageIcon background = new ImageIcon("GUI/Resources/TextBox_Background.png");
@@ -28,74 +30,109 @@ public class BattleItemsScreen extends JPanel {
 	private int scrollOffset = 0;
 
 	private ItemPanel[] itemList = new ItemPanel[] {new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), 
-			new ItemPanel(), new ItemPanel(), new ItemPanel()};
+			new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel()};
 
 
 	public BattleItemsScreen(GameData data)	{
 		this.data = data;
 
-		this.setBackground(Color.GREEN);
+		this.setLayout(new BorderLayout());
+
 		Dimension newDimension = new Dimension(600, 150);
 		this.setPreferredSize(newDimension);
 		this.setMaximumSize(newDimension);
 		this.setMinimumSize(newDimension);
 
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		JPanel leftPanel = new JPanel();
+		JPanel rightPanel = new JPanel();
+		JPanel[] leftAndRightList = new JPanel[] {leftPanel, rightPanel};
+		Dimension subDimension = new Dimension(300, 150);
 
-		this.add(Box.createVerticalStrut(10));
+		for (int i = 0; i < leftAndRightList.length; i++)	{
+			leftAndRightList[i].setLayout(new BoxLayout(leftAndRightList[i], BoxLayout.Y_AXIS));
+			leftAndRightList[i].setOpaque(false);
+			leftAndRightList[i].setPreferredSize(subDimension);
+			leftAndRightList[i].setMaximumSize(subDimension);
+			leftAndRightList[i].setMinimumSize(subDimension);
+			leftAndRightList[i].add(Box.createVerticalStrut(6));
 
-		for (int i = 0; i < itemList.length; i++)	{
-			this.add(itemList[i]);
+		}
+
+		for (int i = 0; i < LIST_LENGTH; i++)	{
+			leftPanel.add(itemList[i * 2]);
+		}	
+		for (int i = 0; i < LIST_LENGTH; i++)	{
+			rightPanel.add(itemList[1 + i * 2]);
 		}	
 
+		this.add(leftPanel, BorderLayout.WEST);
+		this.add(rightPanel, BorderLayout.EAST);
 
 	}
-	
-//	@Override
-//	public void setVisible(boolean b)	{
-//		visible = b;
-//	}
+
+	//	@Override
+	//	public void setVisible(boolean b)	{
+	//		visible = b;
+	//	}
 
 	@Override
 	protected void paintComponent(Graphics g)	{	
 		super.paintComponent(g);
 		g.drawImage(background.getImage(), 0, 0, null);
-		g.drawImage(cursor.getImage(), 10, 15 + 25 * cursorPosition, null);
+		g.drawImage(cursor.getImage(), 10 + 300 * (cursorPosition % 2), 11 + 35 * (cursorPosition/2), null);
 	}
 
 	public void updateList()	{
-		
-		for (int i = 0; i < 6; i++)	{
-			if (i < data.getInventory().getCategory(CONSUMABLES).size())	{
-				itemList[i].setItem(data.getInventory().getCategory(CONSUMABLES).get(i + scrollOffset));
-				itemList[i].setVisible(true);
-			}
-			else	{
-				itemList[i].setVisible(false);
+
+		if (data.getInventory().getCategory(CONSUMABLES).size() == 0)	{
+			itemList[0].declareEmpty();
+		}
+		else	{
+
+			for (int i = 0; i < 6; i++)	{
+				if (i < data.getInventory().getCategory(CONSUMABLES).size())	{
+					itemList[i].setItem(data.getInventory().getCategory(CONSUMABLES).get(i + scrollOffset));
+					itemList[i].setVisible(true);
+				}
+				else	{
+					itemList[i].setVisible(false);
+				}
 			}
 		}
 	}
-	
+
 	public void respondToKeyPress(KeyEvent e)	{
 		if (e.getKeyCode() == KeyEvent.VK_UP)	{
 			raiseCursor();
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-			
+			moveCursorRight();
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
 			dropCursor();
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-			
+			moveCursorLeft();
 		}
 	}
 
-	public void dropCursor()	{
-		cursorPosition++;
+	private void dropCursor()	{
+		if (cursorPosition < 6 && (cursorPosition + 2) < data.getInventory().getCategory(CONSUMABLES).size())	{
+			cursorPosition += 2;
+		}
 	}
-	public void raiseCursor()	{
-		if (cursorPosition > 0)	{
+	private void raiseCursor()	{
+		if (cursorPosition > 1)	{
+			cursorPosition -= 2;
+		}
+	}
+	private void moveCursorRight()	{
+		if (cursorPosition % 2 == 0 && (cursorPosition + 1) < data.getInventory().getCategory(CONSUMABLES).size())	{
+			cursorPosition++;
+		}
+	}
+	private void moveCursorLeft()	{
+		if (cursorPosition %2 == 1)	{
 			cursorPosition--;
 		}
 	}
@@ -105,6 +142,18 @@ public class BattleItemsScreen extends JPanel {
 	}
 	public int getCursorPosition()	{
 		return cursorPosition;
+	}
+	/**
+	 * Returns the item that is currently selected by the item panel. If there are no usable items, this method
+	 * will return null;
+	 * 
+	 * @return The item at the selected cursor position
+	 */
+	public Item getSelectedItem()	{
+		if (data.getInventory().getCategory(CONSUMABLES).size() == 0)	{
+			return null;
+		}
+		return data.getInventory().getCategory(CONSUMABLES).get(cursorPosition + scrollOffset);
 	}
 
 
@@ -117,14 +166,14 @@ public class BattleItemsScreen extends JPanel {
 	private class ItemPanel extends JPanel	{
 
 		private static final long serialVersionUID = 4342436547521865798L;
-		private ImageIcon itemIcon = new ImageIcon("GUI/Resources/sword_ico.png");
+		private ImageIcon itemIcon = new ImageIcon();
 		private JLabel itemName = new JLabel();
 		private JLabel itemQuantity = new JLabel();
 		private boolean visible = true;
 
 		public ItemPanel()	{
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			Dimension newDimension = new Dimension(250, 35);
+			Dimension newDimension = new Dimension(300, 35);
 			this.setPreferredSize(newDimension);
 			this.setMaximumSize(newDimension);
 			this.setMinimumSize(newDimension);
@@ -133,8 +182,8 @@ public class BattleItemsScreen extends JPanel {
 			this.setAlignmentX(LEFT_ALIGNMENT);
 			itemName.setAlignmentX(LEFT_ALIGNMENT);
 
-			itemName.setMaximumSize(new Dimension(150, 35));
-			itemName.setPreferredSize(new Dimension(150, 35));
+			itemName.setMaximumSize(new Dimension(200, 35));
+			itemName.setPreferredSize(new Dimension(200, 35));
 
 			this.add(Box.createHorizontalStrut(65));
 			this.add(itemName);
@@ -162,6 +211,12 @@ public class BattleItemsScreen extends JPanel {
 				itemName.setText("");
 				itemQuantity.setText("");
 			}
+		}
+
+		public void declareEmpty()	{
+			itemName.setText("No usable items");
+			itemQuantity.setText("");
+			itemIcon = new ImageIcon();
 		}
 	}
 }

@@ -290,13 +290,25 @@ public class MapWriter {
 		ironSwordChest.setLoot(new Weapon(SWORD.IRON));
 		Chest ironDaggerChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
 		ironDaggerChest.setLoot(new Weapon(DAGGER.GOLD));
-		Chest potionChest = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
-		potionChest.setLoot(new Consumable(POTION.HEALTH_SMALL));
+		
+		Chest potionChest1 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		potionChest1.setLoot(new Consumable(POTION.HEALTH_SMALL));
+		Chest potionChest2 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		potionChest2.setLoot(new Consumable(POTION.HEALTH_LARGE));
+		Chest potionChest3 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		potionChest3.setLoot(new Consumable(POTION.MANA_SMALL));
+		Chest potionChest4 = new Chest(TREASURE_CHEST.TREASURE_CHEST_SMALL);
+		potionChest4.setLoot(new Consumable(POTION.MANA_LARGE));
+		
 		
 		tiles[9][12] = new Tile(TILE.GROUND_GRASS, ironSwordChest);
 		tiles[13][12] = new Tile(TILE.GROUND_GRASS, DECORATION.TREE_PALM);
 		tiles[11][15] = new Tile(TILE.GROUND_GRASS, ironDaggerChest);
-		tiles[11][5] = new Tile(TILE.GROUND_GRASS, potionChest);
+		
+		tiles[11][5] = new Tile(TILE.GROUND_GRASS, potionChest1);
+		tiles[11][4] = new Tile(TILE.GROUND_GRASS, potionChest2);
+		tiles[11][6] = new Tile(TILE.GROUND_GRASS, potionChest3);
+		tiles[10][6] = new Tile(TILE.GROUND_GRASS, potionChest4);
 		
 		for (int i = 0; i < tiles.length; i++)	{
 			tiles[i][0] = new Tile(TILE.WALL_CAVE);

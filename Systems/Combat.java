@@ -2,21 +2,23 @@ package Systems;
 
 import java.util.Random;
 
+import Systems.Enums.CONSUMABLE_TYPE;
+
 /**
  * @author mobius
  * A class used to do combat calculations
  */
 public class Combat {
-	
+
 	private GameData data;
 	private Random rand = new Random();
 	private boolean crit = false;
 	private final int BASE_HIT_CHANCE = 85;
-	
+
 	public Combat(GameData data)	{
 		this.data = data;
 	}
-	
+
 	/**
 	 * Used to do a basic attack calculation between two people
 	 * 
@@ -43,7 +45,40 @@ public class Combat {
 			}
 		}
 	}
-	
+
+	public void heal(Combatant caster, Combatant receiver)	{
+
+	}
+
+	public void heal(Combatant caster, Combatant receiver, Consumable usedItem)	{
+		if (usedItem.getHealthRestore() > 0)	{
+			if (caster.getClass() == PartyMember.class)	{
+				((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
+			}
+
+			receiver.modCurrentHealth(usedItem.getHealthRestore());
+			
+			if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
+				receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
+			}
+		}
+		
+		if (usedItem.getManaRestore() > 0)	{
+			
+			receiver.modCurrentMana(usedItem.getManaRestore());
+		
+			if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
+				receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
+			}
+		}
+	}
+
+	public void useItem(Combatant user, Combatant target, Consumable usedItem)	{
+		if (usedItem.getType() == CONSUMABLE_TYPE.POTION)	{
+			heal(user, target, usedItem);
+		}
+	}
+
 	/**
 	 * Used for a basic combat calculation to tell whether or not the attack missed.
 	 * 

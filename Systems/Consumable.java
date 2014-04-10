@@ -28,7 +28,7 @@ public class Consumable implements Item, Serializable {
 
 	private JTextArea left = new JTextArea();
 	
-	private boolean statChange = true;
+	private boolean statChange = true;          //Prevents the getters from needlessly recalculating the text boxes every time
 	
 	public Consumable(POTION potion)	{
 		type = CONSUMABLE_TYPE.POTION;
@@ -80,6 +80,28 @@ public class Consumable implements Item, Serializable {
 		}
 	}
 
+	/**
+	 * Whether or not the item has a harmful or a helpful effect. An example of a helpful item
+	 * would be a potion and an example of a harmful item would be one that inflicts a status ailment.
+	 * 
+	 * @return Whether or not the item is harmful.
+	 */
+	public boolean harmfulEh()	{
+		switch (type)	{
+		case POTION:
+			return false;
+		case FOOD:
+			return false;
+		case WATER:
+			return false;
+		case POISON:
+			return true;
+		default:
+			System.err.println("Consumable type not categorized");
+			return false;
+		}
+	}
+	
 	@Override
 	public ImageIcon getIcon() {
 		return icon;
@@ -99,6 +121,14 @@ public class Consumable implements Item, Serializable {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+	
+	public int getHealthRestore()	{
+		return healthRestore;
+	}
+	
+	public int getManaRestore()	{
+		return manaRestore;
 	}
 
 	@Override
@@ -142,6 +172,5 @@ public class Consumable implements Item, Serializable {
 	public int getQuantity()	{
 		return stackQuantity;
 	}
-	
 
 }

@@ -186,8 +186,21 @@ public abstract class Combatant implements Serializable {
 	public Stat getHit() {
 		return hit;
 	}
+	/**
+	 * Changes the combatant's current health by a certain value.
+	 * 
+	 * @param health The value the health is changing by.
+	 */
 	public void modCurrentHealth(int health) {
 		currentHealth.modifyBase(health);
+	}
+	/**
+	 * Changes the combatant's current mana by a certain value.
+	 * 
+	 * @param mana The value the mana is changing by.
+	 */
+	public void modCurrentMana(int mana)	{
+		currentMana.modifyBase(mana);
 	}
 	public boolean aliveEh()	{
 		return alive;
