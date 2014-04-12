@@ -74,6 +74,9 @@ public class Combat {
 		if (usedItem.getConsumableType() == CONSUMABLE_TYPE.POTION)	{
 			if ((usedItem.getHealthRestore() > 0 && validHealTargetEh(target)) || 
 					(usedItem.getManaRestore() > 0 && validManaRestoreTargetEh(target)))	{
+				if (user.getClass() == PartyMember.class)	{
+					((PartyMember) user).startItemAnimation();
+				}
 				usePotion(user, target, usedItem);
 				data.getInventory().removeItem(usedItem);
 				return true;
@@ -173,13 +176,14 @@ public class Combat {
 	}
 	
 	private void addBattleText(Combatant receiver, Consumable usedItem)	{
+		final int POTION_ANIMATION_DELAY = 20;
 		if (usedItem.getHealthRestore() > 0)	{
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
-					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL);
+			data.getBattleScreen().getBattleArea().getCombatText().addDelayedBattleText(
+					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL, POTION_ANIMATION_DELAY);
 		}
 		else	{
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(
-					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE);
+			data.getBattleScreen().getBattleArea().getCombatText().addDelayedBattleText(
+					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE, POTION_ANIMATION_DELAY);
 		}
 	}
 

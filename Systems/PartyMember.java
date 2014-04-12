@@ -254,6 +254,28 @@ public class PartyMember extends Combatant implements Serializable {
 				combatAction = COMBAT_ACTION.IDLE;
 			}
 			break;
+		case ITEM:
+			if (animationSteps > 35)	{
+				animationSteps--;
+			}
+			else if (animationSteps == 35)	{
+				current = leap;
+				animationSteps--;
+			}
+			else if (animationSteps > 15)	{
+				animationSteps--;
+			}
+			else if (animationSteps == 15)	{
+				current = right;
+				animationSteps--;
+			}
+			else if (animationSteps > 0)	{
+				animationSteps--;
+			}
+			else if (animationSteps == 0)	{
+				combatAction = COMBAT_ACTION.IDLE;
+			}
+			break;
 		case IMPACT:
 			combatAction = COMBAT_ACTION.ATTACK;
 		}	
@@ -509,6 +531,11 @@ public class PartyMember extends Combatant implements Serializable {
 	}
 	public void setEquipment(Equipment equipment)	{
 		this.equipment = equipment;
+	}
+	
+	public void startItemAnimation()	{
+		combatAction = COMBAT_ACTION.ITEM;
+		animationSteps = 55;
 	}
 
 	/**

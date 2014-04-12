@@ -20,6 +20,7 @@ v0.39
 -Potions are now only usable on valid targets (targets that would benefit/ are alive)
 -Info panel now correctly displays during item targeting
 -Info panel now serves as a smaller text box that will display information
+-Potion use is now animated for party members
 
 
 v0.38

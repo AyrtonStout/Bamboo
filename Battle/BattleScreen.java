@@ -200,13 +200,14 @@ public class BattleScreen extends JPanel {
 		}
 		if (state == BATTLE_STATE.ENEMY_MOVE)	{
 			((Enemy) activeMember).takeAction(data.getParty());
-			state = BATTLE_STATE.ANIM_ATTACK;
+			state = BATTLE_STATE.ANIMATION;
 		}
-		if (state == BATTLE_STATE.ANIM_ATTACK)	{
+		if (state == BATTLE_STATE.ANIMATION)	{
 			if (activeMember.getCombatAction() == COMBAT_ACTION.IMPACT)	{
 				data.getCombat().attack(activeMember, activeMember.getTarget());
 				menu.update();
 			}
+//			System.out.println(state);
 			if (turnOverEh())	{
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
@@ -364,7 +365,7 @@ public class BattleScreen extends JPanel {
 	
 	private void startAttack()	{
 		info.setVisible(false);
-		state = BATTLE_STATE.ANIM_ATTACK;
+		state = BATTLE_STATE.ANIMATION;
 		activeMember.attackTarget(battleArea.getTarget());
 	}
 	
@@ -376,9 +377,10 @@ public class BattleScreen extends JPanel {
 			this.remove(itemScreen);
 			this.add(menu, BorderLayout.SOUTH);
 			menu.update();
-			state = BATTLE_STATE.MAIN;
-			activeMember = turnOrder.getActiveCombatant();
-			update();	
+			activeMember.setCombatState(COMBAT_ACTION.ITEM);
+			state = BATTLE_STATE.ANIMATION;
+//			activeMember = turnOrder.getActiveCombatant();
+//			update();	
 		}
 		else	{
 			
