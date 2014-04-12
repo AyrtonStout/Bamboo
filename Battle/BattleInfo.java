@@ -153,8 +153,10 @@ public class BattleInfo extends JPanel {
 	 */
 	public void setTarget(Combatant target)	{
 		if (textMode)	{
+			textModeContents.setVisible(false);
 			this.remove(textModeContents);
 			this.add(normalModeContents);
+			normalModeContents.setVisible(true);
 			textMode = false;
 		}
 		
@@ -167,8 +169,10 @@ public class BattleInfo extends JPanel {
 	public void setText(String str)	{
 
 		if (!textMode)	{
+			normalModeContents.setVisible(false);
 			this.remove(normalModeContents);
 			this.add(textModeContents);
+			textModeContents.setVisible(true);
 			textMode = true;
 		}
 		text.setText(str);

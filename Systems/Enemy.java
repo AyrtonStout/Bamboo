@@ -133,6 +133,10 @@ public class Enemy extends Combatant implements Serializable {
 			break;
 		case IMPACT:
 			combatAction = COMBAT_ACTION.ATTACK;
+		case ITEM:
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -140,13 +144,22 @@ public class Enemy extends Combatant implements Serializable {
 		return xpReward;
 	}
 	
-	public void attackTarget(Combatant target)	{
-		combatAction = COMBAT_ACTION.ATTACK;
-		animationSteps = 80;
-		this.target = target;
-	}
-	
-	public void takeAction(PartyMember[] party)	{
+	public void takeAction(PartyMember[] party, Encounter enemies)	{
+		int possibleTargets = 0;
+		Random rand = new Random();
+		int attackTarget;
+		
+		for (int i = 0; i < party.length; i++)	{
+			if (party[i] != null && party[i].aliveEh())	{
+				possibleTargets++;
+			}
+		}
+		attackTarget = rand.nextInt(possibleTargets);
+		
+		while (attackTarget != 0)	{
+			//TODO finish this
+		}
+		
 		target = party[0];
 		combatAction = COMBAT_ACTION.ATTACK;
 		animationSteps = 100;

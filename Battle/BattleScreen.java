@@ -207,7 +207,6 @@ public class BattleScreen extends JPanel {
 				data.getCombat().attack(activeMember, activeMember.getTarget());
 				menu.update();
 			}
-//			System.out.println(state);
 			if (turnOverEh())	{
 				checkForDeaths();
 				state = BATTLE_STATE.MAIN;
