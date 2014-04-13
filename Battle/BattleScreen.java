@@ -199,7 +199,7 @@ public class BattleScreen extends JPanel {
 			state = BATTLE_STATE.ENEMY_MOVE;
 		}
 		if (state == BATTLE_STATE.ENEMY_MOVE)	{
-			((Enemy) activeMember).takeAction(data.getParty());
+			((Enemy) activeMember).takeAction(data.getParty(), enemies);
 			state = BATTLE_STATE.ANIMATION;
 		}
 		if (state == BATTLE_STATE.ANIMATION)	{

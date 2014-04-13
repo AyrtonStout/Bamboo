@@ -156,11 +156,18 @@ public class Enemy extends Combatant implements Serializable {
 		}
 		attackTarget = rand.nextInt(possibleTargets);
 		
-		while (attackTarget != 0)	{
-			//TODO finish this
+		for (int i = 0; i < party.length; i++)	{
+			if (party[i] != null && party[i].aliveEh())	{
+				if (attackTarget == 0)	{
+					target = party[i];
+					break;
+				}
+				else	{
+					attackTarget--;
+				}
+			}
 		}
-		
-		target = party[0];
+	
 		combatAction = COMBAT_ACTION.ATTACK;
 		animationSteps = 100;
 	}
