@@ -8,7 +8,7 @@ import Systems.InputManager;
 
 /**
  * @author mobius
- * @version 0.38 - Combat Series
+ * @version 0.40 - Fix and enhance random older crap series
  */
 public class Frame extends JFrame {
 

@@ -18,7 +18,6 @@ import Systems.Item;
 public class BattleItemsScreen extends JPanel {
 
 	private static final long serialVersionUID = -6022290414676321151L;
-	private static final int CONSUMABLES = 3;
 
 	private GameData data;
 	private final int LIST_LENGTH = 4;
@@ -83,14 +82,14 @@ public class BattleItemsScreen extends JPanel {
 
 	public void updateList()	{
 
-		if (data.getInventory().getCategory(CONSUMABLES).size() == 0)	{
+		if (data.getInventory().getConsumables().size() == 0)	{
 			itemList[0].declareEmpty();
 		}
 		else	{
 
 			for (int i = 0; i < 6; i++)	{
-				if (i < data.getInventory().getCategory(CONSUMABLES).size())	{
-					itemList[i].setItem(data.getInventory().getCategory(CONSUMABLES).get(i + scrollOffset));
+				if (i < data.getInventory().getConsumables().size())	{
+					itemList[i].setItem(data.getInventory().getConsumables().get(i + scrollOffset));
 					itemList[i].setVisible(true);
 				}
 				else	{
@@ -116,7 +115,7 @@ public class BattleItemsScreen extends JPanel {
 	}
 
 	private void dropCursor()	{
-		if (cursorPosition < 6 && (cursorPosition + 2) < data.getInventory().getCategory(CONSUMABLES).size())	{
+		if (cursorPosition < 6 && (cursorPosition + 2) < data.getInventory().getConsumables().size())	{
 			cursorPosition += 2;
 		}
 	}
@@ -126,7 +125,7 @@ public class BattleItemsScreen extends JPanel {
 		}
 	}
 	private void moveCursorRight()	{
-		if (cursorPosition % 2 == 0 && (cursorPosition + 1) < data.getInventory().getCategory(CONSUMABLES).size())	{
+		if (cursorPosition % 2 == 0 && (cursorPosition + 1) < data.getInventory().getConsumables().size())	{
 			cursorPosition++;
 		}
 	}
@@ -149,10 +148,10 @@ public class BattleItemsScreen extends JPanel {
 	 * @return The item at the selected cursor position
 	 */
 	public Item getSelectedItem()	{
-		if (data.getInventory().getCategory(CONSUMABLES).size() == 0)	{
+		if (data.getInventory().getConsumables().size() == 0)	{
 			return null;
 		}
-		return data.getInventory().getCategory(CONSUMABLES).get(cursorPosition + scrollOffset);
+		return data.getInventory().getConsumables().get(cursorPosition + scrollOffset);
 	}
 
 

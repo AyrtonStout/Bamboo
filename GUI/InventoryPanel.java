@@ -396,22 +396,82 @@ public class InventoryPanel extends JPanel {
 
 		public void updateList(int outerCursorPosition)	{
 
-			for (int i = 0; i < 7; i++)	{
-				if (i < inventory.getCategory(outerCursorPosition).size())	{
-					itemList[i].setItem(inventory.getCategory(outerCursorPosition).get(i + scrollOffset));
-					itemList[i].setVisible(true);
+			switch (outerCursorPosition)	{
+			case 0:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getWeapons().size())	{
+						itemList[i].setItem(inventory.getWeapons().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
 				}
-				else	{
-					itemList[i].setVisible(false);
+				break;
+			case 1:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getArmor().size())	{
+						itemList[i].setItem(inventory.getArmor().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
 				}
+				break;
+			case 2:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getAccessories().size())	{
+						itemList[i].setItem(inventory.getAccessories().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
+				break;
+			case 3:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getConsumables().size())	{
+						itemList[i].setItem(inventory.getConsumables().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
+				break;
+			case 4:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getLoot().size())	{
+						itemList[i].setItem(inventory.getLoot().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
+				break;
+			case 5:
+				for (int i = 0; i < 7; i++)	{
+					if (i < inventory.getKeyItems().size())	{
+						itemList[i].setItem(inventory.getKeyItems().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
+				break;
 			}
+			
 		}
 
 		public void dropItemCursor()	{
-			if (itemCursorPosition < 6 && itemCursorPosition < inventory.getCategory(categories.getCursorPosition()).size() - 1)	{
+			if (itemCursorPosition < 6 && itemCursorPosition < inventory.getCategorySize(categories.getCursorPosition()) - 1)	{
 				itemCursorPosition++;
 			}
-			else if (itemCursorPosition == 6 && itemCursorPosition + scrollOffset < inventory.getCategory(categories.getCursorPosition()).size() - 1)	{
+			else if (itemCursorPosition == 6 && itemCursorPosition + scrollOffset < inventory.getCategorySize(categories.getCursorPosition()) - 1)	{
 				scrollOffset++;
 				updateList(categories.getCursorPosition());
 			}
@@ -477,6 +537,9 @@ public class InventoryPanel extends JPanel {
 				itemIcon = item.getIcon();
 				if (item.getClass() == Consumable.class && ((Consumable) item).getQuantity() > 1)	{
 					itemQuantity.setText("x" + Integer.toString(((Consumable) item).getQuantity()));
+				}
+				else	{
+					itemQuantity.setText("");
 				}
 			}
 
@@ -586,7 +649,7 @@ public class InventoryPanel extends JPanel {
 		 * Updates the text box to display the contents of the currently selected item
 		 */
 		public void update()	{
-			Item queriedItem = inventory.getCategory(categories.getCursorPosition()).get(list.getItemCursorPosition() + list.scrollOffset);
+			Item queriedItem = inventory.getItem(categories.getCursorPosition(), list.getItemCursorPosition() + list.scrollOffset);
 			itemName.setText(queriedItem.getName());
 
 			if (queriedItem.getMainText() != null)	{

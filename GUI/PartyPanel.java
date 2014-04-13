@@ -26,7 +26,6 @@ import javax.swing.text.StyleConstants;
 import Systems.GameData;
 import Systems.Item;
 import Systems.PartyMember;
-import Systems.Weapon;
 
 public class PartyPanel extends JPanel {
 
@@ -251,21 +250,19 @@ public class PartyPanel extends JPanel {
 				
 				else if (optionsCursorPosition == REMOVE)	{
 					if (slotCursorPosition == 0)	{
-						data.getInventory().getCategory(0).add((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon()));
+						data.getInventory().getWeapons().add(data.getParty()[characterCursorPosition].getEquipment().removeWeapon());
 					}
 				}
 			}
 
 			else if (partyState == PartyState.ITEM_SELECT)	{
 				if (slotCursorPosition == 0)	{
-					if (data.getInventory().getCategory(0).size() > 0)	{
-						data.getParty()[characterCursorPosition].getEquipment().setWeapon(
-								(Weapon) data.getInventory().getCategory(0).remove(itemCursorPosition + itemPanel.scrollOffset));
+					if (data.getParty()[characterCursorPosition].getEquipment().getWeapon() != null)	{
+						data.getInventory().addItem(data.getParty()[characterCursorPosition].getEquipment().removeWeapon());
 					}
-					else	{
-						if (data.getParty()[characterCursorPosition].getEquipment().getWeapon() != null)	{
-							data.getInventory().addItem(((Item) (data.getParty()[characterCursorPosition].getEquipment().removeWeapon())));
-						}
+					if (data.getInventory().getWeapons().size() > 0)	{
+						data.getParty()[characterCursorPosition].getEquipment().setWeapon(
+								data.getInventory().getWeapons().remove(itemCursorPosition + itemPanel.scrollOffset));
 					}
 				}
 				swapPanels();
@@ -722,27 +719,41 @@ public class PartyPanel extends JPanel {
 		}
 		
 		public void update()	{
-			int category;
 			if (slotCursorPosition == 0)	{
-				category = 0;
+				for (int i = 0; i < itemList.length; i++)	{
+					if (i < data.getInventory().getWeapons().size())	{
+						itemList[i].setItem(data.getInventory().getWeapons().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
 			}
 			else if (slotCursorPosition > 0 && slotCursorPosition <= 4)	{
-				category = 1;
+				for (int i = 0; i < itemList.length; i++)	{
+					if (i < data.getInventory().getArmor().size())	{
+						itemList[i].setItem(data.getInventory().getArmor().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
+				}
 			}
 			else {
-				category = 2;
-			}
-			elements = data.getInventory().getCategory(category).size();
-			for (int i = 0; i < itemList.length; i++)	{
-				if (i < elements)	{
-					itemList[i].setItem(data.getInventory().getCategory(category).get(i + scrollOffset));
-					itemList[i].setVisible(true);
-				}
-				else	{
-					itemList[i].setVisible(false);
+				for (int i = 0; i < itemList.length; i++)	{
+					if (i < data.getInventory().getAccessories().size())	{
+						itemList[i].setItem(data.getInventory().getAccessories().get(i + scrollOffset));
+						itemList[i].setVisible(true);
+					}
+					else	{
+						itemList[i].setVisible(false);
+					}
 				}
 			}
-			if (elements == 0)	{
+			
+			if (itemList[0].visibleEh() == false)	{
 				itemList[0].clear();
 				itemList[0].setVisible(true);
 			}
@@ -793,6 +804,9 @@ public class PartyPanel extends JPanel {
 			public void clear()	{
 				itemName.setText("EMPTY");
 				itemIcon = new ImageIcon();
+			}
+			public boolean visibleEh()	{
+				return visible;
 			}
 		}
 	}

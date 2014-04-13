@@ -1,8 +1,9 @@
 An old school role playing game that borrows heavily from games like Pokemon and Final Fantasy.
 
 Completion Status-
-Game is continually being developed and is still missing many key systems. However many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, inventory and party screens.
-Current Focus: Combat screen
+Game is continually being developed and is still missing some key systems. However many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen,
+inventory and party screens.
+Current Focus: Bug fixes and enhancements to older code
 
 Note on running the game-
 Run the game from the Frame class. If an error is thrown, first run the MapWriter class to regenerate the map and then run again from the Frame class.
@@ -16,6 +17,11 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.40 - The fix and enhance random crap series
+-Redid inventory class and its methods to make more sense at the expense of code length 
+-Fixed long standing bug that would destroy the currently equipped item if equipping
+ a different item
+
 v0.39
 -Potions are now only usable on valid targets (targets that would benefit/ are alive)
 -Info panel now correctly displays during item targeting
@@ -23,7 +29,7 @@ v0.39
 -Potion use is now animated for party members
 -Enemies now attack a random target instead of the first target. Still a placeholder
  for a more robust system; just a better one
-
+-This concludes the combat series until after the spells and abilities series.
 
 v0.38
 -Item option now brings up a new panel that will display consumables
