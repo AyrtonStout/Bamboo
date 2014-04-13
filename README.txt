@@ -21,6 +21,7 @@ v0.40 - The fix and enhance random crap series
 -Redid inventory class and its methods to make more sense at the expense of code length 
 -Fixed long standing bug that would destroy the currently equipped item if equipping
  a different item
+-It is now possible to equip more than just weapons, though such gear does not yet exist
 
 v0.39
 -Potions are now only usable on valid targets (targets that would benefit/ are alive)

@@ -2,16 +2,19 @@ package Systems;
 
 import java.io.Serializable;
 
+import Systems.Enums.ACCESSORY_TYPE;
+
+
 public class Equipment implements Serializable {
 
 	private static final long serialVersionUID = -8207154870997336759L;
 
 	PartyMember owner;
-	
+
 	Weapon weapon;
 	Armor helmet, chest, gloves, boots;
 	Accessory ring1, ring2, necklace;
-	
+
 	public Equipment(PartyMember partyMember) {
 		owner = partyMember;
 	}
@@ -27,7 +30,7 @@ public class Equipment implements Serializable {
 		if (ring1 != null) inventory.addItem(ring1);
 		if (ring2 != null) inventory.addItem(ring2);
 		if (necklace != null) inventory.addItem(necklace);
-		
+
 		weapon = null;
 		helmet = null;
 		chest = null;
@@ -37,6 +40,82 @@ public class Equipment implements Serializable {
 		ring2 = null;
 		necklace = null;
 	}
+
+	public void equipItem(Item equippedItem, Inventory inventory)	{
+		if (equippedItem.getClass() == Weapon.class)	{
+			if (weapon != null)	{
+				inventory.addItem(removeWeapon());
+			}
+			setWeapon((Weapon) equippedItem);
+		}
+		else if (equippedItem.getClass() == Armor.class)	{
+			switch (((Armor) equippedItem).getSlot())	{
+			case HELMET:
+				if (helmet != null)	{
+					inventory.addItem(removeHelmet());
+				}
+				setHelmet((Armor) equippedItem);
+				break;
+			case CHEST:
+				if (chest != null)	{
+					inventory.addItem(removeChest());
+				}
+				setChest((Armor) equippedItem);
+				break;
+			case GLOVES:
+				if (gloves != null)	{
+					inventory.addItem(removeGloves());
+				}
+				setGloves((Armor) equippedItem);
+				break;
+			case BOOTS:
+				if (boots != null)	{
+					inventory.addItem(removeBoots());
+				}
+				setBoots((Armor) equippedItem);
+				break;
+			}
+		}
+		else if (equippedItem.getClass() == Accessory.class)	{
+			switch (((Accessory) equippedItem).getType())	{
+			case NECKLACE:
+				if (necklace != null)	{
+					inventory.addItem(removeNecklace());
+				}
+				setNecklace((Accessory) equippedItem);
+				break;
+			case RING:
+				System.err.println("When equipping a ring, provide an integer as a third argument with 1 for ring1 and 2 for ring2");
+				return;
+			}
+		}
+		inventory.removeItem(equippedItem);
+	}
+	
+	public void equipItem(Item equippedItem, Inventory inventory, int ringSlot)	{
+		if (equippedItem.getClass() != Accessory.class)	{
+			System.err.println("Third argument to be used only with rings");
+		}
+		else if (((Accessory) equippedItem).getType() != ACCESSORY_TYPE.RING)	{
+			System.err.println("Third argument to be used only with rings");
+		}
+		else if (ringSlot == 1)	{
+			if (ring1 != null)	{
+				inventory.addItem(removeRing1());
+			}
+			setRing1((Accessory) equippedItem);
+		}
+		else if (ringSlot == 2)	{
+			if (ring2 != null)	{
+				inventory.addItem(removeRing2());
+			}
+			setRing2((Accessory) equippedItem);
+		}
+		else	{
+			System.err.println("Invalid ring slot provided. Use 1 for first ring and 2 for second ring");
+		}
+	}
+
 	public Weapon getWeapon()	{
 		return weapon;
 	}

@@ -82,7 +82,7 @@ public class Enums {
 	
 	public enum ACCESSORY_TYPE	{
 		
-		RING, NECKLACE, TRINKET;
+		RING, NECKLACE;
 		
 	}
 

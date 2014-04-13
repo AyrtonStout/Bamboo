@@ -37,7 +37,7 @@ public class Accessory implements Item {
 	public String getName() {
 		return name;
 	}
-	public ACCESSORY_TYPE type()	{
+	public ACCESSORY_TYPE getType()	{
 		return type;
 	}
 

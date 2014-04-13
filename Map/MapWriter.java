@@ -218,7 +218,7 @@ public class MapWriter {
 		
 		ArrayList<ArrayList<MONSTER>> encounters = new ArrayList<ArrayList<MONSTER>>();
 		ArrayList<Integer> spawnChances = new ArrayList<Integer>();
-		int spawnProbability = 20;
+		int spawnProbability = 5;
 		
 		ArrayList<MONSTER> encounter1 = new ArrayList<MONSTER>(4);
 		encounter1.add(MONSTER.GIANT_RAT);
