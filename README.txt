@@ -22,6 +22,8 @@ v0.40 - The fix and enhance random crap series
 -Fixed long standing bug that would destroy the currently equipped item if equipping
  a different item
 -It is now possible to equip more than just weapons, though such gear does not yet exist
+-Rewrote the inheritance hierarchy to make equippable items implement items, and then
+ items like swords and armor inherit from equippable items instead. 
 
 v0.39
 -Potions are now only usable on valid targets (targets that would benefit/ are alive)

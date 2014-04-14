@@ -141,7 +141,7 @@ public class Equipment implements Serializable {
 		return necklace;
 	}
 	public void setWeapon(Weapon weapon) {
-		owner.getStrength().modifyBuff(weapon.getStrength());
+		owner.getStrength().modifyBuff(weapon.getStrength().getActual());
 		owner.refresh();
 		this.weapon = weapon;
 	}
@@ -167,7 +167,7 @@ public class Equipment implements Serializable {
 		this.necklace = necklace;
 	}
 	public Weapon removeWeapon()	{
-		owner.getStrength().modifyBuff(-weapon.getStrength());
+		owner.getStrength().modifyBuff(-weapon.getStrength().getActual());
 		owner.refresh();
 		Weapon tmp = weapon;
 		weapon = null;

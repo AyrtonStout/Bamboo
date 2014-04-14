@@ -10,27 +10,11 @@ import Systems.Enums.HELMET;
  * @author mobius
  * Creates a piece of armor to be worn by the player or NPC
  */
-public class Armor implements Item {
+public class Armor extends EquippableItem {
 	
 	private ARMOR_SLOT slot;
-	private String name;
-	private String description;
-	private ImageIcon icon;
 	
 	private Stat armor;
-	
-	private Stat strength;
-	private Stat agility;
-	private Stat spirit;
-	private Stat intellect;
-	private Stat stamina;
-	
-	private Stat critChance;
-	private Stat critDamage;
-	private Stat hit;
-	private Stat armorPen;
-	private Stat dodge;
-	private Stat speed;
 	
 	private Stat[] secondaryStats;
 	private String[] secondaryNames = new String[] {"Strength", "Agility", "Spirit", "Intellect", "Stamina", "Crit Chance",

@@ -18,31 +18,14 @@ import Systems.Enums.DAGGER;
  * a different special property that has a % chance of happening determined
  * by the 'special' variable.
  */
-public class Weapon implements Item, Serializable {
+public class Weapon extends EquippableItem implements Serializable {
 
 	private static final long serialVersionUID = 1138349332217177728L;
 	
 	private WEAPON_TYPE type;
-	private String name;
-	private String description;
-	private ImageIcon icon;
 	
 	private Stat attack;
 	private double attackSpeed;
-	private Stat special;
-	
-	private Stat strength;
-	private Stat agility;
-	private Stat intellect;
-	private Stat spirit;
-	private Stat stamina;
-	
-	private Stat critChance;
-	private Stat critDamage;
-	private Stat hit;
-	private Stat armorPen;
-	private Stat dodge;
-	private Stat speed;
 	
 	private Stat[] secondaryStats;
 	private String[] secondaryNames = new String[] {"Strength", "Agility", "Intellect", "Spirit", "Stamina", "Crit Chance",
@@ -116,14 +99,6 @@ public class Weapon implements Item, Serializable {
 		}
 	}
 	
-	@Override
-	public ImageIcon getIcon()	{
-		return icon;
-	}
-	@Override
-	public String getName() {
-		return name;
-	}
 	/**
 	 * @return The type of weapon
 	 */
@@ -131,33 +106,16 @@ public class Weapon implements Item, Serializable {
 		return type;
 	}
 	/**
-	 * @param icon The icon representation of the weapon
-	 */
-	public void setIcon(ImageIcon icon)	{
-		this.icon = icon;
-	}
-	/**
 	 * @param attack The base attack value of the weapon
 	 */
 	public void setAttack(int attack)	{
 		this.attack.setBase(attack);
 	}
-	/**
-	 * @param speed The combo chance of the weapon
-	 */
-	public void setSpeed(double speed)	{
-		this.attackSpeed = speed;
+	
+	public double getAttackSpeed()	{
+		return attackSpeed;
 	}
-	/**
-	 * @param chance The chance that the weapon procs its special effect
-	 */
-	public void setSpecial(int chance)	{
-		this.special.setBase(chance);
-	}
-	@Override
-	public String getDescription() {
-		return description;
-	}
+
 	@Override
 	public JTextArea getMainText() {
 		if (statChange1)	{
@@ -187,11 +145,8 @@ public class Weapon implements Item, Serializable {
 		return right;
 	}
 	
-	public int getStrength()	{
-		if (strength != null)
-			return strength.getActual();
-		else
-			return 0;
+	public int getAttack()	{
+		return 0;
 	}
 	
 }
