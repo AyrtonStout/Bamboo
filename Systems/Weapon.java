@@ -145,8 +145,8 @@ public class Weapon extends EquippableItem implements Serializable {
 		return right;
 	}
 	
-	public int getAttack()	{
-		return 0;
+	public Stat getAttack()	{
+		return attack;
 	}
 	
 }

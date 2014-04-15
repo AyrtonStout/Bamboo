@@ -9,8 +9,10 @@ import Systems.Enums.ACCESSORY_TYPE;
  * @author mobius
  * A type of equippable item with specific benefits
  */
-public class Accessory implements Item {
-	
+public class Accessory extends EquippableItem {
+
+	private static final long serialVersionUID = -4442101290715158333L;
+
 	private ACCESSORY_TYPE type;
 	private String name;
 	private ImageIcon icon;

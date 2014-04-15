@@ -11,7 +11,9 @@ import Systems.Enums.HELMET;
  * Creates a piece of armor to be worn by the player or NPC
  */
 public class Armor extends EquippableItem {
-	
+
+	private static final long serialVersionUID = -7775554574627958590L;
+
 	private ARMOR_SLOT slot;
 	
 	private Stat armor;
@@ -29,11 +31,9 @@ public class Armor extends EquippableItem {
 
 	
 	/**
-	 * Creates the base skeleton for some armor. Additional stats should be added individually.
+	 * Creates a piece of armor depending on what constructor is invoked.
 	 * 
-	 * @param name The name of the piece of armor
-	 * @param type The type of armor (iron, gold, etc)
-	 * @param slot The armor slot the item is equipped to (feet, helm, chest, etc)
+	 * @param helmet The type of helmet that is being created
 	 */
 	public Armor(HELMET helmet)	{
 		slot = ARMOR_SLOT.HELMET;

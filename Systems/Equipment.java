@@ -41,12 +41,13 @@ public class Equipment implements Serializable {
 		necklace = null;
 	}
 
-	public void equipItem(Item equippedItem, Inventory inventory)	{
+	public void equipItem(EquippableItem equippedItem, Inventory inventory)	{
 		if (equippedItem.getClass() == Weapon.class)	{
 			if (weapon != null)	{
 				inventory.addItem(removeWeapon());
 			}
-			setWeapon((Weapon) equippedItem);
+			weapon = (Weapon) equippedItem;
+			owner.getAttackPower().modifyBase(weapon.getAttack().getActual());
 		}
 		else if (equippedItem.getClass() == Armor.class)	{
 			switch (((Armor) equippedItem).getSlot())	{
@@ -54,25 +55,25 @@ public class Equipment implements Serializable {
 				if (helmet != null)	{
 					inventory.addItem(removeHelmet());
 				}
-				setHelmet((Armor) equippedItem);
+				helmet = (Armor) equippedItem;
 				break;
 			case CHEST:
 				if (chest != null)	{
 					inventory.addItem(removeChest());
 				}
-				setChest((Armor) equippedItem);
+				chest = (Armor) equippedItem;
 				break;
 			case GLOVES:
 				if (gloves != null)	{
 					inventory.addItem(removeGloves());
 				}
-				setGloves((Armor) equippedItem);
+				gloves = (Armor) equippedItem;
 				break;
 			case BOOTS:
 				if (boots != null)	{
 					inventory.addItem(removeBoots());
 				}
-				setBoots((Armor) equippedItem);
+				boots = (Armor) equippedItem;
 				break;
 			}
 		}
@@ -82,13 +83,15 @@ public class Equipment implements Serializable {
 				if (necklace != null)	{
 					inventory.addItem(removeNecklace());
 				}
-				setNecklace((Accessory) equippedItem);
+				necklace = (Accessory) equippedItem;
 				break;
 			case RING:
 				System.err.println("When equipping a ring, provide an integer as a third argument with 1 for ring1 and 2 for ring2");
 				return;
 			}
 		}
+		addStats(equippedItem);
+		owner.refresh();
 		inventory.removeItem(equippedItem);
 	}
 	
@@ -103,13 +106,13 @@ public class Equipment implements Serializable {
 			if (ring1 != null)	{
 				inventory.addItem(removeRing1());
 			}
-			setRing1((Accessory) equippedItem);
+			ring1 = (Accessory) equippedItem;
 		}
 		else if (ringSlot == 2)	{
 			if (ring2 != null)	{
 				inventory.addItem(removeRing2());
 			}
-			setRing2((Accessory) equippedItem);
+			ring2 = (Accessory) equippedItem;
 		}
 		else	{
 			System.err.println("Invalid ring slot provided. Use 1 for first ring and 2 for second ring");
@@ -140,72 +143,96 @@ public class Equipment implements Serializable {
 	public Accessory getNecklace() {
 		return necklace;
 	}
-	public void setWeapon(Weapon weapon) {
-		owner.getStrength().modifyBuff(weapon.getStrength().getActual());
-		owner.refresh();
-		this.weapon = weapon;
-	}
-	public void setHelmet(Armor helmet) {
-		this.helmet = helmet;
-	}
-	public void setChest(Armor chest) {
-		this.chest = chest;
-	}
-	public void setGloves(Armor gloves) {
-		this.gloves = gloves;
-	}
-	public void setBoots(Armor boots) {
-		this.boots = boots;
-	}
-	public void setRing1(Accessory ring1) {
-		this.ring1 = ring1;
-	}
-	public void setRing2(Accessory ring2) {
-		this.ring2 = ring2;
-	}
-	public void setNecklace(Accessory necklace) {
-		this.necklace = necklace;
-	}
+
 	public Weapon removeWeapon()	{
-		owner.getStrength().modifyBuff(-weapon.getStrength().getActual());
+		removeStats(weapon);
+		owner.getAttackPower().modifyBase(-weapon.getAttack().getActual());
 		owner.refresh();
 		Weapon tmp = weapon;
 		weapon = null;
 		return tmp;
 	}
 	public Armor removeHelmet() {
+		removeStats(helmet);
+		owner.refresh();
 		Armor tmp = helmet;
 		helmet = null;
 		return tmp;
 	}
 	public Armor removeChest() {
+		removeStats(chest);
+		owner.refresh();
 		Armor tmp = chest;
 		chest = null;
 		return tmp;
 	}
 	public Armor removeGloves() {
+		removeStats(gloves);
+		owner.refresh();
 		Armor tmp = gloves;
 		gloves = null;
 		return tmp;
 	}
 	public Armor removeBoots() {
+		removeStats(boots);
+		owner.refresh();
 		Armor tmp = boots;
 		boots = null;
 		return tmp;
 	}
 	public Accessory removeRing1() {
+		removeStats(ring1);
+		owner.refresh();
 		Accessory tmp = ring1;
 		ring1 = null;
 		return tmp;
 	}
 	public Accessory removeRing2() {
+		removeStats(ring2);
+		owner.refresh();
 		Accessory tmp = ring2;
 		ring2 = null;
 		return tmp;
 	}
 	public Accessory removeNecklace() {
+		removeStats(necklace);
+		owner.refresh();
 		Accessory tmp = necklace;
 		necklace = null;
 		return tmp;
+	}
+	
+	private void addStats(EquippableItem item)	{
+		owner.getStrength().modifyBuff(item.getStrength().getActual());
+		owner.getAgility().modifyBuff(item.getAgility().getActual());
+		owner.getIntellect().modifyBuff(item.getIntellect().getActual());
+		owner.getSpirit().modifyBuff(item.getSpirit().getActual());
+		owner.getStamina().modifyBuff(item.getStamina().getActual());
+		
+		owner.getCritChance().modifyBuff(item.getCritChance().getActual());
+		owner.getCritDamage().modifyBuff(item.getCritDamage().getActual());
+		owner.getHit().modifyBuff(item.getHit().getActual());
+		owner.getArmorPen().modifyBuff(item.getArmorPen().getActual());
+		owner.getDodge().modifyBuff(item.getDodge().getActual());
+		owner.getSpeed().modifyBuff(item.getSpeed().getActual());
+		owner.getSpecial().modifyBuff(item.getSpecial().getActual());
+		
+	}
+	
+	private void removeStats(EquippableItem item)	{
+		owner.getStrength().modifyBuff(-item.getStrength().getActual());
+		owner.getAgility().modifyBuff(-item.getAgility().getActual());
+		owner.getIntellect().modifyBuff(-item.getIntellect().getActual());
+		owner.getSpirit().modifyBuff(-item.getSpirit().getActual());
+		owner.getStamina().modifyBuff(-item.getStamina().getActual());
+		
+		owner.getCritChance().modifyBuff(-item.getCritChance().getActual());
+		owner.getCritDamage().modifyBuff(-item.getCritDamage().getActual());
+		owner.getHit().modifyBuff(-item.getHit().getActual());
+		owner.getArmorPen().modifyBuff(-item.getArmorPen().getActual());
+		owner.getDodge().modifyBuff(-item.getDodge().getActual());
+		owner.getSpeed().modifyBuff(-item.getSpeed().getActual());
+		owner.getSpecial().modifyBuff(-item.getSpecial().getActual());
+		
 	}
 }

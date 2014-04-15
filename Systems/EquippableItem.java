@@ -46,36 +46,69 @@ public abstract class EquippableItem implements Item, Serializable {
 		return strength;
 	}
 	public Stat getAgility() {
+		if (agility == null)	{
+			return new Stat(0);
+		}
 		return agility;
 	}
 	public Stat getSpirit() {
+		if (spirit == null)	{
+			return new Stat(0);
+		}
 		return spirit;
 	}
 	public Stat getIntellect() {
+		if (intellect == null)	{
+			return new Stat(0);
+		}
 		return intellect;
 	}
 	public Stat getStamina() {
+		if (stamina == null)	{
+			return new Stat(0);
+		}
 		return stamina;
 	}
 	public Stat getCritChance() {
+		if (critChance == null)	{
+			return new Stat(0);
+		}
 		return critChance;
 	}
 	public Stat getCritDamage() {
+		if (critDamage == null)	{
+			return new Stat(0);
+		}
 		return critDamage;
 	}
 	public Stat getHit() {
+		if (hit == null)	{
+			return new Stat(0);
+		}
 		return hit;
 	}
 	public Stat getArmorPen() {
+		if (armorPen == null)	{
+			return new Stat(0);
+		}
 		return armorPen;
 	}
 	public Stat getDodge() {
+		if (dodge == null)	{
+			return new Stat(0);
+		}
 		return dodge;
 	}
 	public Stat getSpeed() {
+		if (speed == null)	{
+			return new Stat(0);
+		}
 		return speed;
 	}
 	public Stat getSpecial()	{
+		if (special == null)	{
+			return new Stat(0);
+		}
 		return special;
 	}
 

@@ -105,10 +105,10 @@ public class PartyPanel extends JPanel {
 	protected void paintComponent(Graphics g)	{
 		g.drawImage(background.getImage(), 0, 0, null);
 		if (optionsCursorPosition == EQUIP || optionsCursorPosition == REMOVE)	{
-			g.drawImage(optionsCursor.getImage(), 5 + 70 * optionsCursorPosition, 15 , null);
+			g.drawImage(optionsCursor.getImage(), 5 + 70 * optionsCursorPosition, 9 , null);
 		}
 		else if (optionsCursorPosition == AUTO || optionsCursorPosition == REMOVEALL)	{
-			g.drawImage(optionsCursor.getImage(), 5 + 70 * (optionsCursorPosition - 2), 41, null);
+			g.drawImage(optionsCursor.getImage(), 5 + 70 * (optionsCursorPosition - 2), 39, null);
 		}
 
 		for (int i = 0; i < data.getParty().length; i++)	{
@@ -117,13 +117,13 @@ public class PartyPanel extends JPanel {
 			}
 		}
 		if (partyState == PartyState.SLOT_SELECT)	{
-			g.drawImage(optionsCursor.getImage(), 220, 200 + 22 * slotCursorPosition, null);
+			g.drawImage(optionsCursor.getImage(), 220, 173 + 22 * slotCursorPosition, null);
 		}
 		if (partyState == PartyState.SLOT_SELECT || partyState == PartyState.CHARACTER_SELECT)	{
 			g.drawImage(characterCursor.getImage(), 226 + characterCursorPosition * 50, 60, null);
 		}
 		if (partyState == PartyState.ITEM_SELECT)	{
-			g.drawImage(optionsCursor.getImage(), 240, 205 + 45 * itemCursorPosition, null);
+			g.drawImage(optionsCursor.getImage(), 240, 180 + 45 * itemCursorPosition, null);
 		}
 	}
 
@@ -308,6 +308,8 @@ public class PartyPanel extends JPanel {
 			optionsCursorPosition = 0;
 			characterCursorPosition = 0;
 			slotCursorPosition = 0;
+			bottomLeftPanel.update();
+			bottomRightPanel.update();
 			return true;
 		}
 		else	{
@@ -318,37 +320,33 @@ public class PartyPanel extends JPanel {
 	private class HeaderPanel extends JPanel	{
 
 		private static final long serialVersionUID = 3917011061855068994L;
-		private int height = 66;
+		private final int HEIGHT = 60;
 		private JLabel equip = new JLabel("Equip");
 		private JLabel remove = new JLabel("Remove");
 		private JLabel removeAll = new JLabel("Remove All");
 		private JLabel auto = new JLabel("Auto");
 
 		public HeaderPanel()	{
-			this.setPreferredSize(new Dimension(600, height));
-			this.setMinimumSize(new Dimension(600, height));
-			this.setMaximumSize(new Dimension(600, height));
+			this.setPreferredSize(new Dimension(600, HEIGHT));
+			this.setMinimumSize(new Dimension(600, HEIGHT));
+			this.setMaximumSize(new Dimension(600, HEIGHT));
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setOpaque(false);
 
 			JPanel optionsWrapper = new JPanel();
-			optionsWrapper.setPreferredSize(new Dimension(200, height));
-			optionsWrapper.setMaximumSize(new Dimension(200, height));
-			optionsWrapper.setMinimumSize(new Dimension(200, height));
+			optionsWrapper.setPreferredSize(new Dimension(200, HEIGHT));
+			optionsWrapper.setMaximumSize(new Dimension(200, HEIGHT));
+			optionsWrapper.setMinimumSize(new Dimension(200, HEIGHT));
 			optionsWrapper.setOpaque(false);
-
-			JPanel spacer = new JPanel();
-			spacer.setPreferredSize(new Dimension(200, 5));
-			spacer.setOpaque(false);
 
 			JPanel top = new JPanel();
 			top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-			top.setPreferredSize(new Dimension(200, height/3));
+			top.setPreferredSize(new Dimension(200, HEIGHT/3 + 10));
 			top.setOpaque(false);
 
 			JPanel bottom = new JPanel();
 			bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
-			bottom.setPreferredSize(new Dimension(200, height/3));
+			bottom.setPreferredSize(new Dimension(200, HEIGHT/3 + 2));
 			bottom.setOpaque(false);
 
 			equip.setFont(menuFont);
@@ -365,12 +363,12 @@ public class PartyPanel extends JPanel {
 			bottom.add(Box.createHorizontalStrut(28));
 			bottom.add(removeAll);
 
-			optionsWrapper.add(spacer);
 			optionsWrapper.add(top);
 			optionsWrapper.add(bottom);
 
 			this.add(Box.createHorizontalStrut(20));
 			this.add(optionsWrapper);
+			
 
 		}
 	}
@@ -379,7 +377,8 @@ public class PartyPanel extends JPanel {
 
 		private static final long serialVersionUID = -6021372252484376467L;
 
-		private int height = 130;
+		private final int HEIGHT = 110;
+		private final int TOP_SPACE = 25;
 
 		private JLabel levelNumberLabel = new JLabel("", SwingConstants.CENTER);
 		private JLabel healthNumberLabel = new JLabel();
@@ -390,18 +389,17 @@ public class PartyPanel extends JPanel {
 
 		public CenterPanel()	{
 
-			this.setPreferredSize(new Dimension(600, height));
-			this.setMaximumSize(new Dimension(600, height));
-			this.setMinimumSize(new Dimension(600, height));
+			this.setPreferredSize(new Dimension(600, HEIGHT));
+			this.setMaximumSize(new Dimension(600, HEIGHT));
+			this.setMinimumSize(new Dimension(600, HEIGHT));
 			this.setOpaque(false);
-
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
 			JPanel leftPanel = new JPanel();
 			leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-			leftPanel.setPreferredSize(new Dimension(100, height));
-			leftPanel.setMaximumSize(new Dimension(100, height));
-			leftPanel.setMinimumSize(new Dimension(100, height));
+			leftPanel.setPreferredSize(new Dimension(100, HEIGHT));
+			leftPanel.setMaximumSize(new Dimension(100, HEIGHT));
+			leftPanel.setMinimumSize(new Dimension(100, HEIGHT));
 			leftPanel.setOpaque(false);
 
 			JLabel levelTextLabel = new JLabel("LVL", SwingConstants.CENTER);
@@ -415,38 +413,34 @@ public class PartyPanel extends JPanel {
 			levelNumberLabel.setMaximumSize(new Dimension(57, 20));
 			levelNumberLabel.setMinimumSize(new Dimension(57, 20));
 
-			leftPanel.add(Box.createVerticalStrut(35));
+			leftPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			leftPanel.add(levelTextLabel);
 			leftPanel.add(levelNumberLabel);
 
-			JPanel spacer = new JPanel();
-			spacer.setPreferredSize(new Dimension(60, height));
-			spacer.setMaximumSize(new Dimension(60, height));
-			spacer.setMinimumSize(new Dimension(60, height));
-			spacer.setOpaque(false);
-
 			JPanel healthManaLabelPanel = new JPanel();
 			healthManaLabelPanel.setLayout(new BoxLayout(healthManaLabelPanel, BoxLayout.Y_AXIS));
-			healthManaLabelPanel.setPreferredSize(new Dimension(40, height));
-			healthManaLabelPanel.setMaximumSize(new Dimension(40, height));
-			healthManaLabelPanel.setMinimumSize(new Dimension(40, height));
+			healthManaLabelPanel.setPreferredSize(new Dimension(40, HEIGHT));
+			healthManaLabelPanel.setMaximumSize(new Dimension(40, HEIGHT));
+			healthManaLabelPanel.setMinimumSize(new Dimension(40, HEIGHT));
 			healthManaLabelPanel.setOpaque(false);
 
 			JLabel healthLabel = new JLabel("HP");
 			healthLabel.setFont(boldFont);
+			healthLabel.setOpaque(false);
 			JLabel manaLabel = new JLabel("MP");
 			manaLabel.setFont(boldFont);
-
-			healthManaLabelPanel.add(Box.createVerticalStrut(35));
+			manaLabel.setOpaque(false);
+			
+			healthManaLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			healthManaLabelPanel.add(healthLabel);
 			healthManaLabelPanel.add(manaLabel);
 
 			JPanel healthManaTextPanel = new JPanel();
 			healthManaTextPanel.setLayout(new BoxLayout(healthManaTextPanel, BoxLayout.Y_AXIS));
 			healthManaTextPanel.setAlignmentX(RIGHT_ALIGNMENT);
-			healthManaTextPanel.setPreferredSize(new Dimension(100, height));
-			healthManaTextPanel.setMaximumSize(new Dimension(100, height));
-			healthManaTextPanel.setMinimumSize(new Dimension(100, height));
+			healthManaTextPanel.setPreferredSize(new Dimension(100, HEIGHT));
+			healthManaTextPanel.setMaximumSize(new Dimension(100, HEIGHT));
+			healthManaTextPanel.setMinimumSize(new Dimension(100, HEIGHT));
 			healthManaTextPanel.setOpaque(false);
 
 			healthNumberLabel.setFont(menuFont);
@@ -454,23 +448,16 @@ public class PartyPanel extends JPanel {
 			healthNumberLabel.setAlignmentX(RIGHT_ALIGNMENT);
 			manaNumberLabel.setAlignmentX(RIGHT_ALIGNMENT);
 
-			healthManaTextPanel.add(Box.createVerticalStrut(35));
+			healthManaTextPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			healthManaTextPanel.add(healthNumberLabel);
 			healthManaTextPanel.add(manaNumberLabel);
 
 
-			JPanel spacer2 = new JPanel();
-			spacer2.setPreferredSize(new Dimension(20, height));
-			spacer2.setMaximumSize(new Dimension(20, height));
-			spacer2.setMinimumSize(new Dimension(20, height));
-			spacer2.setOpaque(false);
-
-
 			JPanel xpLabelPanel = new JPanel();
 			xpLabelPanel.setLayout(new BoxLayout(xpLabelPanel, BoxLayout.Y_AXIS));
-			xpLabelPanel.setPreferredSize(new Dimension(100, height));
-			xpLabelPanel.setMaximumSize(new Dimension(100, height));
-			xpLabelPanel.setMinimumSize(new Dimension(100, height));
+			xpLabelPanel.setPreferredSize(new Dimension(100, HEIGHT));
+			xpLabelPanel.setMaximumSize(new Dimension(100, HEIGHT));
+			xpLabelPanel.setMinimumSize(new Dimension(100, HEIGHT));
 			xpLabelPanel.setOpaque(false);
 
 			JLabel xpEarnedLabel = new JLabel("XP Earned");
@@ -478,16 +465,16 @@ public class PartyPanel extends JPanel {
 			xpEarnedLabel.setFont(boldFont);
 			xpToGoLabel.setFont(boldFont);
 
-			xpLabelPanel.add(Box.createVerticalStrut(35));
+			xpLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			xpLabelPanel.add(xpEarnedLabel);
 			xpLabelPanel.add(xpToGoLabel);
 
 
 			JPanel xpTextPanel = new JPanel();
 			xpTextPanel.setLayout(new BoxLayout(xpTextPanel, BoxLayout.Y_AXIS));
-			xpTextPanel.setPreferredSize(new Dimension(130, height));
-			xpTextPanel.setMaximumSize(new Dimension(130, height));
-			xpTextPanel.setMinimumSize(new Dimension(130, height));
+			xpTextPanel.setPreferredSize(new Dimension(130, HEIGHT));
+			xpTextPanel.setMaximumSize(new Dimension(130, HEIGHT));
+			xpTextPanel.setMinimumSize(new Dimension(130, HEIGHT));
 			xpTextPanel.setAlignmentX(RIGHT_ALIGNMENT);
 			xpTextPanel.setOpaque(false);
 
@@ -496,21 +483,22 @@ public class PartyPanel extends JPanel {
 			xpEarnedText.setAlignmentX(RIGHT_ALIGNMENT);
 			xpToGoText.setAlignmentX(RIGHT_ALIGNMENT);
 
-			xpTextPanel.add(Box.createVerticalStrut(35));
+			xpTextPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			xpTextPanel.add(xpEarnedText);
 			xpTextPanel.add(xpToGoText);
 
 			this.add(leftPanel);
-			this.add(spacer);
+			this.add(Box.createHorizontalStrut(60));
 			this.add(healthManaLabelPanel);
 			this.add(healthManaTextPanel);
-			this.add(spacer2);
+			this.add(Box.createHorizontalStrut(20));
 			this.add(xpLabelPanel);
 			this.add(xpTextPanel);
 		}
 
 		protected void paintComponent(Graphics g)	{
-			g.drawImage(portrait.getImage(), 60, 30, null);
+			super.paintComponent(g);
+			g.drawImage(portrait.getImage(), 60, TOP_SPACE - 10, null);
 		}
 
 		public void update()	{
@@ -532,7 +520,7 @@ public class PartyPanel extends JPanel {
 
 		JTextPane attributeStats;
 
-		private int leftHeight = 405;
+		private int leftHeight = 425;
 
 		public StatPanel()	{
 
@@ -559,7 +547,7 @@ public class PartyPanel extends JPanel {
 
 			//Names
 			JTextArea attributeNames = new JTextArea("Strength\nAgility\nIntellect\nSpirit\nLuck\n\n" +
-					"Attack Power\nSpell Power\nCrit Chance\nCrit Damage\nHit\nArmor Pen\nSpeed\n\nArmor\nStamina\nDodge\nResist");
+					"Attack Power\nSpell Power\nCrit Chance\nCrit Damage\nHit\nArmor Pen\nSpeed\nSpecial\n\nArmor\nStamina\nDodge\nResist");
 			attributeNames.setFont(boldFont);
 			attributeNames.setPreferredSize(new Dimension(130, leftHeight));
 			attributeNames.setEditable(false);
@@ -579,8 +567,6 @@ public class PartyPanel extends JPanel {
 			attributeStats.selectAll();
 			attributeStats.setParagraphAttributes(rightAlign, false);
 
-			attributeStats.setText("5\n5\n5\n5\n5\n\n5\n5\n5\n200%\n5\n5\n5\n\n5\n5\n5\n5");
-
 			textWrapper.add(attributeNames);
 			attributes.add(Box.createHorizontalStrut(10));
 			attributes.add(textWrapper);
@@ -595,12 +581,12 @@ public class PartyPanel extends JPanel {
 			attributeStats.setText(member.getStrength().toString() + "\n" + member.getAgility() + "\n" + member.getIntellect() + "\n" +
 					member.getSpirit() + "\n" + member.getLuck() + "\n\n" + member.getAttackPower() + "\n" + member.getSpellPower() + "\n" +
 					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
-					member.getSpeed() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + member.getDodge() + "%\n" + 
-					member.getResist() + "%");
+					member.getSpeed() + "\n" + member.getSpecial() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + 
+					member.getDodge() + "%\n" +	member.getResist() + "%");
 		}
 	}
 
-	private class EquipmentPanel	extends JPanel{
+	private class EquipmentPanel extends JPanel{
 
 		private static final long serialVersionUID = -6841005924579611279L;
 
@@ -642,8 +628,6 @@ public class PartyPanel extends JPanel {
 			equipmentNames.setEditable(false);
 			equipmentNames.setOpaque(false);
 			equipmentNames.selectAll();
-
-			equipmentNames.setText("Empty\nEmpty\nEmpty\nEmpty\nEmpty\nEmpty\nEmpty\nEmpty\n");
 
 			/*
 			 * Bottom

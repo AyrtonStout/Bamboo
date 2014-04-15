@@ -39,7 +39,7 @@ public class PartyMember extends Combatant implements Serializable {
 	private int xpTotalEarned;
 	private int xpRequirement = 200;
 	
-	private Stat strength, agility, intellect, spirit, luck, stamina;
+	private Stat strength, agility, intellect, spirit, luck, stamina, special;
 	//Partial stats are used primarily for leveling up. Once a value exceeds 10 it will increase the main stat by 1
 	private int partialStr, partialAgi, partialInt, partialSpi, partialLuck, partialSta;
 	
@@ -74,6 +74,7 @@ public class PartyMember extends Combatant implements Serializable {
 			stamina = new Stat(6);
 			
 			speed = new Stat(9);
+			special = new Stat(0);
 			
 			partialStr = 3;
 			partialAgi = 6;
@@ -97,6 +98,7 @@ public class PartyMember extends Combatant implements Serializable {
 			stamina = new Stat(5);
 			
 			speed = new Stat(8);
+			special = new Stat(0);
 			
 			partialStr = 6;
 			partialAgi = 6;
@@ -390,6 +392,12 @@ public class PartyMember extends Combatant implements Serializable {
 	public void setStamina(Stat stamina) {
 		this.stamina = stamina;
 	}
+	public Stat getSpecial()	{
+		return special;
+	}
+	public void setSpecial(Stat special)	{
+		this.special = special;
+	}
 	public Stat getAttackPower() {
 		return attackPower;
 	}
@@ -543,6 +551,9 @@ public class PartyMember extends Combatant implements Serializable {
 	 */
 	public void refresh() {
 		attackPower.setBase(strength.getActual());
+		if (equipment.getWeapon() != null)	{
+			attackPower.modifyBase(equipment.getWeapon().getAttack().getActual());
+		}
 		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
 		currentHealth.setBase(maximumHealth.getBase());
 		currentMana.setBase(maximumMana.getBase());
@@ -550,7 +561,7 @@ public class PartyMember extends Combatant implements Serializable {
 
 	@Override
 	public int getAttack() {
-		return (strength.getActual());
+		return (strength.getActual() + equipment.getWeapon().getAttack().getActual());
 	}
 
 	/**
