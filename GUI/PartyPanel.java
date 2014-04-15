@@ -20,9 +20,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
+import Systems.EquippableItem;
 import Systems.GameData;
 import Systems.Item;
 import Systems.PartyMember;
@@ -228,6 +232,9 @@ public class PartyPanel extends JPanel {
 				else if (itemCursorPosition == 8 && itemCursorPosition + itemPanel.scrollOffset < itemPanel.elements - 1)	{
 					itemPanel.scrollOffset++;
 				}
+				bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], 
+						data.getInventory().getWeapons().get(itemCursorPosition + itemPanel.scrollOffset));
+				//TODO
 			}
 
 			break;
@@ -518,26 +525,30 @@ public class PartyPanel extends JPanel {
 
 		private static final long serialVersionUID = -6568528749764392354L;
 
-		JTextPane attributeStats;
+		JTextPane attributeStats, statChange;
+		StyledDocument doc;
+		Style style;
 
-		private int leftHeight = 425;
-
+		private final int HEIGHT = 425;
+		private final int WIDTH = 230;
+		
 		public StatPanel()	{
 
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			this.setPreferredSize(new Dimension(600, leftHeight));
-			this.setMaximumSize(new Dimension(600, leftHeight));
-			this.setMinimumSize(new Dimension(600, leftHeight));
+			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 			this.setOpaque(false);
+//			this.setBackground(Color.GREEN);
 
 			/*
 			 * Left Panel
 			 */
 			JPanel attributes = new JPanel();
 			attributes.setLayout(new BoxLayout(attributes, BoxLayout.X_AXIS));
-			attributes.setPreferredSize(new Dimension(200, leftHeight));
-			attributes.setMaximumSize(new Dimension(200, leftHeight));
-			attributes.setMinimumSize(new Dimension(200, leftHeight));
+			attributes.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+			attributes.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+			attributes.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 			attributes.setOpaque(false);
 
 			JPanel textWrapper = new JPanel();
@@ -549,16 +560,16 @@ public class PartyPanel extends JPanel {
 			JTextArea attributeNames = new JTextArea("Strength\nAgility\nIntellect\nSpirit\nLuck\n\n" +
 					"Attack Power\nSpell Power\nCrit Chance\nCrit Damage\nHit\nArmor Pen\nSpeed\nSpecial\n\nArmor\nStamina\nDodge\nResist");
 			attributeNames.setFont(boldFont);
-			attributeNames.setPreferredSize(new Dimension(130, leftHeight));
+			attributeNames.setPreferredSize(new Dimension(130, HEIGHT));
 			attributeNames.setEditable(false);
 			attributeNames.setOpaque(false);
 
 			//Values
 			attributeStats = new JTextPane();
 			attributeStats.setFont(statFont);
-			attributeStats.setPreferredSize(new Dimension(50, leftHeight));
-			attributeStats.setMaximumSize(new Dimension(50, leftHeight));
-			attributeStats.setMinimumSize(new Dimension(50, leftHeight));
+			attributeStats.setPreferredSize(new Dimension(50, HEIGHT));
+			attributeStats.setMaximumSize(new Dimension(50, HEIGHT));
+			attributeStats.setMinimumSize(new Dimension(50, HEIGHT));
 			attributeStats.setEditable(false);
 			attributeStats.setOpaque(false);
 
@@ -566,12 +577,32 @@ public class PartyPanel extends JPanel {
 			StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT); 
 			attributeStats.selectAll();
 			attributeStats.setParagraphAttributes(rightAlign, false);
+			
+			//Change
+			statChange = new JTextPane();
+			statChange.setFont(statFont);
+			statChange.setPreferredSize(new Dimension(50, HEIGHT));
+			statChange.setMaximumSize(new Dimension(50, HEIGHT));
+			statChange.setMinimumSize(new Dimension(50, HEIGHT));
+			doc = statChange.getStyledDocument();
+			
+			style = statChange.addStyle("I'm a Style", null);
+	        StyleConstants.setForeground(style, Color.red);
+	        
+	        try { doc.insertString(doc.getLength(), "BLAH ",style); }
+	        catch (BadLocationException e){}
+	        
+	        StyleConstants.setForeground(style, Color.blue);
+
+	        try { doc.insertString(doc.getLength(), "BLEH",style); }
+	        catch (BadLocationException e){}
 
 			textWrapper.add(attributeNames);
 			attributes.add(Box.createHorizontalStrut(10));
 			attributes.add(textWrapper);
 			attributes.add(attributeStats);
-			attributes.add(Box.createHorizontalStrut(20));
+			attributes.add(statChange);
+			attributes.add(Box.createHorizontalStrut(10));
 
 			this.add(attributes);
 		}
@@ -584,29 +615,56 @@ public class PartyPanel extends JPanel {
 					member.getSpeed() + "\n" + member.getSpecial() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + 
 					member.getDodge() + "%\n" +	member.getResist() + "%");
 		}
+		public void updateStatChange(PartyMember member, EquippableItem newItem)	{
+			statChange.setText("");
+			if (member.getStrength().getActual() > member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
+					+ newItem.getStrength().getActual())	{
+				try {
+			        StyleConstants.setForeground(style, Color.red);
+					doc.insertString(doc.getLength(), "➤" + Integer.toString(member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
+							+ newItem.getStrength().getActual()) + "\n", style);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+			else	{
+				try {
+			        StyleConstants.setForeground(style, Color.green);
+					doc.insertString(doc.getLength(), "➤" + Integer.toString(member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
+							+ newItem.getStrength().getActual()) + "\n", style);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	private class EquipmentPanel extends JPanel{
 
 		private static final long serialVersionUID = -6841005924579611279L;
 
-		private int height = 265;
+		final int HEIGHT = 265;
+		final int WIDTH = 370;
 		JTextPane equipmentNames;
 
 		public EquipmentPanel()	{
 
 
 			this.setLayout(new BorderLayout());
+			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 			this.setOpaque(false);
+//			this.setBackground(Color.RED);
 
 			/*
 			 * Top
 			 */
 			JPanel top = new JPanel();
 			top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-			top.setPreferredSize(new Dimension(400, height));
-			top.setMaximumSize(new Dimension(400, height));
-			top.setMinimumSize(new Dimension(400, height));
+			top.setPreferredSize(new Dimension(WIDTH - 20, HEIGHT));
+			top.setMaximumSize(new Dimension(WIDTH - 20, HEIGHT));
+			top.setMinimumSize(new Dimension(WIDTH - 20, HEIGHT));
 			top.setOpaque(false);
 
 			JPanel textWrapper = new JPanel();
@@ -617,14 +675,14 @@ public class PartyPanel extends JPanel {
 			//Names
 			JTextArea equipmentSlots = new JTextArea("Weapon\nHelmet\nChest\nGloves\nBoots\nNecklace\nRing 1\nRing 2\n\n");
 			equipmentSlots.setFont(boldFont);
-			equipmentSlots.setPreferredSize(new Dimension(100, height));
+			equipmentSlots.setPreferredSize(new Dimension(100, HEIGHT));
 			equipmentSlots.setEditable(false);
 			equipmentSlots.setOpaque(false);
 
 			//Values
 			equipmentNames = new JTextPane();
 			equipmentNames.setFont(statFont);
-			equipmentNames.setPreferredSize(new Dimension(230, height));
+			equipmentNames.setPreferredSize(new Dimension(230, HEIGHT));
 			equipmentNames.setEditable(false);
 			equipmentNames.setOpaque(false);
 			equipmentNames.selectAll();
@@ -634,7 +692,7 @@ public class PartyPanel extends JPanel {
 			 */
 			JPanel status = new JPanel();
 			status.setOpaque(false);
-			status.setPreferredSize(new Dimension(360, 405 - height));
+			status.setPreferredSize(new Dimension(WIDTH - 30, 405 - HEIGHT));
 			status.setLayout(new BoxLayout(status, BoxLayout.Y_AXIS));
 			JLabel title = new JLabel("                       Status");
 			JLabel buffs = new JLabel("Buffs");
@@ -649,7 +707,7 @@ public class PartyPanel extends JPanel {
 			bottomWrapper.setLayout(new BorderLayout());
 			bottomWrapper.setOpaque(false);
 			JPanel bottomSpacer = new JPanel();
-			bottomSpacer.setPreferredSize(new Dimension(40, 405 - height));
+			bottomSpacer.setPreferredSize(new Dimension(40, 405 - HEIGHT));
 			bottomSpacer.setOpaque(false);
 
 			bottomWrapper.add(bottomSpacer, BorderLayout.WEST);
@@ -663,7 +721,7 @@ public class PartyPanel extends JPanel {
 
 
 
-			top.add(Box.createHorizontalStrut(40));
+			top.add(Box.createHorizontalStrut(30));
 			top.add(textWrapper);
 			top.add(equipmentNames);
 			top.add(Box.createHorizontalStrut(15));
@@ -696,14 +754,16 @@ public class PartyPanel extends JPanel {
 
 		private int elements;
 		private int scrollOffset = 0;
+		final int WIDTH = 370;
+		final int HEIGHT = 405;
 
 		private ItemPanel[] itemList = new ItemPanel[] {new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), 
 				new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel()};
 
 		private ItemSelectionPanel()	{
-			this.setPreferredSize(new Dimension(400, 405));
-			this.setMaximumSize(new Dimension(400, 405));
-			this.setMinimumSize(new Dimension(400, 405));
+			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 
 			this.setBackground(Color.RED);
 			this.setOpaque(false);
@@ -756,6 +816,10 @@ public class PartyPanel extends JPanel {
 				itemList[0].clear();
 				itemList[0].setVisible(true);
 			}
+		}
+		
+		public EquippableItem getSelectedItem()	{
+			return null;
 		}
 
 		private class ItemPanel extends JPanel	{

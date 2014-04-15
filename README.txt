@@ -17,6 +17,9 @@ I and P will directly access inventory and party panels
 
 Changelog-
 
+v0.41
+-In progress on making stat changes reflect prior to equipping item
+
 v0.40 - The fix and enhance random crap series
 -Redid inventory class and its methods to make more sense at the expense of code length 
 -Fixed long standing bug that would destroy the currently equipped item if equipping
@@ -24,6 +27,10 @@ v0.40 - The fix and enhance random crap series
 -It is now possible to equip more than just weapons, though such gear does not yet exist
 -Rewrote the inheritance hierarchy to make equippable items implement items, and then
  items like swords and armor inherit from equippable items instead. 
+-All stats that an equippable item gives are now included in the party panel
+-Fixed the missing Special stat from the party panel's display
+-Weapon attack values are now included into the combat calculations
+
 
 v0.39
 -Potions are now only usable on valid targets (targets that would benefit/ are alive)
