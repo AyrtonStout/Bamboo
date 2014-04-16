@@ -26,10 +26,14 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import Systems.Accessory;
+import Systems.Armor;
 import Systems.EquippableItem;
 import Systems.GameData;
 import Systems.Item;
 import Systems.PartyMember;
+import Systems.Stat;
+import Systems.Weapon;
 
 public class PartyPanel extends JPanel {
 
@@ -121,17 +125,17 @@ public class PartyPanel extends JPanel {
 			}
 		}
 		if (partyState == PartyState.SLOT_SELECT)	{
-			g.drawImage(optionsCursor.getImage(), 220, 173 + 22 * slotCursorPosition, null);
+			g.drawImage(optionsCursor.getImage(), 240, 173 + 22 * slotCursorPosition, null);
 		}
 		if (partyState == PartyState.SLOT_SELECT || partyState == PartyState.CHARACTER_SELECT)	{
 			g.drawImage(characterCursor.getImage(), 226 + characterCursorPosition * 50, 60, null);
 		}
 		if (partyState == PartyState.ITEM_SELECT)	{
-			g.drawImage(optionsCursor.getImage(), 240, 180 + 45 * itemCursorPosition, null);
+			g.drawImage(optionsCursor.getImage(), 260, 180 + 45 * itemCursorPosition, null);
 		}
 	}
 
-	public void update()	{
+	public void initialize()	{
 		portrait = data.getParty()[0].getPortrait();
 		for (int i = 0; i < data.getParty().length; i++)	{
 			if (data.getParty()[i] != null)	{
@@ -140,10 +144,22 @@ public class PartyPanel extends JPanel {
 		}
 		midPanel.update();
 		bottomLeftPanel.update();
-		if (partyState == PartyState.SLOT_SELECT || partyState == PartyState.CHARACTER_SELECT)	{	
+		bottomRightPanel.update();
+	}
+	
+	public void update()	{
+		if (partyState == PartyState.SLOT_SELECT)	{	
+			bottomRightPanel.update();
+			midPanel.update();
+			bottomLeftPanel.update();
+		}
+		else if (partyState == PartyState.CHARACTER_SELECT)	{
 			bottomRightPanel.update();
 		}
 		else if (partyState == PartyState.ITEM_SELECT)	{
+			if (itemPanel.getSelectedItem() != null)	{
+				bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], itemPanel.getSelectedItem());
+			}
 			itemPanel.update();
 		}
 	}
@@ -232,9 +248,6 @@ public class PartyPanel extends JPanel {
 				else if (itemCursorPosition == 8 && itemCursorPosition + itemPanel.scrollOffset < itemPanel.elements - 1)	{
 					itemPanel.scrollOffset++;
 				}
-				bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], 
-						data.getInventory().getWeapons().get(itemCursorPosition + itemPanel.scrollOffset));
-				//TODO
 			}
 
 			break;
@@ -253,6 +266,9 @@ public class PartyPanel extends JPanel {
 			else if (partyState == PartyState.SLOT_SELECT)	{
 				if (optionsCursorPosition == EQUIP)	{
 					swapPanels();
+					if (itemPanel.getSelectedItem() != null)	{
+						bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], itemPanel.getSelectedItem());
+					}
 				}
 
 				else if (optionsCursorPosition == REMOVE)	{
@@ -263,28 +279,18 @@ public class PartyPanel extends JPanel {
 			}
 
 			else if (partyState == PartyState.ITEM_SELECT)	{
-				if (slotCursorPosition == 0 && data.getInventory().getWeapons().size() > 0)	{
-					data.getParty()[characterCursorPosition].getEquipment().equipItem(data.getInventory().getWeapons().get(
-							itemCursorPosition + itemPanel.scrollOffset), data.getInventory());
+				if (itemPanel.getSelectedItem() != null)	{
+					if (slotCursorPosition != 6 && slotCursorPosition != 7)	{
+						data.getParty()[characterCursorPosition].getEquipment().equipItem(itemPanel.getSelectedItem(), data.getInventory());
+					}
+					else if (slotCursorPosition == 6)	{
+						data.getParty()[characterCursorPosition].getEquipment().equipItem(itemPanel.getSelectedItem(), data.getInventory(), 1);
+					}
+					else if (slotCursorPosition == 7)	{
+						data.getParty()[characterCursorPosition].getEquipment().equipItem(itemPanel.getSelectedItem(), data.getInventory(), 2);
+					}
+					swapPanels();
 				}
-				else if	(slotCursorPosition >= 1 && slotCursorPosition <= 4 && data.getInventory().getArmor().size() > 0)	{
-					data.getParty()[characterCursorPosition].getEquipment().equipItem(data.getInventory().getArmor().get(
-							itemCursorPosition + itemPanel.scrollOffset), data.getInventory());	
-				}
-				else if (slotCursorPosition == 5 && slotCursorPosition == 8 && data.getInventory().getAccessories().size() > 0)	{
-					System.out.println(data.getInventory().getAccessories().size());
-					data.getParty()[characterCursorPosition].getEquipment().equipItem(data.getInventory().getAccessories().get(
-							itemCursorPosition + itemPanel.scrollOffset), data.getInventory());
-				}
-				else if (slotCursorPosition == 6 && data.getInventory().getAccessories().size() > 0)	{
-					data.getParty()[characterCursorPosition].getEquipment().equipItem(data.getInventory().getAccessories().get(
-							itemCursorPosition + itemPanel.scrollOffset), data.getInventory(), 1);
-				}
-				else if (slotCursorPosition == 7 && data.getInventory().getAccessories().size() > 0)	{
-					data.getParty()[characterCursorPosition].getEquipment().equipItem(data.getInventory().getAccessories().get(
-							itemCursorPosition + itemPanel.scrollOffset), data.getInventory(), 2);
-				}
-				swapPanels();
 			}
 
 			else if (partyState == PartyState.CHARACTER_SELECT)	{
@@ -375,7 +381,7 @@ public class PartyPanel extends JPanel {
 
 			this.add(Box.createHorizontalStrut(20));
 			this.add(optionsWrapper);
-			
+
 
 		}
 	}
@@ -437,7 +443,7 @@ public class PartyPanel extends JPanel {
 			JLabel manaLabel = new JLabel("MP");
 			manaLabel.setFont(boldFont);
 			manaLabel.setOpaque(false);
-			
+
 			healthManaLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
 			healthManaLabelPanel.add(healthLabel);
 			healthManaLabelPanel.add(manaLabel);
@@ -530,8 +536,8 @@ public class PartyPanel extends JPanel {
 		Style style;
 
 		private final int HEIGHT = 425;
-		private final int WIDTH = 230;
-		
+		private final int WIDTH = 235;
+
 		public StatPanel()	{
 
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -539,7 +545,6 @@ public class PartyPanel extends JPanel {
 			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
 			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 			this.setOpaque(false);
-//			this.setBackground(Color.GREEN);
 
 			/*
 			 * Left Panel
@@ -577,25 +582,16 @@ public class PartyPanel extends JPanel {
 			StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT); 
 			attributeStats.selectAll();
 			attributeStats.setParagraphAttributes(rightAlign, false);
-			
+
 			//Change
 			statChange = new JTextPane();
 			statChange.setFont(statFont);
-			statChange.setPreferredSize(new Dimension(50, HEIGHT));
-			statChange.setMaximumSize(new Dimension(50, HEIGHT));
-			statChange.setMinimumSize(new Dimension(50, HEIGHT));
+			statChange.setPreferredSize(new Dimension(55, HEIGHT));
+			statChange.setMaximumSize(new Dimension(55, HEIGHT));
+			statChange.setMinimumSize(new Dimension(55, HEIGHT));
+			statChange.setOpaque(false);
 			doc = statChange.getStyledDocument();
-			
-			style = statChange.addStyle("I'm a Style", null);
-	        StyleConstants.setForeground(style, Color.red);
-	        
-	        try { doc.insertString(doc.getLength(), "BLAH ",style); }
-	        catch (BadLocationException e){}
-	        
-	        StyleConstants.setForeground(style, Color.blue);
-
-	        try { doc.insertString(doc.getLength(), "BLEH",style); }
-	        catch (BadLocationException e){}
+			style = statChange.addStyle("", null);
 
 			textWrapper.add(attributeNames);
 			attributes.add(Box.createHorizontalStrut(10));
@@ -614,28 +610,201 @@ public class PartyPanel extends JPanel {
 					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
 					member.getSpeed() + "\n" + member.getSpecial() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + 
 					member.getDodge() + "%\n" +	member.getResist() + "%");
+			statChange.setText("");
 		}
+
 		public void updateStatChange(PartyMember member, EquippableItem newItem)	{
 			statChange.setText("");
-			if (member.getStrength().getActual() > member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
-					+ newItem.getStrength().getActual())	{
+			
+			if (newItem.getClass() == Weapon.class)	{
+				compareItems(member, member.getEquipment().getWeapon(), newItem);
+			}
+			else if (newItem.getClass() == Armor.class)	{
+				switch (((Armor) newItem).getSlot())	{
+				case HELMET:
+					compareItems(member, member.getEquipment().getHelmet(), newItem);
+					break;
+				case CHEST:
+					compareItems(member, member.getEquipment().getChest(), newItem);
+					break;
+				case GLOVES:
+					compareItems(member, member.getEquipment().getGloves(), newItem);
+					break;
+				case BOOTS:
+					compareItems(member, member.getEquipment().getBoots(), newItem);
+					break;
+				}
+			}
+			else if (newItem.getClass() == Accessory.class)	{
+				switch (((Accessory) newItem).getType())	{
+				case NECKLACE:
+					compareItems(member, member.getEquipment().getNecklace(), newItem);
+					break;
+				case RING:
+					if (slotCursorPosition == 6)	{
+						compareItems(member, member.getEquipment().getRing1(), newItem);
+						break;
+					}
+					else if	(slotCursorPosition == 7)	{
+						compareItems(member, member.getEquipment().getRing2(), newItem);
+						break;
+					}
+				}
+			}
+			
+		}
+		
+		private void compareItems(PartyMember member, EquippableItem original, EquippableItem newItem)	{
+			appendStatChangeText(member.getStrength(), original == null ? null : original.getStrength(), newItem.getStrength());
+			appendStatChangeText(member.getAgility(), original == null ? null : original.getAgility(), newItem.getAgility());
+			appendStatChangeText(member.getIntellect(), original == null ? null : original.getIntellect(), newItem.getIntellect());
+			appendStatChangeText(member.getSpirit(), original == null ? null : original.getSpirit(), newItem.getSpirit());
+			appendStatChangeText(member.getLuck(), original == null ? null : original.getLuck(), newItem.getLuck());
+			
+			try {
+			doc.insertString(doc.getLength(),"\n", style);
+			} catch (BadLocationException e) {}
+			
+			AppendAttackPowerChange(member.getAttackPower(), original, newItem);
+			AppendSpellPowerChange(member.getSpellPower(), original, newItem);
+			appendStatChangeText(member.getCritChance(), original == null ? null : original.getCritChance(), newItem.getCritChance());
+			appendStatChangeText(member.getCritDamage(), original == null ? null : original.getCritDamage(), newItem.getCritDamage());
+			appendStatChangeText(member.getHit(), original == null ? null : original.getHit(), newItem.getHit());
+			appendStatChangeText(member.getArmorPen(), original == null ? null : original.getArmorPen(), newItem.getArmorPen());
+			appendStatChangeText(member.getSpeed(), original == null ? null : original.getSpeed(), newItem.getSpeed());
+			appendStatChangeText(member.getSpecial(), original == null ? null : original.getSpecial(), newItem.getSpecial());
+			
+			try {
+			doc.insertString(doc.getLength(),"\n", style);
+			doc.insertString(doc.getLength(),"\n", style);
+			} catch (BadLocationException e) {}
+			//TODO ARMOR
+			appendStatChangeText(member.getStamina(), original == null ? null : original.getStamina(), newItem.getStamina());
+			appendStatChangeText(member.getDodge(), original == null ? null : original.getDodge(), newItem.getDodge());
+			appendStatChangeText(member.getResist(), original == null ? null : original.getResist(), newItem.getResist());
+			
+		}
+		
+		private void appendStatChangeText(Stat characterStat, Stat originalItem, Stat newItem)	{
+			final int COLUMN_WIDTH = 3;
+			int change;
+			
+			if (originalItem == null)	{
+				change = newItem.getActual();
+			}
+			else	{
+				change = -originalItem.getActual() + newItem.getActual();	
+			}
+			String tmp = Integer.toString(change + characterStat.getActual());
+			String statText = "➤";
+			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
+				statText += "  ";
+			}
+			statText += tmp;
+			
+			if (change > 0)	{
 				try {
-			        StyleConstants.setForeground(style, Color.red);
-					doc.insertString(doc.getLength(), "➤" + Integer.toString(member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
-							+ newItem.getStrength().getActual()) + "\n", style);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
+					StyleConstants.setForeground(style, new Color(34, 139, 34));
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}
+			}
+			else if (change < 0)	{
+				try {
+					StyleConstants.setForeground(style, Color.RED);
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}	
+			}
+			try {
+				doc.insertString(doc.getLength(),"\n", style);
+			} catch (BadLocationException e) {}
+		}
+		
+		/**
+		 * Calculates the change to attack power based on the items passed into the method.
+		 * 
+		 * @param characterStat
+		 * @param originalItem
+		 * @param newItem
+		 */
+		private void AppendAttackPowerChange(Stat characterStat, EquippableItem originalItem, EquippableItem newItem)	{
+			final int COLUMN_WIDTH = 3;
+			int change;
+			
+			if (originalItem == null)	{
+				change = newItem.getStrength().getActual();
+				if (newItem.getClass() == Weapon.class)	{
+					change += ((Weapon) (newItem)).getAttack().getActual();
 				}
 			}
 			else	{
-				try {
-			        StyleConstants.setForeground(style, Color.green);
-					doc.insertString(doc.getLength(), "➤" + Integer.toString(member.getStrength().getActual() - member.getEquipment().getWeapon().getStrength().getActual()
-							+ newItem.getStrength().getActual()) + "\n", style);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
+				change = -originalItem.getStrength().getActual() + newItem.getStrength().getActual();	
+				if (newItem.getClass() == Weapon.class)	{
+					change += -((Weapon) originalItem).getAttack().getActual() + ((Weapon) newItem).getAttack().getActual();
 				}
 			}
+			String tmp = Integer.toString(change + characterStat.getActual());
+			String statText = "➤";
+			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
+				statText += "  ";
+			}
+			statText += tmp;
+			
+			if (change > 0)	{
+				try {
+					StyleConstants.setForeground(style, new Color(34, 139, 34));
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}
+			}
+			else if (change < 0)	{
+				try {
+					StyleConstants.setForeground(style, Color.RED);
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}	
+			}
+			try {
+				doc.insertString(doc.getLength(),"\n", style);
+			} catch (BadLocationException e) {}
+		}
+		/**
+		 * Calculates the change to spell power based on the items passed into the method. This calculation is trivial and not
+		 * currently needing its own method, but will so later when spell power is calculated on more than intellect.
+		 * 
+		 * @param characterStat
+		 * @param originalItem
+		 * @param newItem
+		 */
+		private void AppendSpellPowerChange(Stat characterStat, EquippableItem originalItem, EquippableItem newItem)	{
+			final int COLUMN_WIDTH = 3;
+			int change;
+			
+			if (originalItem == null)	{
+				change = newItem.getIntellect().getActual();
+			}
+			else	{
+				change = -originalItem.getIntellect().getActual() + newItem.getIntellect().getActual();	
+			}
+			String tmp = Integer.toString(change + characterStat.getActual());
+			String statText = "➤";
+			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
+				statText += "  ";
+			}
+			statText += tmp;
+			
+			if (change > 0)	{
+				try {
+					StyleConstants.setForeground(style, new Color(34, 139, 34));
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}
+			}
+			else if (change < 0)	{
+				try {
+					StyleConstants.setForeground(style, Color.RED);
+					doc.insertString(doc.getLength(),statText, style);
+				} catch (BadLocationException e) {}	
+			}
+			try {
+				doc.insertString(doc.getLength(),"\n", style);
+			} catch (BadLocationException e) {}
 		}
 	}
 
@@ -644,7 +813,7 @@ public class PartyPanel extends JPanel {
 		private static final long serialVersionUID = -6841005924579611279L;
 
 		final int HEIGHT = 265;
-		final int WIDTH = 370;
+		final int WIDTH = 365;
 		JTextPane equipmentNames;
 
 		public EquipmentPanel()	{
@@ -655,7 +824,7 @@ public class PartyPanel extends JPanel {
 			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
 			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 			this.setOpaque(false);
-//			this.setBackground(Color.RED);
+			//			this.setBackground(Color.RED);
 
 			/*
 			 * Top
@@ -765,7 +934,6 @@ public class PartyPanel extends JPanel {
 			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
 			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 
-			this.setBackground(Color.RED);
 			this.setOpaque(false);
 
 			for (int i = 0; i < itemList.length; i++)	{
@@ -817,9 +985,20 @@ public class PartyPanel extends JPanel {
 				itemList[0].setVisible(true);
 			}
 		}
-		
+
 		public EquippableItem getSelectedItem()	{
-			return null;
+			if (slotCursorPosition == 0 && data.getInventory().getWeapons().size() > 0)	{
+				return data.getInventory().getWeapons().get(itemCursorPosition + itemPanel.scrollOffset);
+			}
+			else if	(slotCursorPosition >= 1 && slotCursorPosition <= 4 && data.getInventory().getArmor().size() > 0)	{
+				return data.getInventory().getArmor().get(itemCursorPosition + itemPanel.scrollOffset);
+			}
+			else if (slotCursorPosition >= 5 && slotCursorPosition <= 8 && data.getInventory().getAccessories().size() > 0)	{
+				return data.getInventory().getAccessories().get(itemCursorPosition + itemPanel.scrollOffset);
+			}
+			else	{
+				return null;
+			}
 		}
 
 		private class ItemPanel extends JPanel	{

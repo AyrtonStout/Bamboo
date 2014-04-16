@@ -43,8 +43,9 @@ public class PartyMember extends Combatant implements Serializable {
 	//Partial stats are used primarily for leveling up. Once a value exceeds 10 it will increase the main stat by 1
 	private int partialStr, partialAgi, partialInt, partialSpi, partialLuck, partialSta;
 	
-	private int STAMINA_TO_HEALTH_RATIO = 10;
-
+	final static int STAMINA_TO_HEALTH_RATIO = 10;
+	final static int INTELLECT_TO_MANA_RATIO = 15;
+	
 	private ImageIcon current;
 	private ImageIcon portrait;
 	private ImageIcon left, up, right, down;
@@ -130,6 +131,8 @@ public class PartyMember extends Combatant implements Serializable {
 		height = 48;
 		
 		refresh();
+		currentHealth.setBase(maximumHealth.getBase());
+		currentMana.setBase(maximumMana.getBase());
 	}
 	
 	public boolean levelUpEh() {
@@ -210,6 +213,8 @@ public class PartyMember extends Combatant implements Serializable {
 		}
 		
 		refresh();
+		currentHealth.setBase(maximumHealth.getBase());
+		currentMana.setBase(maximumMana.getBase());
 	}
 	
 	public void initialize(GameData data)	{
@@ -554,14 +559,14 @@ public class PartyMember extends Combatant implements Serializable {
 		if (equipment.getWeapon() != null)	{
 			attackPower.modifyBase(equipment.getWeapon().getAttack().getActual());
 		}
+		spellPower.setBase(intellect.getActual());
 		maximumHealth = new Stat(stamina.getActual() * STAMINA_TO_HEALTH_RATIO);
-		currentHealth.setBase(maximumHealth.getBase());
-		currentMana.setBase(maximumMana.getBase());
+		maximumMana = new Stat(intellect.getActual() * INTELLECT_TO_MANA_RATIO);
 	}
 
 	@Override
 	public int getAttack() {
-		return (strength.getActual() + equipment.getWeapon().getAttack().getActual());
+		return (attackPower.getActual());
 	}
 
 	/**

@@ -63,7 +63,9 @@ public class Weapon extends EquippableItem implements Serializable {
 			name = "Golden Dagger";
 			attack = new Stat(12);
 			attackSpeed = 1.8;
-			special = new Stat(15);		
+			special = new Stat(15);
+			luck = new Stat(900);
+			
 			description = "Balanced for throwing but that's not really a good idea";
 		}
 	}

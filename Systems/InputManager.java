@@ -277,7 +277,7 @@ public class InputManager extends JPanel {
 		data.getMenu().setVisible(false);
 		data.getMenu().shrink();
 		data.getDialogueBox().shrink();
-		data.getPartyPanel().update();
+		data.getPartyPanel().initialize();
 		data.getGameBoard().add(data.getPartyPanel());
 		data.setPaused(true);
 	}

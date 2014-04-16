@@ -18,7 +18,9 @@ I and P will directly access inventory and party panels
 Changelog-
 
 v0.41
--In progress on making stat changes reflect prior to equipping item
+-Before equipping an item, the item will now show what the stat changes will be
+-Mana now changes depending on the character's intellect
+-Equipping weapons will no longer fully restore a character's health
 
 v0.40 - The fix and enhance random crap series
 -Redid inventory class and its methods to make more sense at the expense of code length 

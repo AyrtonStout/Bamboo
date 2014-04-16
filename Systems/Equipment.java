@@ -208,6 +208,7 @@ public class Equipment implements Serializable {
 		owner.getIntellect().modifyBuff(item.getIntellect().getActual());
 		owner.getSpirit().modifyBuff(item.getSpirit().getActual());
 		owner.getStamina().modifyBuff(item.getStamina().getActual());
+		owner.getLuck().modifyBuff(item.getLuck().getActual());
 		
 		owner.getCritChance().modifyBuff(item.getCritChance().getActual());
 		owner.getCritDamage().modifyBuff(item.getCritDamage().getActual());
@@ -216,7 +217,7 @@ public class Equipment implements Serializable {
 		owner.getDodge().modifyBuff(item.getDodge().getActual());
 		owner.getSpeed().modifyBuff(item.getSpeed().getActual());
 		owner.getSpecial().modifyBuff(item.getSpecial().getActual());
-		
+		owner.getResist().modifyBuff(item.getResist().getActual());
 	}
 	
 	private void removeStats(EquippableItem item)	{
@@ -225,6 +226,7 @@ public class Equipment implements Serializable {
 		owner.getIntellect().modifyBuff(-item.getIntellect().getActual());
 		owner.getSpirit().modifyBuff(-item.getSpirit().getActual());
 		owner.getStamina().modifyBuff(-item.getStamina().getActual());
+		owner.getLuck().modifyBuff(-item.getLuck().getActual());
 		
 		owner.getCritChance().modifyBuff(-item.getCritChance().getActual());
 		owner.getCritDamage().modifyBuff(-item.getCritDamage().getActual());
@@ -233,6 +235,6 @@ public class Equipment implements Serializable {
 		owner.getDodge().modifyBuff(-item.getDodge().getActual());
 		owner.getSpeed().modifyBuff(-item.getSpeed().getActual());
 		owner.getSpecial().modifyBuff(-item.getSpecial().getActual());
-		
+		owner.getResist().modifyBuff(-item.getResist().getActual());
 	}
 }

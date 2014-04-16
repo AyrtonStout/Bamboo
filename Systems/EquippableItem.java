@@ -17,6 +17,7 @@ public abstract class EquippableItem implements Item, Serializable {
 	protected Stat spirit;
 	protected Stat intellect;
 	protected Stat stamina;
+	protected Stat luck;
 	
 	protected Stat critChance;
 	protected Stat critDamage;
@@ -25,6 +26,7 @@ public abstract class EquippableItem implements Item, Serializable {
 	protected Stat dodge;
 	protected Stat speed;
 	protected Stat special;
+	protected Stat resist;
 	
 	@Override
 	public ImageIcon getIcon()	{
@@ -69,6 +71,12 @@ public abstract class EquippableItem implements Item, Serializable {
 		}
 		return stamina;
 	}
+	public Stat getLuck()	{
+		if (luck == null)	{
+			return new Stat(0);
+		}
+		return luck;
+	}
 	public Stat getCritChance() {
 		if (critChance == null)	{
 			return new Stat(0);
@@ -111,7 +119,13 @@ public abstract class EquippableItem implements Item, Serializable {
 		}
 		return special;
 	}
-
+	public Stat getResist()	{
+		if (resist == null)	{
+			return new Stat(0);
+		}
+		return resist;
+	}
+	
 	public void setStrength(Stat strength) {
 		this.strength = strength;
 	}
@@ -126,6 +140,9 @@ public abstract class EquippableItem implements Item, Serializable {
 	}
 	public void setStamina(Stat stamina) {
 		this.stamina = stamina;
+	}
+	public void setLuck(Stat luck)	{
+		this.luck = luck;
 	}
 	public void setCritChance(Stat critChance) {
 		this.critChance = critChance;
@@ -153,6 +170,9 @@ public abstract class EquippableItem implements Item, Serializable {
 	 */
 	public void setSpecial(Stat special)	{
 		this.special = special;
+	}
+	public void setResist(Stat resist)	{
+		this.resist = resist;
 	}
 	/**
 	 * @param icon The icon representation of the weapon
