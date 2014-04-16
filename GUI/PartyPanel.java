@@ -52,27 +52,27 @@ public class PartyPanel extends JPanel {
 	private ImageIcon optionsCursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 	private int optionsCursorPosition = 0;
 	private int slotCursorPosition = 0;
-	private int itemCursorPosition = 0;
 
 	private final int EQUIP = 0;
 	private final int REMOVE = 1;
 	private final int AUTO = 2;
 	private final int REMOVEALL = 3;
 
-	private InputStream stream;
 	private Font menuFont, boldFont, statFont;
 
-	HeaderPanel topPanel;
-	CenterPanel midPanel;
-	StatPanel bottomLeftPanel;
-	EquipmentPanel bottomRightPanel;
-	ItemSelectionPanel itemPanel;
+	private PartyHeader topPanel;
+	private PartyInfo midPanel;
+	private PartyStats bottomLeftPanel;
+	private PartyEquipment bottomRightPanel;
+	private PartyItems itemPanel;
 
 	JPanel wrapper;
 
 	public PartyPanel(GameData gameData)	{
 		data = gameData;
 
+		InputStream stream;
+		
 		try {
 			stream = new BufferedInputStream(
 					new FileInputStream("GUI/Resources/Font_Arial.ttf"));
@@ -91,11 +91,11 @@ public class PartyPanel extends JPanel {
 		this.setBackground(Color.CYAN);
 
 
-		topPanel = new HeaderPanel();
-		midPanel = new CenterPanel();
-		bottomLeftPanel = new StatPanel();
-		bottomRightPanel = new EquipmentPanel();
-		itemPanel = new ItemSelectionPanel();
+		topPanel = new PartyHeader(menuFont);
+		midPanel = new PartyInfo(menuFont, boldFont);
+		bottomLeftPanel = new PartyStats(statFont, boldFont);
+		bottomRightPanel = new PartyEquipment(statFont, boldFont);
+		itemPanel = new PartyItems(menuFont, data.getInventory());
 
 		wrapper = new JPanel();
 		wrapper.setLayout(new BorderLayout());
@@ -131,7 +131,7 @@ public class PartyPanel extends JPanel {
 			g.drawImage(characterCursor.getImage(), 226 + characterCursorPosition * 50, 60, null);
 		}
 		if (partyState == PartyState.ITEM_SELECT)	{
-			g.drawImage(optionsCursor.getImage(), 260, 180 + 45 * itemCursorPosition, null);
+			g.drawImage(optionsCursor.getImage(), 260, 180 + 45 * itemPanel.cursorPosition, null);
 		}
 	}
 
@@ -142,25 +142,25 @@ public class PartyPanel extends JPanel {
 				party[i] = data.getParty()[i].getDown()/*getFunky()*/;
 			}
 		}
-		midPanel.update();
-		bottomLeftPanel.update();
-		bottomRightPanel.update();
+		midPanel.update(data.getParty()[characterCursorPosition]);
+		bottomLeftPanel.update(data.getParty()[characterCursorPosition]);
+		bottomRightPanel.update(data.getParty()[characterCursorPosition]);
 	}
 	
 	public void update()	{
 		if (partyState == PartyState.SLOT_SELECT)	{	
-			bottomRightPanel.update();
-			midPanel.update();
-			bottomLeftPanel.update();
+			bottomRightPanel.update(data.getParty()[characterCursorPosition]);
+			midPanel.update(data.getParty()[characterCursorPosition]);
+			bottomLeftPanel.update(data.getParty()[characterCursorPosition]);
 		}
 		else if (partyState == PartyState.CHARACTER_SELECT)	{
-			bottomRightPanel.update();
+			bottomRightPanel.update(data.getParty()[characterCursorPosition]);
 		}
 		else if (partyState == PartyState.ITEM_SELECT)	{
 			if (itemPanel.getSelectedItem() != null)	{
-				bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], itemPanel.getSelectedItem());
+				bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], itemPanel.getSelectedItem(), slotCursorPosition);
 			}
-			itemPanel.update();
+			itemPanel.update(slotCursorPosition);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class PartyPanel extends JPanel {
 			wrapper.remove(itemPanel);
 			wrapper.add(bottomRightPanel, BorderLayout.EAST);
 			partyState = PartyState.SLOT_SELECT;
-			itemCursorPosition = 0;
+			itemPanel.cursorPosition = 0;
 		}
 	}
 
@@ -206,10 +206,10 @@ public class PartyPanel extends JPanel {
 				}
 			}
 			else if (partyState == PartyState.ITEM_SELECT)	{
-				if (itemCursorPosition > 0)	{
-					itemCursorPosition--;
+				if (itemPanel.cursorPosition > 0)	{
+					itemPanel.cursorPosition--;
 				}
-				else if (itemCursorPosition == 0 && itemPanel.scrollOffset > 0)	{
+				else if (itemPanel.cursorPosition == 0 && itemPanel.scrollOffset > 0)	{
 					itemPanel.scrollOffset--;
 				}
 			}
@@ -242,10 +242,10 @@ public class PartyPanel extends JPanel {
 				}
 			}
 			else if (partyState == PartyState.ITEM_SELECT)	{
-				if (itemCursorPosition < 8 && itemCursorPosition < itemPanel.elements - 1)	{
-					itemCursorPosition++;
+				if (itemPanel.cursorPosition < 8 && itemPanel.cursorPosition < itemPanel.elements - 1)	{
+					itemPanel.cursorPosition++;
 				}
-				else if (itemCursorPosition == 8 && itemCursorPosition + itemPanel.scrollOffset < itemPanel.elements - 1)	{
+				else if (itemPanel.cursorPosition == 8 && itemPanel.cursorPosition + itemPanel.scrollOffset < itemPanel.elements - 1)	{
 					itemPanel.scrollOffset++;
 				}
 			}
@@ -266,9 +266,6 @@ public class PartyPanel extends JPanel {
 			else if (partyState == PartyState.SLOT_SELECT)	{
 				if (optionsCursorPosition == EQUIP)	{
 					swapPanels();
-					if (itemPanel.getSelectedItem() != null)	{
-						bottomLeftPanel.updateStatChange(data.getParty()[characterCursorPosition], itemPanel.getSelectedItem());
-					}
 				}
 
 				else if (optionsCursorPosition == REMOVE)	{
@@ -321,8 +318,6 @@ public class PartyPanel extends JPanel {
 			optionsCursorPosition = 0;
 			characterCursorPosition = 0;
 			slotCursorPosition = 0;
-			bottomLeftPanel.update();
-			bottomRightPanel.update();
 			return true;
 		}
 		else	{
@@ -330,728 +325,7 @@ public class PartyPanel extends JPanel {
 		}
 	}
 
-	private class HeaderPanel extends JPanel	{
 
-		private static final long serialVersionUID = 3917011061855068994L;
-		private final int HEIGHT = 60;
-		private JLabel equip = new JLabel("Equip");
-		private JLabel remove = new JLabel("Remove");
-		private JLabel removeAll = new JLabel("Remove All");
-		private JLabel auto = new JLabel("Auto");
-
-		public HeaderPanel()	{
-			this.setPreferredSize(new Dimension(600, HEIGHT));
-			this.setMinimumSize(new Dimension(600, HEIGHT));
-			this.setMaximumSize(new Dimension(600, HEIGHT));
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			this.setOpaque(false);
-
-			JPanel optionsWrapper = new JPanel();
-			optionsWrapper.setPreferredSize(new Dimension(200, HEIGHT));
-			optionsWrapper.setMaximumSize(new Dimension(200, HEIGHT));
-			optionsWrapper.setMinimumSize(new Dimension(200, HEIGHT));
-			optionsWrapper.setOpaque(false);
-
-			JPanel top = new JPanel();
-			top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-			top.setPreferredSize(new Dimension(200, HEIGHT/3 + 10));
-			top.setOpaque(false);
-
-			JPanel bottom = new JPanel();
-			bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
-			bottom.setPreferredSize(new Dimension(200, HEIGHT/3 + 2));
-			bottom.setOpaque(false);
-
-			equip.setFont(menuFont);
-			remove.setFont(menuFont);
-			removeAll.setFont(menuFont);
-			auto.setFont(menuFont);
-
-			top.add(equip); 
-			top.add(Box.createHorizontalStrut(20)); 
-			top.add(remove);
-
-			bottom.add(Box.createHorizontalStrut(1));
-			bottom.add(auto); 
-			bottom.add(Box.createHorizontalStrut(28));
-			bottom.add(removeAll);
-
-			optionsWrapper.add(top);
-			optionsWrapper.add(bottom);
-
-			this.add(Box.createHorizontalStrut(20));
-			this.add(optionsWrapper);
-
-
-		}
-	}
-
-	private class CenterPanel extends JPanel	{
-
-		private static final long serialVersionUID = -6021372252484376467L;
-
-		private final int HEIGHT = 110;
-		private final int TOP_SPACE = 25;
-
-		private JLabel levelNumberLabel = new JLabel("", SwingConstants.CENTER);
-		private JLabel healthNumberLabel = new JLabel();
-		private JLabel manaNumberLabel = new JLabel();
-		private JLabel xpEarnedText = new JLabel();
-		private JLabel xpToGoText = new JLabel();
-
-
-		public CenterPanel()	{
-
-			this.setPreferredSize(new Dimension(600, HEIGHT));
-			this.setMaximumSize(new Dimension(600, HEIGHT));
-			this.setMinimumSize(new Dimension(600, HEIGHT));
-			this.setOpaque(false);
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
-			JPanel leftPanel = new JPanel();
-			leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-			leftPanel.setPreferredSize(new Dimension(100, HEIGHT));
-			leftPanel.setMaximumSize(new Dimension(100, HEIGHT));
-			leftPanel.setMinimumSize(new Dimension(100, HEIGHT));
-			leftPanel.setOpaque(false);
-
-			JLabel levelTextLabel = new JLabel("LVL", SwingConstants.CENTER);
-			levelTextLabel.setFont(boldFont);
-			levelTextLabel.setPreferredSize(new Dimension(57, 20));
-			levelTextLabel.setMaximumSize(new Dimension(57, 20));
-			levelTextLabel.setMinimumSize(new Dimension(57, 20));
-
-			levelNumberLabel.setFont(menuFont);
-			levelNumberLabel.setPreferredSize(new Dimension(57, 20));
-			levelNumberLabel.setMaximumSize(new Dimension(57, 20));
-			levelNumberLabel.setMinimumSize(new Dimension(57, 20));
-
-			leftPanel.add(Box.createVerticalStrut(TOP_SPACE));
-			leftPanel.add(levelTextLabel);
-			leftPanel.add(levelNumberLabel);
-
-			JPanel healthManaLabelPanel = new JPanel();
-			healthManaLabelPanel.setLayout(new BoxLayout(healthManaLabelPanel, BoxLayout.Y_AXIS));
-			healthManaLabelPanel.setPreferredSize(new Dimension(40, HEIGHT));
-			healthManaLabelPanel.setMaximumSize(new Dimension(40, HEIGHT));
-			healthManaLabelPanel.setMinimumSize(new Dimension(40, HEIGHT));
-			healthManaLabelPanel.setOpaque(false);
-
-			JLabel healthLabel = new JLabel("HP");
-			healthLabel.setFont(boldFont);
-			healthLabel.setOpaque(false);
-			JLabel manaLabel = new JLabel("MP");
-			manaLabel.setFont(boldFont);
-			manaLabel.setOpaque(false);
-
-			healthManaLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
-			healthManaLabelPanel.add(healthLabel);
-			healthManaLabelPanel.add(manaLabel);
-
-			JPanel healthManaTextPanel = new JPanel();
-			healthManaTextPanel.setLayout(new BoxLayout(healthManaTextPanel, BoxLayout.Y_AXIS));
-			healthManaTextPanel.setAlignmentX(RIGHT_ALIGNMENT);
-			healthManaTextPanel.setPreferredSize(new Dimension(100, HEIGHT));
-			healthManaTextPanel.setMaximumSize(new Dimension(100, HEIGHT));
-			healthManaTextPanel.setMinimumSize(new Dimension(100, HEIGHT));
-			healthManaTextPanel.setOpaque(false);
-
-			healthNumberLabel.setFont(menuFont);
-			manaNumberLabel.setFont(menuFont);
-			healthNumberLabel.setAlignmentX(RIGHT_ALIGNMENT);
-			manaNumberLabel.setAlignmentX(RIGHT_ALIGNMENT);
-
-			healthManaTextPanel.add(Box.createVerticalStrut(TOP_SPACE));
-			healthManaTextPanel.add(healthNumberLabel);
-			healthManaTextPanel.add(manaNumberLabel);
-
-
-			JPanel xpLabelPanel = new JPanel();
-			xpLabelPanel.setLayout(new BoxLayout(xpLabelPanel, BoxLayout.Y_AXIS));
-			xpLabelPanel.setPreferredSize(new Dimension(100, HEIGHT));
-			xpLabelPanel.setMaximumSize(new Dimension(100, HEIGHT));
-			xpLabelPanel.setMinimumSize(new Dimension(100, HEIGHT));
-			xpLabelPanel.setOpaque(false);
-
-			JLabel xpEarnedLabel = new JLabel("XP Earned");
-			JLabel xpToGoLabel = new JLabel("XP Level");
-			xpEarnedLabel.setFont(boldFont);
-			xpToGoLabel.setFont(boldFont);
-
-			xpLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
-			xpLabelPanel.add(xpEarnedLabel);
-			xpLabelPanel.add(xpToGoLabel);
-
-
-			JPanel xpTextPanel = new JPanel();
-			xpTextPanel.setLayout(new BoxLayout(xpTextPanel, BoxLayout.Y_AXIS));
-			xpTextPanel.setPreferredSize(new Dimension(130, HEIGHT));
-			xpTextPanel.setMaximumSize(new Dimension(130, HEIGHT));
-			xpTextPanel.setMinimumSize(new Dimension(130, HEIGHT));
-			xpTextPanel.setAlignmentX(RIGHT_ALIGNMENT);
-			xpTextPanel.setOpaque(false);
-
-			xpEarnedText.setFont(menuFont);
-			xpToGoText.setFont(menuFont);
-			xpEarnedText.setAlignmentX(RIGHT_ALIGNMENT);
-			xpToGoText.setAlignmentX(RIGHT_ALIGNMENT);
-
-			xpTextPanel.add(Box.createVerticalStrut(TOP_SPACE));
-			xpTextPanel.add(xpEarnedText);
-			xpTextPanel.add(xpToGoText);
-
-			this.add(leftPanel);
-			this.add(Box.createHorizontalStrut(60));
-			this.add(healthManaLabelPanel);
-			this.add(healthManaTextPanel);
-			this.add(Box.createHorizontalStrut(20));
-			this.add(xpLabelPanel);
-			this.add(xpTextPanel);
-		}
-
-		protected void paintComponent(Graphics g)	{
-			super.paintComponent(g);
-			g.drawImage(portrait.getImage(), 60, TOP_SPACE - 10, null);
-		}
-
-		public void update()	{
-			PartyMember member = data.getParty()[characterCursorPosition];
-			portrait = data.getParty()[characterCursorPosition].getPortrait();
-			levelNumberLabel.setText(Integer.toString(member.getLevel()));
-			healthNumberLabel.setText(member.getCurrentHealth().toString() + "/" + member.getMaxHealth().toString());
-			manaNumberLabel.setText(member.getCurrentMana().toString() + "/" + member.getMaxMana().toString());
-			xpEarnedText.setText(member.getXpTotalEarned() + " (-" + 
-					Integer.toString(member.getXpRequirement() - member.getXpThisLevel()) + ")");
-			xpToGoText.setText(member.getXpThisLevel() + "/" + member.getXpRequirement());
-		}
-	}
-
-
-	private class StatPanel	extends JPanel {
-
-		private static final long serialVersionUID = -6568528749764392354L;
-
-		JTextPane attributeStats, statChange;
-		StyledDocument doc;
-		Style style;
-
-		private final int HEIGHT = 425;
-		private final int WIDTH = 235;
-
-		public StatPanel()	{
-
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
-			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-			this.setOpaque(false);
-
-			/*
-			 * Left Panel
-			 */
-			JPanel attributes = new JPanel();
-			attributes.setLayout(new BoxLayout(attributes, BoxLayout.X_AXIS));
-			attributes.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-			attributes.setMaximumSize(new Dimension(WIDTH, HEIGHT));
-			attributes.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-			attributes.setOpaque(false);
-
-			JPanel textWrapper = new JPanel();
-			textWrapper.setLayout(new BoxLayout(textWrapper, BoxLayout.Y_AXIS));
-			textWrapper.setOpaque(false);
-			textWrapper.add(Box.createVerticalStrut(4));
-
-			//Names
-			JTextArea attributeNames = new JTextArea("Strength\nAgility\nIntellect\nSpirit\nLuck\n\n" +
-					"Attack Power\nSpell Power\nCrit Chance\nCrit Damage\nHit\nArmor Pen\nSpeed\nSpecial\n\nArmor\nStamina\nDodge\nResist");
-			attributeNames.setFont(boldFont);
-			attributeNames.setPreferredSize(new Dimension(130, HEIGHT));
-			attributeNames.setEditable(false);
-			attributeNames.setOpaque(false);
-
-			//Values
-			attributeStats = new JTextPane();
-			attributeStats.setFont(statFont);
-			attributeStats.setPreferredSize(new Dimension(50, HEIGHT));
-			attributeStats.setMaximumSize(new Dimension(50, HEIGHT));
-			attributeStats.setMinimumSize(new Dimension(50, HEIGHT));
-			attributeStats.setEditable(false);
-			attributeStats.setOpaque(false);
-
-			SimpleAttributeSet rightAlign = new SimpleAttributeSet();  
-			StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT); 
-			attributeStats.selectAll();
-			attributeStats.setParagraphAttributes(rightAlign, false);
-
-			//Change
-			statChange = new JTextPane();
-			statChange.setFont(statFont);
-			statChange.setPreferredSize(new Dimension(55, HEIGHT));
-			statChange.setMaximumSize(new Dimension(55, HEIGHT));
-			statChange.setMinimumSize(new Dimension(55, HEIGHT));
-			statChange.setOpaque(false);
-			doc = statChange.getStyledDocument();
-			style = statChange.addStyle("", null);
-
-			textWrapper.add(attributeNames);
-			attributes.add(Box.createHorizontalStrut(10));
-			attributes.add(textWrapper);
-			attributes.add(attributeStats);
-			attributes.add(statChange);
-			attributes.add(Box.createHorizontalStrut(10));
-
-			this.add(attributes);
-		}
-
-		public void update()	{
-			PartyMember member = data.getParty()[characterCursorPosition];
-			attributeStats.setText(member.getStrength().toString() + "\n" + member.getAgility() + "\n" + member.getIntellect() + "\n" +
-					member.getSpirit() + "\n" + member.getLuck() + "\n\n" + member.getAttackPower() + "\n" + member.getSpellPower() + "\n" +
-					member.getCritChance() + "%\n" + member.getCritDamage() + "%\n" + member.getHit() + "%\n" + member.getArmorPen() + "\n" +
-					member.getSpeed() + "\n" + member.getSpecial() + "\n\n" + member.getArmor() + "\n" + member.getStamina() + "\n" + 
-					member.getDodge() + "%\n" +	member.getResist() + "%");
-			statChange.setText("");
-		}
-
-		public void updateStatChange(PartyMember member, EquippableItem newItem)	{
-			statChange.setText("");
-			
-			if (newItem.getClass() == Weapon.class)	{
-				compareItems(member, member.getEquipment().getWeapon(), newItem);
-			}
-			else if (newItem.getClass() == Armor.class)	{
-				switch (((Armor) newItem).getSlot())	{
-				case HELMET:
-					compareItems(member, member.getEquipment().getHelmet(), newItem);
-					break;
-				case CHEST:
-					compareItems(member, member.getEquipment().getChest(), newItem);
-					break;
-				case GLOVES:
-					compareItems(member, member.getEquipment().getGloves(), newItem);
-					break;
-				case BOOTS:
-					compareItems(member, member.getEquipment().getBoots(), newItem);
-					break;
-				}
-			}
-			else if (newItem.getClass() == Accessory.class)	{
-				switch (((Accessory) newItem).getType())	{
-				case NECKLACE:
-					compareItems(member, member.getEquipment().getNecklace(), newItem);
-					break;
-				case RING:
-					if (slotCursorPosition == 6)	{
-						compareItems(member, member.getEquipment().getRing1(), newItem);
-						break;
-					}
-					else if	(slotCursorPosition == 7)	{
-						compareItems(member, member.getEquipment().getRing2(), newItem);
-						break;
-					}
-				}
-			}
-			
-		}
-		
-		private void compareItems(PartyMember member, EquippableItem original, EquippableItem newItem)	{
-			appendStatChangeText(member.getStrength(), original == null ? null : original.getStrength(), newItem.getStrength());
-			appendStatChangeText(member.getAgility(), original == null ? null : original.getAgility(), newItem.getAgility());
-			appendStatChangeText(member.getIntellect(), original == null ? null : original.getIntellect(), newItem.getIntellect());
-			appendStatChangeText(member.getSpirit(), original == null ? null : original.getSpirit(), newItem.getSpirit());
-			appendStatChangeText(member.getLuck(), original == null ? null : original.getLuck(), newItem.getLuck());
-			
-			try {
-			doc.insertString(doc.getLength(),"\n", style);
-			} catch (BadLocationException e) {}
-			
-			AppendAttackPowerChange(member.getAttackPower(), original, newItem);
-			AppendSpellPowerChange(member.getSpellPower(), original, newItem);
-			appendStatChangeText(member.getCritChance(), original == null ? null : original.getCritChance(), newItem.getCritChance());
-			appendStatChangeText(member.getCritDamage(), original == null ? null : original.getCritDamage(), newItem.getCritDamage());
-			appendStatChangeText(member.getHit(), original == null ? null : original.getHit(), newItem.getHit());
-			appendStatChangeText(member.getArmorPen(), original == null ? null : original.getArmorPen(), newItem.getArmorPen());
-			appendStatChangeText(member.getSpeed(), original == null ? null : original.getSpeed(), newItem.getSpeed());
-			appendStatChangeText(member.getSpecial(), original == null ? null : original.getSpecial(), newItem.getSpecial());
-			
-			try {
-			doc.insertString(doc.getLength(),"\n", style);
-			doc.insertString(doc.getLength(),"\n", style);
-			} catch (BadLocationException e) {}
-			//TODO ARMOR
-			appendStatChangeText(member.getStamina(), original == null ? null : original.getStamina(), newItem.getStamina());
-			appendStatChangeText(member.getDodge(), original == null ? null : original.getDodge(), newItem.getDodge());
-			appendStatChangeText(member.getResist(), original == null ? null : original.getResist(), newItem.getResist());
-			
-		}
-		
-		private void appendStatChangeText(Stat characterStat, Stat originalItem, Stat newItem)	{
-			final int COLUMN_WIDTH = 3;
-			int change;
-			
-			if (originalItem == null)	{
-				change = newItem.getActual();
-			}
-			else	{
-				change = -originalItem.getActual() + newItem.getActual();	
-			}
-			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
-			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
-				statText += "  ";
-			}
-			statText += tmp;
-			
-			if (change > 0)	{
-				try {
-					StyleConstants.setForeground(style, new Color(34, 139, 34));
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}
-			}
-			else if (change < 0)	{
-				try {
-					StyleConstants.setForeground(style, Color.RED);
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}	
-			}
-			try {
-				doc.insertString(doc.getLength(),"\n", style);
-			} catch (BadLocationException e) {}
-		}
-		
-		/**
-		 * Calculates the change to attack power based on the items passed into the method.
-		 * 
-		 * @param characterStat
-		 * @param originalItem
-		 * @param newItem
-		 */
-		private void AppendAttackPowerChange(Stat characterStat, EquippableItem originalItem, EquippableItem newItem)	{
-			final int COLUMN_WIDTH = 3;
-			int change;
-			
-			if (originalItem == null)	{
-				change = newItem.getStrength().getActual();
-				if (newItem.getClass() == Weapon.class)	{
-					change += ((Weapon) (newItem)).getAttack().getActual();
-				}
-			}
-			else	{
-				change = -originalItem.getStrength().getActual() + newItem.getStrength().getActual();	
-				if (newItem.getClass() == Weapon.class)	{
-					change += -((Weapon) originalItem).getAttack().getActual() + ((Weapon) newItem).getAttack().getActual();
-				}
-			}
-			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
-			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
-				statText += "  ";
-			}
-			statText += tmp;
-			
-			if (change > 0)	{
-				try {
-					StyleConstants.setForeground(style, new Color(34, 139, 34));
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}
-			}
-			else if (change < 0)	{
-				try {
-					StyleConstants.setForeground(style, Color.RED);
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}	
-			}
-			try {
-				doc.insertString(doc.getLength(),"\n", style);
-			} catch (BadLocationException e) {}
-		}
-		/**
-		 * Calculates the change to spell power based on the items passed into the method. This calculation is trivial and not
-		 * currently needing its own method, but will so later when spell power is calculated on more than intellect.
-		 * 
-		 * @param characterStat
-		 * @param originalItem
-		 * @param newItem
-		 */
-		private void AppendSpellPowerChange(Stat characterStat, EquippableItem originalItem, EquippableItem newItem)	{
-			final int COLUMN_WIDTH = 3;
-			int change;
-			
-			if (originalItem == null)	{
-				change = newItem.getIntellect().getActual();
-			}
-			else	{
-				change = -originalItem.getIntellect().getActual() + newItem.getIntellect().getActual();	
-			}
-			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
-			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
-				statText += "  ";
-			}
-			statText += tmp;
-			
-			if (change > 0)	{
-				try {
-					StyleConstants.setForeground(style, new Color(34, 139, 34));
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}
-			}
-			else if (change < 0)	{
-				try {
-					StyleConstants.setForeground(style, Color.RED);
-					doc.insertString(doc.getLength(),statText, style);
-				} catch (BadLocationException e) {}	
-			}
-			try {
-				doc.insertString(doc.getLength(),"\n", style);
-			} catch (BadLocationException e) {}
-		}
-	}
-
-	private class EquipmentPanel extends JPanel{
-
-		private static final long serialVersionUID = -6841005924579611279L;
-
-		final int HEIGHT = 265;
-		final int WIDTH = 365;
-		JTextPane equipmentNames;
-
-		public EquipmentPanel()	{
-
-
-			this.setLayout(new BorderLayout());
-			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
-			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-			this.setOpaque(false);
-			//			this.setBackground(Color.RED);
-
-			/*
-			 * Top
-			 */
-			JPanel top = new JPanel();
-			top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-			top.setPreferredSize(new Dimension(WIDTH - 20, HEIGHT));
-			top.setMaximumSize(new Dimension(WIDTH - 20, HEIGHT));
-			top.setMinimumSize(new Dimension(WIDTH - 20, HEIGHT));
-			top.setOpaque(false);
-
-			JPanel textWrapper = new JPanel();
-			textWrapper.setLayout(new BoxLayout(textWrapper, BoxLayout.Y_AXIS));
-			textWrapper.setOpaque(false);
-			textWrapper.add(Box.createVerticalStrut(4));
-
-			//Names
-			JTextArea equipmentSlots = new JTextArea("Weapon\nHelmet\nChest\nGloves\nBoots\nNecklace\nRing 1\nRing 2\n\n");
-			equipmentSlots.setFont(boldFont);
-			equipmentSlots.setPreferredSize(new Dimension(100, HEIGHT));
-			equipmentSlots.setEditable(false);
-			equipmentSlots.setOpaque(false);
-
-			//Values
-			equipmentNames = new JTextPane();
-			equipmentNames.setFont(statFont);
-			equipmentNames.setPreferredSize(new Dimension(230, HEIGHT));
-			equipmentNames.setEditable(false);
-			equipmentNames.setOpaque(false);
-			equipmentNames.selectAll();
-
-			/*
-			 * Bottom
-			 */
-			JPanel status = new JPanel();
-			status.setOpaque(false);
-			status.setPreferredSize(new Dimension(WIDTH - 30, 405 - HEIGHT));
-			status.setLayout(new BoxLayout(status, BoxLayout.Y_AXIS));
-			JLabel title = new JLabel("                       Status");
-			JLabel buffs = new JLabel("Buffs");
-			JLabel debuffs = new JLabel("Debuffs");
-			JLabel effects = new JLabel("Effects");
-
-			title.setFont(boldFont); buffs.setFont(boldFont); debuffs.setFont(boldFont); effects.setFont(boldFont);
-
-			status.add(title); status.add(buffs); status.add(debuffs); status.add(effects);
-
-			JPanel bottomWrapper = new JPanel();
-			bottomWrapper.setLayout(new BorderLayout());
-			bottomWrapper.setOpaque(false);
-			JPanel bottomSpacer = new JPanel();
-			bottomSpacer.setPreferredSize(new Dimension(40, 405 - HEIGHT));
-			bottomSpacer.setOpaque(false);
-
-			bottomWrapper.add(bottomSpacer, BorderLayout.WEST);
-			bottomWrapper.add(status, BorderLayout.EAST);
-
-			/*
-			 * Combining
-			 */
-
-			textWrapper.add(equipmentSlots);
-
-
-
-			top.add(Box.createHorizontalStrut(30));
-			top.add(textWrapper);
-			top.add(equipmentNames);
-			top.add(Box.createHorizontalStrut(15));
-
-
-			this.add(top, BorderLayout.NORTH);
-			this.add(bottomWrapper, BorderLayout.SOUTH);
-
-		}
-
-		public void update()	{
-			PartyMember member = data.getParty()[characterCursorPosition];
-			Item[] equipment = member.getEquipment().toArray();
-			StringBuilder builder = new StringBuilder();
-			for (int i = 0; i < 8; i++)	{
-				if (equipment[i] != null)	{
-					builder.append(equipment[i].getName() + "\n");
-				}
-				else	{
-					builder.append("Empty\n");
-				}
-			}
-			equipmentNames.setText(builder.toString());
-		}
-	}
-
-	private class ItemSelectionPanel	extends JPanel {
-
-		private static final long serialVersionUID = 8869703204051577618L;
-
-		private int elements;
-		private int scrollOffset = 0;
-		final int WIDTH = 370;
-		final int HEIGHT = 405;
-
-		private ItemPanel[] itemList = new ItemPanel[] {new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), 
-				new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel()};
-
-		private ItemSelectionPanel()	{
-			this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-			this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
-			this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-
-			this.setOpaque(false);
-
-			for (int i = 0; i < itemList.length; i++)	{
-				this.add(itemList[i]);
-			}
-
-		}
-
-		public void update()	{
-			if (slotCursorPosition == 0)	{
-				elements = data.getInventory().getWeapons().size();
-				for (int i = 0; i < itemList.length; i++)	{
-					if (i < data.getInventory().getWeapons().size())	{
-						itemList[i].setItem(data.getInventory().getWeapons().get(i + scrollOffset));
-						itemList[i].setVisible(true);
-					}
-					else	{
-						itemList[i].setVisible(false);
-					}
-				}
-			}
-			else if (slotCursorPosition > 0 && slotCursorPosition <= 4)	{
-				elements = data.getInventory().getArmor().size();
-				for (int i = 0; i < itemList.length; i++)	{
-					if (i < data.getInventory().getArmor().size())	{
-						itemList[i].setItem(data.getInventory().getArmor().get(i + scrollOffset));
-						itemList[i].setVisible(true);
-					}
-					else	{
-						itemList[i].setVisible(false);
-					}
-				}
-			}
-			else {
-				elements = data.getInventory().getAccessories().size();
-				for (int i = 0; i < itemList.length; i++)	{
-					if (i < data.getInventory().getAccessories().size())	{
-						itemList[i].setItem(data.getInventory().getAccessories().get(i + scrollOffset));
-						itemList[i].setVisible(true);
-					}
-					else	{
-						itemList[i].setVisible(false);
-					}
-				}
-			}
-
-			if (itemList[0].visibleEh() == false)	{
-				itemList[0].clear();
-				itemList[0].setVisible(true);
-			}
-		}
-
-		public EquippableItem getSelectedItem()	{
-			if (slotCursorPosition == 0 && data.getInventory().getWeapons().size() > 0)	{
-				return data.getInventory().getWeapons().get(itemCursorPosition + itemPanel.scrollOffset);
-			}
-			else if	(slotCursorPosition >= 1 && slotCursorPosition <= 4 && data.getInventory().getArmor().size() > 0)	{
-				return data.getInventory().getArmor().get(itemCursorPosition + itemPanel.scrollOffset);
-			}
-			else if (slotCursorPosition >= 5 && slotCursorPosition <= 8 && data.getInventory().getAccessories().size() > 0)	{
-				return data.getInventory().getAccessories().get(itemCursorPosition + itemPanel.scrollOffset);
-			}
-			else	{
-				return null;
-			}
-		}
-
-		private class ItemPanel extends JPanel	{
-
-			private static final long serialVersionUID = 4342436547521865798L;
-			private ImageIcon itemIcon = new ImageIcon();
-			private JLabel itemName = new JLabel();
-			private boolean visible = true;
-
-			public ItemPanel()	{
-				this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-				this.setPreferredSize(new Dimension(355, 40));
-				this.setMaximumSize(new Dimension(395, 40));
-				this.setMinimumSize(new Dimension(395, 40));
-				this.setOpaque(false);
-
-				this.setAlignmentX(LEFT_ALIGNMENT);
-				itemName.setAlignmentX(LEFT_ALIGNMENT);
-				itemName.setFont(statFont);
-
-				itemName.setMaximumSize(new Dimension(260, 40));
-				itemName.setPreferredSize(new Dimension(260, 40));
-
-				this.add(Box.createHorizontalStrut(100));
-				this.add(itemName);
-			}
-
-			@Override
-			protected void paintComponent(Graphics g)	{
-				if (visible)	{
-					g.drawImage(itemIcon.getImage(), 50, 0, null);
-				}
-			}
-
-			public void setItem(Item item)	{
-				itemName.setText(item.getName());
-				itemIcon = item.getIcon();
-			}
-			public void setVisible(boolean b)	{
-				visible = b;
-				if (b == false)	{
-					itemName.setText("");
-				}
-			}
-			public void clear()	{
-				itemName.setText("EMPTY");
-				itemIcon = new ImageIcon();
-			}
-			public boolean visibleEh()	{
-				return visible;
-			}
-		}
-	}
 
 	private enum PartyState	{
 
