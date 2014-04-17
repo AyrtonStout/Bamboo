@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import Systems.EquippableItem;
 import Systems.Inventory;
 import Systems.Item;
+import Systems.PartyMember;
 
 public class PartyItems extends JPanel {
 
@@ -25,13 +26,16 @@ public class PartyItems extends JPanel {
 	public int cursorPosition = 0;
 	public int scrollOffset = 0;
 	private int itemCategory;
+	private PartyMember selectedMember;
 
 	final int WIDTH = 370;
 	final int HEIGHT = 405;
 	private Font statFont;
-
+	
+	private ImageIcon optionsCursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
+	
 	private ItemPanel[] itemList; 
-			
+
 	public PartyItems(Font statFont, Inventory inventory)	{
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		this.setMaximumSize(new Dimension(WIDTH, HEIGHT));
@@ -40,7 +44,7 @@ public class PartyItems extends JPanel {
 
 		this.statFont = statFont;
 		this.inventory = inventory;
-		
+
 		itemList = new ItemPanel[] {new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), 
 				new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel()};
 
@@ -51,8 +55,9 @@ public class PartyItems extends JPanel {
 
 	}
 
-	public void update(int itemCategory)	{
+	public void update(int itemCategory, PartyMember selectedMember)	{
 		this.itemCategory = itemCategory;
+		this.selectedMember = selectedMember;
 		
 		if (itemCategory == 0)	{
 			elements = inventory.getWeapons().size();
@@ -113,7 +118,33 @@ public class PartyItems extends JPanel {
 	}
 
 	public void respondToKeyPress(KeyEvent e)	{
-
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+			if (cursorPosition < 8 && cursorPosition < elements - 1)	{
+				cursorPosition++;
+			}
+			else if (cursorPosition == 8 && cursorPosition + scrollOffset < elements - 1)	{
+				scrollOffset++;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
+			if (cursorPosition > 0)	{
+				cursorPosition--;
+			}
+			else if (cursorPosition == 0 && scrollOffset > 0)	{
+				scrollOffset--;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+			if (itemCategory != 6 && itemCategory != 7)	{
+				selectedMember.getEquipment().equipItem(getSelectedItem(), inventory);
+			}
+			else if (itemCategory == 6)	{
+				selectedMember.getEquipment().equipItem(getSelectedItem(), inventory, 1);
+			}
+			else if (itemCategory == 7)	{
+				selectedMember.getEquipment().equipItem(getSelectedItem(), inventory, 2);
+			}
+		}
 	}
 
 	private class ItemPanel extends JPanel	{
@@ -165,5 +196,9 @@ public class PartyItems extends JPanel {
 		public boolean visibleEh()	{
 			return visible;
 		}
+	}
+
+	public void drawArrow(Graphics g) {
+		g.drawImage(optionsCursor.getImage(), 260, 180 + 45 * cursorPosition, null);
 	}
 }

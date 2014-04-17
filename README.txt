@@ -21,7 +21,7 @@ v0.41
 -Before equipping an item, the item will now show what the stat changes will be
 -Mana now changes depending on the character's intellect
 -Equipping weapons will no longer fully restore a character's health
--Partial rewrite of partypanel class. Fragmented into smaller classes
+-Fragmented PartyPanel class into like 5 smaller classes
 
 v0.40 - The fix and enhance random crap series
 -Redid inventory class and its methods to make more sense at the expense of code length 

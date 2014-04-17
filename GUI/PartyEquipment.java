@@ -3,9 +3,12 @@ package GUI;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -20,7 +23,10 @@ public class PartyEquipment extends JPanel{
 
 	final int HEIGHT = 265;
 	final int WIDTH = 365;
-	JTextPane equipmentNames;
+	private JTextPane equipmentNames;
+	
+	private int cursorPosition;
+	private ImageIcon optionsCursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 
 	public PartyEquipment(Font statFont, Font boldFont)	{
 
@@ -118,5 +124,30 @@ public class PartyEquipment extends JPanel{
 			}
 		}
 		equipmentNames.setText(builder.toString());
+	}
+	
+	public void respondToKeyPress(KeyEvent e)	{
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
+			if (cursorPosition < 7)	{
+				cursorPosition++;
+			}
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
+			if (cursorPosition > 0)	{
+				cursorPosition--;
+			}
+		}
+	}
+	
+	public void clear()	{
+		cursorPosition = 0;
+	}
+	
+	public int getCursorPosition()	{
+		return cursorPosition;
+	}
+
+	public void drawArrow(Graphics g) {
+		g.drawImage(optionsCursor.getImage(), 240, 173 + 22 * cursorPosition, null);
 	}
 }
