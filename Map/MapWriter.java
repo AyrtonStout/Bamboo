@@ -17,6 +17,7 @@ import Systems.Enums.POTION;
 import Systems.Enums.SWORD;
 import Systems.Enums.DAGGER;
 import Systems.PartyMember;
+import Systems.PartyMemberEnum;
 import Systems.SpawnGenerator;
 import Systems.Weapon;
 
@@ -355,7 +356,7 @@ public class MapWriter {
 		Trigger spawnNPC = new Trigger(new TEvent(TEVENT.CHARACTER_ENTERS_TILE, new Point(5, 2)), 
 				new TAction(TACTION.SPAWN_NPC, spawnGhost));
 		Trigger addToParty = new Trigger(new TEvent(TEVENT.CHARACTER_FINISHES_TALKING, terra), 
-				new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(NAMED_NPC.TERRA)));
+				new TAction(TACTION.ADD_NPC_TO_PARTY, new PartyMember(PartyMemberEnum.TERRA)));
 		addToParty.addAction(new TAction(TACTION.REMOVE_NPC_FROM_MAP, terra));
 
 		triggers.add(spawnNPC);

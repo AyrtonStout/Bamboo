@@ -56,7 +56,7 @@ public class GameData {
 	public GameData(int windowWidth, int windowHeight)	{
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight, this);
 		player.initializeImages();
-		party[0] = new PartyMember(NAMED_NPC.SABIN);
+		party[0] = new PartyMember(PartyMemberEnum.SABIN);
 		party[0].initialize(this);
 		playableCharacters.add(party[0]);
 		this.windowWidth = windowWidth;

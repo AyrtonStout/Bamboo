@@ -41,7 +41,7 @@ public class PartyMember extends Combatant implements Serializable {
 	
 	private Stat strength, agility, intellect, spirit, luck, stamina, special;
 	//Partial stats are used primarily for leveling up. Once a value exceeds 10 it will increase the main stat by 1
-	private int partialStr, partialAgi, partialInt, partialSpi, partialLuck, partialSta;
+	private int partialStr, partialAgi, partialInt, partialSpi, partialLck, partialSta;
 	
 	final static int STAMINA_TO_HEALTH_RATIO = 10;
 	final static int INTELLECT_TO_MANA_RATIO = 15;
@@ -59,58 +59,26 @@ public class PartyMember extends Combatant implements Serializable {
 	private int highestCrit;
 	
 	
-	@SuppressWarnings("incomplete-switch")
-	public PartyMember(NAMED_NPC member)	{
+	public PartyMember(PartyMemberEnum member)	{
 		
-		switch (member)	{
-		case SABIN:
-			name = "Sabin";
-			gender = "Male";
-
-			strength = new Stat(8);
-			agility = new Stat(4);
-			spirit = new Stat(5);
-			intellect = new Stat(4);
-			luck = new Stat(7);
-			stamina = new Stat(6);
-			
-			speed = new Stat(9);
-			special = new Stat(0);
-			
-			partialStr = 3;
-			partialAgi = 6;
-			partialInt = 4;
-			partialSpi = 0;
-			partialLuck = 5;
-			partialSta = 5;
-			
-			maximumMana = new Stat(100);
-			break;
-			
-		case TERRA:
-			name = "Terra";
-			gender = "Female";
-			
-			strength = new Stat(4);
-			agility = new Stat(5);
-			spirit = new Stat(6);
-			intellect = new Stat(8);
-			luck = new Stat(8);
-			stamina = new Stat(5);
-			
-			speed = new Stat(8);
-			special = new Stat(0);
-			
-			partialStr = 6;
-			partialAgi = 6;
-			partialInt = 9;
-			partialSpi = 2;
-			partialLuck = 7;
-			partialSta = 1;
-			
-			maximumMana = new Stat(150);
-			break;
-		}
+		name = member.getName();
+		gender = member.getGender();
+		strength = new Stat(member.getStrength());
+		agility = new Stat(member.getAgility());
+		intellect = new Stat(member.getIntellect());
+		spirit = new Stat(member.getSpirit());
+		luck = new Stat(member.getLuck());
+		stamina = new Stat(member.getStamina());
+		speed = new Stat(member.getSpeed());
+		
+		partialStr = member.getpStrength();
+		partialAgi = member.getpAgility();
+		partialInt = member.getpIntellect();
+		partialSpi = member.getpSpirit();
+		partialLck = member.getpLuck();
+		partialSta = member.getpStamina();
+		
+		
 		portrait = new ImageIcon("GUI/Resources/Characters/" + name + " - Portrait.gif");
 		left = new ImageIcon("GUI/Resources/Characters/" + name + " (Left).gif");
 		up = new ImageIcon("GUI/Resources/Characters/" + name + " (Up).gif");
@@ -133,6 +101,7 @@ public class PartyMember extends Combatant implements Serializable {
 		refresh();
 		currentHealth.setBase(maximumHealth.getBase());
 		currentMana.setBase(maximumMana.getBase());
+		special = new Stat(0);
 	}
 	
 	public boolean levelUpEh() {
@@ -162,7 +131,7 @@ public class PartyMember extends Combatant implements Serializable {
 		partialAgi += 15;
 		partialInt += 15;
 		partialSpi += 15;
-		partialLuck += 2;
+		partialLck += 2;
 		partialSta += 20;
 		
 		if (gender.equals("Male"))	{
@@ -170,7 +139,7 @@ public class PartyMember extends Combatant implements Serializable {
 			partialAgi += 2;
 			partialInt += 1;
 			partialSpi += 2;
-			partialLuck += 0;
+			partialLck += 0;
 			partialSta += 3;
 		}
 		else if (gender.equals("Female"))	{
@@ -178,7 +147,7 @@ public class PartyMember extends Combatant implements Serializable {
 			partialAgi += 2;
 			partialInt += 3;
 			partialSpi += 2;
-			partialLuck += 1;
+			partialLck += 1;
 			partialSta += 2;
 		}
 		
@@ -203,9 +172,9 @@ public class PartyMember extends Combatant implements Serializable {
 			spirit.modifyBase(1);
 			partialSpi -= 10;
 		}
-		while (partialLuck >= 10)	{
+		while (partialLck >= 10)	{
 			luck.modifyBase(1);
-			partialLuck -= 10;
+			partialLck -= 10;
 		}
 		while (partialSta >= 10)	{
 			stamina.modifyBase(1);
