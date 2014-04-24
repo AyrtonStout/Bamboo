@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import Battle.BattleScreen;
+import BattleScreen.BattleScreen;
 import GUI.DialogueBox;
 import GUI.InventoryPanel;
 import GUI.Menu;
@@ -15,7 +15,6 @@ import GUI.StatisticsPanel;
 import Map.Board;
 import Map.Map;
 import Map.PlayerAvatar;
-import Map.Enums.NAMED_NPC;
 
 /**
  * @author mobius
@@ -37,7 +36,6 @@ public class GameData {
 	private InventoryPanel inventoryPanel = new InventoryPanel(this, inventory);
 	private PartyPanel partyPanel = new PartyPanel(this);
 	private BattleScreen battleScreen = new BattleScreen(this);
-	private Combat combat = new Combat(this);
 	private Time time = new Time();
 	private boolean paused = false;
 	private InputManager input;
@@ -54,6 +52,7 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
+		Combat.data = this;
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight, this);
 		player.initializeImages();
 		party[0] = new PartyMember(PartyMemberEnum.SABIN);
@@ -244,10 +243,6 @@ public class GameData {
 	
 	public BattleScreen getBattleScreen()	{
 		return battleScreen;
-	}
-	
-	public Combat getCombat()	{
-		return combat;
 	}
 	
 }

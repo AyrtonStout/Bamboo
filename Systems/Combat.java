@@ -2,7 +2,8 @@ package Systems;
 
 import java.util.Random;
 
-import Battle.Enums.TEXT_TYPE;
+import BattleScreen.Enums.TEXT_TYPE;
+import Spell.Spell;
 import Systems.Enums.CONSUMABLE_TYPE;
 
 /**
@@ -11,22 +12,20 @@ import Systems.Enums.CONSUMABLE_TYPE;
  */
 public class Combat {
 
-	private GameData data;
-	private Random rand = new Random();
-	private TEXT_TYPE crit;
-	private final int BASE_HIT_CHANCE = 85;
+	public static GameData data;
+	private static Random rand = new Random();
+	private static TEXT_TYPE crit;
+	public static final int BASE_HIT_CHANCE = 85;
 
-	public Combat(GameData data)	{
-		this.data = data;
-	}
-
+	
+	
 	/**
 	 * Used to do a basic attack calculation between two people
 	 * 
 	 * @param aggressor The person doing the attack
 	 * @param victim The person being attacked
 	 */
-	public void attack(Combatant aggressor, Combatant victim)	{
+	public static void attack(Combatant aggressor, Combatant victim)	{
 		if (missEh(aggressor, victim))	{
 			data.getBattleScreen().getBattleArea().getCombatText().addBattleText("MISS", victim, TEXT_TYPE.MISS);
 		}
@@ -47,11 +46,11 @@ public class Combat {
 		}
 	}
 
-	public void heal(Combatant caster, Combatant receiver)	{
+	public static void heal(Combatant caster, Combatant receiver)	{
 
 	}
 
-	public void usePotion(Combatant caster, Combatant receiver, Consumable usedItem)	{
+	public static void usePotion(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (usedItem.getHealthRestore() > 0)	{
 			healTarget(caster, receiver, usedItem);
 		}
@@ -70,7 +69,7 @@ public class Combat {
 	 * @param usedItem The item being used on the target
 	 * @return Whether or not the item was successfully used
 	 */
-	public boolean useItem(Combatant user, Combatant target, Consumable usedItem)	{
+	public static boolean useItem(Combatant user, Combatant target, Consumable usedItem)	{
 		if (usedItem.getConsumableType() == CONSUMABLE_TYPE.POTION)	{
 			if ((usedItem.getHealthRestore() > 0 && validHealTargetEh(target)) || 
 					(usedItem.getManaRestore() > 0 && validManaRestoreTargetEh(target)))	{
@@ -84,13 +83,24 @@ public class Combat {
 		}
 		return false;
 	}
+	
+	
+	public static void castSpell(Spell spell)	{
+		
+		for (int i = 0; i < spell.getModules().length; i++)	{
+			//TODO change arguments and case each spell module
+		}
+		
+	}
 
+	
+	
 	/**
 	 * Used for a basic combat calculation to tell whether or not the attack missed.
 	 * 
 	 * @return Whether or not the attack missed
 	 */
-	private boolean missEh(Combatant aggressor, Combatant victim)	{
+	private static boolean missEh(Combatant aggressor, Combatant victim)	{
 		int chance = rand.nextInt(100);
 		if (chance < BASE_HIT_CHANCE + aggressor.getHit().getActual() - victim.getDodge().getActual())	{
 			return false;
@@ -102,7 +112,7 @@ public class Combat {
 	 * 
 	 * @return Whether or not the attack was a critical strike
 	 */
-	private boolean critEh(Combatant aggressor)	{
+	private static boolean critEh(Combatant aggressor)	{
 		int chance = rand.nextInt(100);
 		if (chance < aggressor.getCritChance().getActual())	{
 			crit = TEXT_TYPE.CRIT;
@@ -120,7 +130,7 @@ public class Combat {
 	 * @param victim The character being attacked
 	 * @return The amount of damage done
 	 */
-	private int damageDealt(Combatant aggressor, Combatant victim)	{
+	private static int damageDealt(Combatant aggressor, Combatant victim)	{
 		if (critEh(aggressor))	{
 			return ((aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100 < 2) ? 
 					2 : (int) Math.round((aggressor.getAttack() - victim.getArmor().getActual()) * aggressor.getCritDamage().getActual()/100.0);
@@ -131,7 +141,7 @@ public class Combat {
 		}
 	}
 	
-	private boolean validHealTargetEh(Combatant target)	{
+	private static boolean validHealTargetEh(Combatant target)	{
 		if (target.getCurrentHealth().getActual() == target.getMaxHealth().getActual())	{
 			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is already at full health");
 			return false;
@@ -143,7 +153,7 @@ public class Combat {
 		return true;
 	}
 	
-	private boolean validManaRestoreTargetEh(Combatant target)	{
+	private static boolean validManaRestoreTargetEh(Combatant target)	{
 		if (target.aliveEh() == false)	{
 			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is too dead to drink potions");
 			return false;
@@ -155,7 +165,7 @@ public class Combat {
 		return true;
 	}
 	
-	private void healTarget(Combatant caster, Combatant receiver, Consumable usedItem)	{
+	private static void healTarget(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (caster.getClass() == PartyMember.class)	{
 			((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
 		}
@@ -167,7 +177,7 @@ public class Combat {
 		}
 	}
 	
-	private void restoreMana(Combatant caster, Combatant receiver, Consumable usedItem) {
+	private static void restoreMana(Combatant caster, Combatant receiver, Consumable usedItem) {
 		receiver.modCurrentMana(usedItem.getManaRestore());
 
 		if (receiver.getCurrentMana().getBase() > receiver.getMaxMana().getActual())	{
@@ -175,7 +185,7 @@ public class Combat {
 		}	
 	}
 	
-	private void addBattleText(Combatant receiver, Consumable usedItem)	{
+	private static void addBattleText(Combatant receiver, Consumable usedItem)	{
 		final int POTION_ANIMATION_DELAY = 20;
 		if (usedItem.getHealthRestore() > 0)	{
 			data.getBattleScreen().getBattleArea().getCombatText().addDelayedBattleText(

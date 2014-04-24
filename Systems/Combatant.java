@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-import Battle.Enums.COMBAT_ACTION;
+import BattleScreen.Enums.COMBAT_ACTION;
 
 /**
  * @author mobius
