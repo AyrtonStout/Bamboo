@@ -2,7 +2,10 @@ package Systems;
 
 import java.util.Random;
 
+import BattleScreen.BattleInfo;
 import BattleScreen.Enums.TEXT_TYPE;
+import BattleScreen.FloatingCombatText;
+import Spell.DirectDamage;
 import Spell.Spell;
 import Systems.Enums.CONSUMABLE_TYPE;
 
@@ -12,7 +15,9 @@ import Systems.Enums.CONSUMABLE_TYPE;
  */
 public class Combat {
 
-	public static GameData data;
+	public static FloatingCombatText combatText;
+	public static BattleInfo info;
+	public static Inventory inventory;
 	private static Random rand = new Random();
 	private static TEXT_TYPE crit;
 	public static final int BASE_HIT_CHANCE = 85;
@@ -27,12 +32,12 @@ public class Combat {
 	 */
 	public static void attack(Combatant aggressor, Combatant victim)	{
 		if (missEh(aggressor, victim))	{
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText("MISS", victim, TEXT_TYPE.MISS);
+			combatText.addBattleText("MISS", victim, TEXT_TYPE.MISS);
 		}
 		else	{
 			int painBrought = damageDealt(aggressor, victim);
 
-			data.getBattleScreen().getBattleArea().getCombatText().addBattleText(Integer.toString(painBrought), victim, crit);
+			combatText.addBattleText(Integer.toString(painBrought), victim, crit);
 			victim.modCurrentHealth(-painBrought);
 			if (victim.getCurrentHealth().getActual() < 1)	{
 				victim.setJustDied(true);
@@ -77,7 +82,7 @@ public class Combat {
 					((PartyMember) user).startItemAnimation();
 				}
 				usePotion(user, target, usedItem);
-				data.getInventory().removeItem(usedItem);
+				inventory.removeItem(usedItem);
 				return true;
 			}
 		}
@@ -85,11 +90,19 @@ public class Combat {
 	}
 	
 	
-	public static void castSpell(Spell spell)	{
+	public static boolean castSpell(Spell spell, Combatant caster, Combatant target)	{
 		
 		for (int i = 0; i < spell.getModules().length; i++)	{
+			if (spell.getModules()[i].getClass() == DirectDamage.class)	{
+				caster.modCurrentMana(-spell.getManaCost());
+				int damage = ((DirectDamage) spell.getModules()[i]).getRawDamageDealt(caster);
+				target.modCurrentHealth(-damage);
+				addBattleText(target, spell, true);
+			}
 			//TODO change arguments and case each spell module
 		}
+		
+		return true;
 		
 	}
 
@@ -143,11 +156,11 @@ public class Combat {
 	
 	private static boolean validHealTargetEh(Combatant target)	{
 		if (target.getCurrentHealth().getActual() == target.getMaxHealth().getActual())	{
-			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is already at full health");
+			info.setText(target.getName() + " is already at full health");
 			return false;
 		}
 		if (target.aliveEh() == false)	{
-			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is too dead to drink potions");
+			info.setText(target.getName() + " is too dead to drink potions");
 			return false;
 		}
 		return true;
@@ -155,11 +168,11 @@ public class Combat {
 	
 	private static boolean validManaRestoreTargetEh(Combatant target)	{
 		if (target.aliveEh() == false)	{
-			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is too dead to drink potions");
+			info.setText(target.getName() + " is too dead to drink potions");
 			return false;
 		}
 		if (target.getCurrentMana().getActual() == target.getMaxMana().getActual())	{
-			data.getBattleScreen().getBattleInfo().setText(target.getName() + " is already at full mana");
+			info.setText(target.getName() + " is already at full mana");
 			return false;
 		}
 		return true;
@@ -188,13 +201,17 @@ public class Combat {
 	private static void addBattleText(Combatant receiver, Consumable usedItem)	{
 		final int POTION_ANIMATION_DELAY = 20;
 		if (usedItem.getHealthRestore() > 0)	{
-			data.getBattleScreen().getBattleArea().getCombatText().addDelayedBattleText(
+			combatText.addDelayedBattleText(
 					Integer.toString(usedItem.getHealthRestore()), receiver, TEXT_TYPE.HEAL, POTION_ANIMATION_DELAY);
 		}
 		else	{
-			data.getBattleScreen().getBattleArea().getCombatText().addDelayedBattleText(
+			combatText.addDelayedBattleText(
 					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE, POTION_ANIMATION_DELAY);
 		}
+	}
+	
+	private static void addBattleText(Combatant receiver, Spell spell, boolean harmful)	{
+		
 	}
 
 }

@@ -17,6 +17,7 @@ import Systems.Enums.GAME_STATE;
 import Systems.Combatant;
 import Systems.Encounter;
 import Systems.Enemy;
+import Systems.PartyMember;
 import BattleScreen.Enums.BATTLE_STATE;
 import BattleScreen.Enums.COMBAT_ACTION;
 import BattleScreen.Enums.COMBAT_START;
@@ -44,6 +45,7 @@ public class BattleScreen extends JPanel {
 	private BattleInfo info;
 	private DialogueBox dialogue;
 	private BattleItemsScreen itemScreen;
+	private BattleSpellScreen spellScreen;
 
 	private Combatant activeMember;
 	private boolean playerMove = true;
@@ -61,6 +63,7 @@ public class BattleScreen extends JPanel {
 		battleArea = new BattleArea(data, this);
 		info = new BattleInfo();
 		itemScreen = new BattleItemsScreen(data);
+		spellScreen = new BattleSpellScreen(data);
 		
 		Dimension screenSize = new Dimension(600, 600);
 		this.setPreferredSize(screenSize);
@@ -76,6 +79,7 @@ public class BattleScreen extends JPanel {
 		this.add(center, BorderLayout.CENTER);
 		this.add(menu, BorderLayout.SOUTH);
 		
+		sync();
 	}
 
 	public void enterBattle(Encounter enemies)	{
@@ -131,6 +135,7 @@ public class BattleScreen extends JPanel {
 					switchToItems();
 					break;
 				case 2:
+					switchToSpells();
 					break;
 				case 3:
 					attemptToRun();
@@ -149,6 +154,7 @@ public class BattleScreen extends JPanel {
 			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
 					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
 				itemScreen.respondToKeyPress(e);
+				info.setItem(itemScreen.getSelectedItem());
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
 				if (data.getInventory().getCategorySize(3) > 0)	{
@@ -172,7 +178,7 @@ public class BattleScreen extends JPanel {
 				useItem();
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
-				info.setVisible(false);
+				info.setItem(itemScreen.getSelectedItem());
 				state = BATTLE_STATE.ITEM_SELECTION;
 			}
 		}
@@ -189,6 +195,25 @@ public class BattleScreen extends JPanel {
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				info.setVisible(false);
 				state = BATTLE_STATE.MAIN;
+			}
+		}
+		
+		else if (state == BATTLE_STATE.SPELL_SELECTION)	{
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
+					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				spellScreen.respondToKeyPress(e);
+				info.setSpell(spellScreen.getSelectedSpell());
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+//				if (data.getInventory().getCategorySize(3) > 0)	{
+//					state = BATTLE_STATE.ITEM_USE_SELECTION;
+//					battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
+//					info.setTarget(battleArea.getTarget());
+//					info.setVisible(true);
+//				}
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				exitSpellMenu();
 			}
 		}
 	}
@@ -291,14 +316,32 @@ public class BattleScreen extends JPanel {
 		state = BATTLE_STATE.ITEM_SELECTION;
 		this.remove(menu);
 		this.add(itemScreen, BorderLayout.SOUTH);
-		itemScreen.setVisible(false);                  //Sigh
 		itemScreen.setVisible(true);
 		itemScreen.updateList();
+		info.setItem(itemScreen.getSelectedItem());
+		info.setVisible(true);
+	}
+	private void switchToSpells()	{
+		state = BATTLE_STATE.SPELL_SELECTION;
+		this.remove(menu);
+		this.add(spellScreen, BorderLayout.SOUTH);
+		spellScreen.setVisible(true);
+		spellScreen.updateList((PartyMember)activeMember);
+		info.setSpell(spellScreen.getSelectedSpell());
+		info.setVisible(true);
 	}
 	private void exitItemMenu()	{
 		state = BATTLE_STATE.MAIN;
 		itemScreen.setVisible(false);
+		info.setVisible(false);
 		this.remove(itemScreen);
+		this.add(menu, BorderLayout.SOUTH);
+	}
+	private void exitSpellMenu()	{
+		state = BATTLE_STATE.MAIN;
+		spellScreen.setVisible(false);
+		info.setVisible(false);
+		this.remove(spellScreen);
 		this.add(menu, BorderLayout.SOUTH);
 	}
 
@@ -379,8 +422,6 @@ public class BattleScreen extends JPanel {
 			menu.update();
 			activeMember.setCombatState(COMBAT_ACTION.ITEM);
 			state = BATTLE_STATE.ANIMATION;
-//			activeMember = turnOrder.getActiveCombatant();
-//			update();	
 		}
 		else	{
 			
@@ -415,6 +456,10 @@ public class BattleScreen extends JPanel {
 	}
 	public BattleInfo getBattleInfo()	{
 		return info;
+	}
+	public void sync()	{
+		Combat.combatText = battleArea.getCombatText();
+		Combat.info = info;
 	}
 	
 }

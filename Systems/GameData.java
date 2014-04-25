@@ -10,6 +10,9 @@ import GUI.DialogueBox;
 import GUI.InventoryPanel;
 import GUI.Menu;
 import GUI.PartyPanel;
+import Spell.DirectDamage;
+import Spell.SPELL_TARGETING;
+import Spell.Spell;
 import Systems.Enums.GAME_STATE;
 import GUI.StatisticsPanel;
 import Map.Board;
@@ -52,12 +55,15 @@ public class GameData {
 	 * Loads all game maps from files and sets the current map
 	 */
 	public GameData(int windowWidth, int windowHeight)	{
-		Combat.data = this;
 		player = new PlayerAvatar("Sabin", windowWidth, windowHeight, this);
 		player.initializeImages();
 		party[0] = new PartyMember(PartyMemberEnum.SABIN);
 		party[0].initialize(this);
 		playableCharacters.add(party[0]);
+		party[0].learnSpell(new Spell("Fireball", 10, "Fireball is like the John Smith of spells", 
+				new DirectDamage(10, 2, SPELL_TARGETING.ENEMY_SINGLE)));
+		party[0].learnSpell(new Spell("Frostbolt", 12, "Hipster fireball", 
+				new DirectDamage(8, 4, SPELL_TARGETING.ENEMY_SINGLE)));
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		

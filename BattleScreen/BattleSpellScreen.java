@@ -11,15 +11,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Systems.Consumable;
+import Spell.Spell;
 import Systems.GameData;
-import Systems.Item;
+import Systems.PartyMember;
 
-public class BattleItemsScreen extends JPanel {
+public class BattleSpellScreen extends JPanel {
 
 	private static final long serialVersionUID = -6022290414676321151L;
 
-	private GameData data;
+//	private GameData data;
+	private PartyMember caster;
 	private final int LIST_LENGTH = 4;
 
 	private ImageIcon cursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
@@ -27,12 +28,12 @@ public class BattleItemsScreen extends JPanel {
 	private int cursorPosition = 0;
 	private int scrollOffset = 0;
 
-	private ItemPanel[] itemList = new ItemPanel[] {new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel(), 
-			new ItemPanel(), new ItemPanel(), new ItemPanel(), new ItemPanel()};
+	private SpellPanel[] spellList = new SpellPanel[] {new SpellPanel(), new SpellPanel(), new SpellPanel(), new SpellPanel(), 
+			new SpellPanel(), new SpellPanel(), new SpellPanel(), new SpellPanel()};
 
 
-	public BattleItemsScreen(GameData data)	{
-		this.data = data;
+	public BattleSpellScreen(GameData data)	{
+//		this.data = data;
 
 		this.setLayout(new BorderLayout());
 
@@ -57,10 +58,10 @@ public class BattleItemsScreen extends JPanel {
 		}
 
 		for (int i = 0; i < LIST_LENGTH; i++)	{
-			leftPanel.add(itemList[i * 2]);
+			leftPanel.add(spellList[i * 2]);
 		}	
 		for (int i = 0; i < LIST_LENGTH; i++)	{
-			rightPanel.add(itemList[1 + i * 2]);
+			rightPanel.add(spellList[1 + i * 2]);
 		}	
 
 		this.add(leftPanel, BorderLayout.WEST);
@@ -75,20 +76,21 @@ public class BattleItemsScreen extends JPanel {
 		g.drawImage(cursor.getImage(), 10 + 300 * (cursorPosition % 2), 11 + 35 * (cursorPosition/2), null);
 	}
 
-	public void updateList()	{
-
-		if (data.getInventory().getConsumables().size() == 0)	{
-			itemList[0].declareEmpty();
+	public void updateList(PartyMember caster)	{
+		this.caster = caster;
+		System.out.println(caster.getKnownSpells().size());
+		
+		if (caster.getKnownSpells().size() == 0)	{
+			spellList[0].declareEmpty();
 		}
 		else	{
-
 			for (int i = 0; i < 6; i++)	{
-				if (i < data.getInventory().getConsumables().size())	{
-					itemList[i].setItem(data.getInventory().getConsumables().get(i + scrollOffset));
-					itemList[i].setVisible(true);
+				if (i < caster.getKnownSpells().size())	{
+					spellList[i].setSpell(caster.getKnownSpells().get(i + scrollOffset));
+					spellList[i].setVisible(true);
 				}
 				else	{
-					itemList[i].setVisible(false);
+					spellList[i].setVisible(false);
 				}
 			}
 		}
@@ -110,7 +112,7 @@ public class BattleItemsScreen extends JPanel {
 	}
 
 	private void dropCursor()	{
-		if (cursorPosition < 6 && (cursorPosition + 2) < data.getInventory().getConsumables().size())	{
+		if (cursorPosition < 6 && (cursorPosition + 2) < caster.getKnownSpells().size())	{
 			cursorPosition += 2;
 		}
 	}
@@ -120,7 +122,7 @@ public class BattleItemsScreen extends JPanel {
 		}
 	}
 	private void moveCursorRight()	{
-		if (cursorPosition % 2 == 0 && (cursorPosition + 1) < data.getInventory().getConsumables().size())	{
+		if (cursorPosition % 2 == 0 && (cursorPosition + 1) < caster.getKnownSpells().size())	{
 			cursorPosition++;
 		}
 	}
@@ -142,11 +144,11 @@ public class BattleItemsScreen extends JPanel {
 	 * 
 	 * @return The item at the selected cursor position
 	 */
-	public Item getSelectedItem()	{
-		if (data.getInventory().getConsumables().size() == 0)	{
+	public Spell getSelectedSpell()	{
+		if (caster.getKnownSpells().size() == 0)	{
 			return null;
 		}
-		return data.getInventory().getConsumables().get(cursorPosition + scrollOffset);
+		return caster.getKnownSpells().get(cursorPosition + scrollOffset);
 	}
 
 
@@ -156,15 +158,15 @@ public class BattleItemsScreen extends JPanel {
 	 * A subpanel inside of the scrollbox that represents an item. Contains the icon, name, and if the item is stackable,
 	 * the quantity of the item.
 	 */
-	private class ItemPanel extends JPanel	{
+	private class SpellPanel extends JPanel	{
 
 		private static final long serialVersionUID = 4342436547521865798L;
-		private ImageIcon itemIcon = new ImageIcon();
-		private JLabel itemName = new JLabel();
-		private JLabel itemQuantity = new JLabel();
+		private ImageIcon spellIcon = new ImageIcon();
+		private JLabel spellName = new JLabel();
+		private JLabel spellCost = new JLabel();
 		private boolean visible = true;
 
-		public ItemPanel()	{
+		public SpellPanel()	{
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			Dimension newDimension = new Dimension(300, 35);
 			this.setPreferredSize(newDimension);
@@ -173,46 +175,41 @@ public class BattleItemsScreen extends JPanel {
 			this.setOpaque(false);
 
 			this.setAlignmentX(LEFT_ALIGNMENT);
-			itemName.setAlignmentX(LEFT_ALIGNMENT);
+			spellName.setAlignmentX(LEFT_ALIGNMENT);
 
-			itemName.setMaximumSize(new Dimension(200, 35));
-			itemName.setPreferredSize(new Dimension(200, 35));
-
+			spellName.setMaximumSize(new Dimension(200, 35));
+			spellName.setPreferredSize(new Dimension(200, 35));
+			
 			this.add(Box.createHorizontalStrut(65));
-			this.add(itemName);
-			this.add(itemQuantity);
+			this.add(spellName);
+			this.add(spellCost);
 		}
 
 		@Override
 		protected void paintComponent(Graphics g)	{
 			if (visible)	{
-				g.drawImage(itemIcon.getImage(), 25, 0, null);
+				g.drawImage(spellIcon.getImage(), 25, 0, null);
 			}
 		}
 
-		public void setItem(Item item)	{
-			itemName.setText(item.getName());
-			itemIcon = item.getIcon();
-			if (((Consumable) item).getQuantity() > 1)	{
-				itemQuantity.setText("x" + Integer.toString(((Consumable) item).getQuantity()));
-			}
-			else	{
-				itemQuantity.setText("");
-			}
+		public void setSpell(Spell spell)	{
+			spellName.setText(spell.getName());
+			spellIcon = spell.getIcon();
+			spellCost.setText(Integer.toString(spell.getManaCost()));
 		}
 
 		public void setVisible(boolean b)	{
 			visible = b;
 			if (b == false)	{
-				itemName.setText("");
-				itemQuantity.setText("");
+				spellName.setText("");
+				spellCost.setText("");
 			}
 		}
 
 		public void declareEmpty()	{
-			itemName.setText("No usable items");
-			itemQuantity.setText("");
-			itemIcon = new ImageIcon();
+			spellName.setText("You know no spells :(");
+			spellCost.setText("");
+			spellIcon = new ImageIcon();
 		}
 	}
 }

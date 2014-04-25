@@ -9,11 +9,13 @@ public class Spell {
 	private ImageIcon icon;
 	private int manaCost;
 	private SpellModule[] effects;
+	private String description;
 	
-	public Spell(String name, int manaCost, SpellModule ...modules)	{
+	public Spell(String name, int manaCost, String description, SpellModule ...modules)	{
 		this.name = name;
 		icon = new ImageIcon();
 		this.manaCost = manaCost;
+		this.description = description;
 		effects = modules;
 	}
 	
@@ -31,6 +33,10 @@ public class Spell {
 	
 	public SpellModule[] getModules()	{
 		return effects;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 }

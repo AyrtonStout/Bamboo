@@ -16,6 +16,10 @@ public class DirectDamage implements SpellModule {
 		this.targeting = targeting;
 	}
 	
+	public int getRawDamageDealt(Combatant caster)	{
+		return baseDamage + caster.getSpellPower().getActual() * spellCoefficient;
+	}
+	
 	@Override
 	public void performAction(Combatant caster, Combatant target, PartyMember[] party, 
 			Encounter enemies, boolean targetOther, boolean AoE) {

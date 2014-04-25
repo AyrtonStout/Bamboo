@@ -15,7 +15,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import Spell.Spell;
 import Systems.Combatant;
+import Systems.Item;
 
 /**
  * @author mobius
@@ -153,11 +155,7 @@ public class BattleInfo extends JPanel {
 	 */
 	public void setTarget(Combatant target)	{
 		if (textMode)	{
-			textModeContents.setVisible(false);
-			this.remove(textModeContents);
-			this.add(normalModeContents);
-			normalModeContents.setVisible(true);
-			textMode = false;
+			changeToTargetMode();
 		}
 		
 		level.setText("L:" + target.getLevel());
@@ -166,14 +164,31 @@ public class BattleInfo extends JPanel {
 		mana.setText(target.getCurrentMana().getActual() + "/" + target.getMaxMana().getActual() + "MP");
 	}
 	
-	public void setText(String str)	{
-
+	public void setItem(Item item)	{
 		if (!textMode)	{
-			normalModeContents.setVisible(false);
-			this.remove(normalModeContents);
-			this.add(textModeContents);
-			textModeContents.setVisible(true);
-			textMode = true;
+			changeToTextMode();
+		}
+		if (item == null)	{
+			text.setText("You have no usable items, you bum");
+		} else	{
+			text.setText(item.getDescription());
+		}
+	}
+	
+	public void setSpell(Spell selectedSpell) {
+		if (!textMode)	{
+			changeToTextMode();
+		}
+		if (selectedSpell == null)	{
+			text.setText("Learn some spells, you hippie");
+		} else	{
+			text.setText(selectedSpell.getDescription());
+		}
+	}
+	
+	public void setText(String str)	{
+		if (!textMode)	{
+			changeToTextMode();
 		}
 		text.setText(str);
 	}
@@ -197,11 +212,29 @@ public class BattleInfo extends JPanel {
 		}
 	}
 	
+	private void changeToTextMode()	{
+		normalModeContents.setVisible(false);
+		this.remove(normalModeContents);
+		this.add(textModeContents);
+		textModeContents.setVisible(true);
+		textMode = true;
+	}
+	
+	private void changeToTargetMode()	{
+		textModeContents.setVisible(false);
+		this.remove(textModeContents);
+		this.add(normalModeContents);
+		normalModeContents.setVisible(true);
+		textMode = false;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g)	{
 		if (visible)	{
 			g.drawImage(background.getImage(), 0, 0, null);
 		}
 	}
+
+	
 
 }

@@ -41,6 +41,10 @@ v0.39
 -Enemies now attack a random target instead of the first target. Still a placeholder for a more robust system; just a better one
 -This concludes the combat series until after the spells and abilities series.
 
+v0.40 - Spell Series
+-Early spell implementation
+-Combat class is now static
+
 v0.38
 -Item option now brings up a new panel that will display consumables
 -Items are displayed in two columns of 4 items each

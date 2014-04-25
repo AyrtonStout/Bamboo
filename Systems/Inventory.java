@@ -20,6 +20,7 @@ public class Inventory {
 	public Inventory(GameData data)	{
 
 		this.data = data;
+		Combat.inventory = this;
 		
 	}
 

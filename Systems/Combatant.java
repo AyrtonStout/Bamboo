@@ -2,8 +2,11 @@ package Systems;
 
 import java.awt.Point;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+
+import Spell.Spell;
 
 import BattleScreen.Enums.COMBAT_ACTION;
 
@@ -23,6 +26,8 @@ public abstract class Combatant implements Serializable {
 	protected Point origin;                 //The point that the enemy is drawn to on the battle screen
 	protected boolean alive = true;
 	protected boolean justDied = false;
+	
+	protected ArrayList<Spell> spells = new ArrayList<Spell>();
 	
 	protected Stat attackPower = new Stat(0);
 	protected Stat spellPower = new Stat(0);
@@ -299,6 +304,20 @@ public abstract class Combatant implements Serializable {
 	}
 	public void setCombatState(COMBAT_ACTION action)	{
 		combatAction = action;
+	}
+	public ArrayList<Spell> getKnownSpells()	{
+		return spells;
+	}
+	public void learnSpell(Spell spell)	{
+		spells.add(spell);
+	}
+	public Spell forgetSpell(Spell spell)	{
+		for (int i = 0; i < spells.size(); i++)	{
+			if (spells.get(i).getName().compareTo(spell.getName()) == 0)	{
+				return spells.remove(i);
+			}
+		}
+		return null;
 	}
 	
 	@Override
