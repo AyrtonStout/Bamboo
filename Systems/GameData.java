@@ -10,7 +10,9 @@ import GUI.DialogueBox;
 import GUI.InventoryPanel;
 import GUI.Menu;
 import GUI.PartyPanel;
+import Spell.ANIMATION_TYPE;
 import Spell.DirectDamage;
+import Spell.DirectHeal;
 import Spell.SPELL_TARGETING;
 import Spell.Spell;
 import Systems.Enums.GAME_STATE;
@@ -60,10 +62,14 @@ public class GameData {
 		party[0] = new PartyMember(PartyMemberEnum.SABIN);
 		party[0].initialize(this);
 		playableCharacters.add(party[0]);
-		party[0].learnSpell(new Spell("Fireball", 10, "Fireball is like the John Smith of spells", 
+		
+		party[0].learnSpell(new Spell("Fireball", 10, 1, "Fireball is like the John Smith of spells", ANIMATION_TYPE.FIREBALL,
 				new DirectDamage(10, 2, SPELL_TARGETING.ENEMY_SINGLE)));
-		party[0].learnSpell(new Spell("Frostbolt", 12, "Hipster fireball", 
+		party[0].learnSpell(new Spell("Frostbolt", 12, 0, "Hipster fireball", ANIMATION_TYPE.FROSTBOLT,
 				new DirectDamage(8, 4, SPELL_TARGETING.ENEMY_SINGLE)));
+		party[0].learnSpell(new Spell("Heal", 15, 2, "Number one source of green combat text", ANIMATION_TYPE.HEAL,
+				new DirectHeal(15, 4, SPELL_TARGETING.EITHER_SINGLE)));
+		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		

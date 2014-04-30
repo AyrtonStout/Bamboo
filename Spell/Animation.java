@@ -1,10 +1,7 @@
 package Spell;
 
-import javax.swing.ImageIcon;
-
-public class Animation {
+public interface Animation {
 	
-	int duration;
-	ImageIcon effect;
-
+	public void update();
+	public boolean doneEh();
 }

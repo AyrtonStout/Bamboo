@@ -78,7 +78,6 @@ public class BattleSpellScreen extends JPanel {
 
 	public void updateList(PartyMember caster)	{
 		this.caster = caster;
-		System.out.println(caster.getKnownSpells().size());
 		
 		if (caster.getKnownSpells().size() == 0)	{
 			spellList[0].declareEmpty();
@@ -115,6 +114,9 @@ public class BattleSpellScreen extends JPanel {
 		if (cursorPosition < 6 && (cursorPosition + 2) < caster.getKnownSpells().size())	{
 			cursorPosition += 2;
 		}
+		else if (cursorPosition < 6 && (cursorPosition + 1) < caster.getKnownSpells().size())	{
+			cursorPosition += 1;
+		}
 	}
 	private void raiseCursor()	{
 		if (cursorPosition > 1)	{
@@ -131,7 +133,7 @@ public class BattleSpellScreen extends JPanel {
 			cursorPosition--;
 		}
 	}
-	public void resetItemCursor()	{
+	public void resetCursor()	{
 		cursorPosition = 0;
 		scrollOffset = 0;
 	}

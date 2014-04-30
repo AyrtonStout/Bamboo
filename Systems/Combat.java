@@ -6,7 +6,9 @@ import BattleScreen.BattleInfo;
 import BattleScreen.Enums.TEXT_TYPE;
 import BattleScreen.FloatingCombatText;
 import Spell.DirectDamage;
+import Spell.DirectHeal;
 import Spell.Spell;
+import Spell.SpellModule;
 import Systems.Enums.CONSUMABLE_TYPE;
 
 /**
@@ -22,8 +24,8 @@ public class Combat {
 	private static TEXT_TYPE crit;
 	public static final int BASE_HIT_CHANCE = 85;
 
-	
-	
+
+
 	/**
 	 * Used to do a basic attack calculation between two people
 	 * 
@@ -88,26 +90,39 @@ public class Combat {
 		}
 		return false;
 	}
-	
-	
+
+
 	public static boolean castSpell(Spell spell, Combatant caster, Combatant target)	{
-		
+
+		caster.modCurrentMana(-spell.getManaCost());
+
 		for (int i = 0; i < spell.getModules().length; i++)	{
 			if (spell.getModules()[i].getClass() == DirectDamage.class)	{
-				caster.modCurrentMana(-spell.getManaCost());
+				//TODO different things depending on targeting configurations 
 				int damage = ((DirectDamage) spell.getModules()[i]).getRawDamageDealt(caster);
 				target.modCurrentHealth(-damage);
-				addBattleText(target, spell, true);
+				combatText.addDelayedBattleText(Integer.toString(damage), target, TEXT_TYPE.SPELL, 20);
+				if (caster.getClass() == PartyMember.class)	{
+					((PartyMember) caster).increaseDamageDealt(damage);
+				}
+			}
+			else if (spell.getModules()[i].getClass() == DirectHeal.class)	{
+				int heal = ((DirectHeal) spell.getModules()[i]).getHealingDone(caster);
+				target.modCurrentHealth(heal);
+				combatText.addDelayedBattleText(Integer.toString(heal), target, TEXT_TYPE.HEAL, 20);
+				if (caster.getClass() == PartyMember.class)	{
+					((PartyMember) caster).increaseHealingDone(heal);
+				}
 			}
 			//TODO change arguments and case each spell module
 		}
-		
+
 		return true;
-		
+
 	}
 
-	
-	
+
+
 	/**
 	 * Used for a basic combat calculation to tell whether or not the attack missed.
 	 * 
@@ -153,7 +168,7 @@ public class Combat {
 					1 : aggressor.getAttack() - victim.getArmor().getActual();
 		}
 	}
-	
+
 	private static boolean validHealTargetEh(Combatant target)	{
 		if (target.getCurrentHealth().getActual() == target.getMaxHealth().getActual())	{
 			info.setText(target.getName() + " is already at full health");
@@ -165,7 +180,7 @@ public class Combat {
 		}
 		return true;
 	}
-	
+
 	private static boolean validManaRestoreTargetEh(Combatant target)	{
 		if (target.aliveEh() == false)	{
 			info.setText(target.getName() + " is too dead to drink potions");
@@ -177,7 +192,7 @@ public class Combat {
 		}
 		return true;
 	}
-	
+
 	private static void healTarget(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (caster.getClass() == PartyMember.class)	{
 			((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
@@ -189,7 +204,7 @@ public class Combat {
 			receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
 		}
 	}
-	
+
 	private static void restoreMana(Combatant caster, Combatant receiver, Consumable usedItem) {
 		receiver.modCurrentMana(usedItem.getManaRestore());
 
@@ -197,7 +212,7 @@ public class Combat {
 			receiver.getCurrentMana().setBase(receiver.getMaxMana().getActual());
 		}	
 	}
-	
+
 	private static void addBattleText(Combatant receiver, Consumable usedItem)	{
 		final int POTION_ANIMATION_DELAY = 20;
 		if (usedItem.getHealthRestore() > 0)	{
@@ -209,9 +224,12 @@ public class Combat {
 					Integer.toString(usedItem.getManaRestore()), receiver, TEXT_TYPE.MANA_RESTORE, POTION_ANIMATION_DELAY);
 		}
 	}
-	
-	private static void addBattleText(Combatant receiver, Spell spell, boolean harmful)	{
-		
-	}
 
+//	private static void addBattleText(Combatant receiver, SpellModule spell, boolean harmful)	{
+//		final int SPELL_ANIMATION_DELAY = 20;
+//		if (spell.getClass() == DirectDamage.class)	{
+//
+//		}
+//
+//	}
 }

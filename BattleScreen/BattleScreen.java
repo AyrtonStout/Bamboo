@@ -205,15 +205,30 @@ public class BattleScreen extends JPanel {
 				info.setSpell(spellScreen.getSelectedSpell());
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
-//				if (data.getInventory().getCategorySize(3) > 0)	{
-//					state = BATTLE_STATE.ITEM_USE_SELECTION;
-//					battleArea.setTargetAlly(!((Consumable) itemScreen.getSelectedItem()).harmfulEh());
-//					info.setTarget(battleArea.getTarget());
+				if (activeMember.getCurrentMana().getActual() >= spellScreen.getSelectedSpell().getManaCost())	{
+					state = BATTLE_STATE.SPELL_TARGET;
+					battleArea.setTargetAlly(!(spellScreen.getSelectedSpell().harmfulEh()));
+					info.setTarget(battleArea.getTarget());
 //					info.setVisible(true);
-//				}
+				}
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_X)	{
 				exitSpellMenu();
+			}
+		}
+		
+		else if (state == BATTLE_STATE.SPELL_TARGET)	{
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT
+					|| e.getKeyCode() == KeyEvent.VK_LEFT)	{
+				battleArea.respondToInput(e, info);	
+			}
+			
+			else if (e.getKeyCode() == KeyEvent.VK_Z)	{
+				useSpell();
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_X)	{
+				info.setSpell(spellScreen.getSelectedSpell());
+				state = BATTLE_STATE.SPELL_SELECTION;
 			}
 		}
 	}
@@ -426,6 +441,18 @@ public class BattleScreen extends JPanel {
 		else	{
 			
 		}
+	}
+	
+	private void useSpell()	{
+		info.setVisible(false);
+		Combat.castSpell(spellScreen.getSelectedSpell(), activeMember, battleArea.getTarget());
+		turnOrder.endCombatantTurn(spellScreen.getSelectedSpell().getPriority());
+		spellScreen.resetCursor();
+		this.remove(spellScreen);
+		this.add(menu, BorderLayout.SOUTH);
+		menu.update();
+		activeMember.setCombatState(COMBAT_ACTION.ITEM);
+		state = BATTLE_STATE.ANIMATION;
 	}
 
 

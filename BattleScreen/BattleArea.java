@@ -71,7 +71,8 @@ public class BattleArea extends JPanel	{
 	protected void paintComponent(Graphics g)	{
 		drawParty(g);
 		battleScreen.getEnemies().drawEnemies(g);
-		if (battleScreen.getState() == BATTLE_STATE.ATTACK_SELECTION || battleScreen.getState() == BATTLE_STATE.ITEM_USE_SELECTION)	{
+		if (battleScreen.getState() == BATTLE_STATE.ATTACK_SELECTION || battleScreen.getState() == BATTLE_STATE.ITEM_USE_SELECTION ||
+				battleScreen.getState() == BATTLE_STATE.SPELL_TARGET)	{
 			drawTargetCursor(g);
 		}
 		battleText.drawText(g);
