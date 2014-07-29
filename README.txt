@@ -4,6 +4,7 @@ Completion Status-
 Game is continually being developed and is still missing some key systems. However many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen, inventory and party screens.
 
 Current Focus: Bug fixes and enhancements to older code
+Current Issues: Spells are still WIP. Using them during combat will sometimes create infinite loops
 
 Note on running the game-
 Run the game from the Frame class. If an error is thrown, first run the MapWriter class to regenerate the map and then run again from the Frame class.
