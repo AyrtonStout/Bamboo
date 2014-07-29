@@ -7,7 +7,8 @@ Current Focus: Bug fixes and enhancements to older code
 Current Issues: Spells are still WIP. Using them during combat will sometimes create infinite loops
 
 Note on running the game-
-Run the game from the Frame class. If an error is thrown, first run the MapWriter class to regenerate the map and then run again from the Frame class.
+Run the game from the Frame class found inside the GUI folder. 
+If an error is thrown, run the MapWriter class inside the Map folder to regenerate the map and then run again from the Frame class.
 
 Note on playing the game-
 Current keybinds are hard coded. 
