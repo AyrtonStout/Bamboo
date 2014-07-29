@@ -13,6 +13,7 @@ import Systems.InputManager;
 public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 7994551050627642940L;
+	public static boolean combatEnabled = false;
 
 	public final int WINDOW_HEIGHT = 600;
 	public final int WINDOW_WIDTH = 600;
