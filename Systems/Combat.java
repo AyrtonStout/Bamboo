@@ -2,6 +2,7 @@ package Systems;
 
 import java.util.Random;
 
+import BattleScreen.BattleAnimations;
 import BattleScreen.BattleInfo;
 import BattleScreen.Enums.TEXT_TYPE;
 import BattleScreen.FloatingCombatText;
@@ -20,6 +21,7 @@ public class Combat {
 	public static FloatingCombatText combatText;
 	public static BattleInfo info;
 	public static Inventory inventory;
+	public static BattleAnimations animations;
 	private static Random rand = new Random();
 	private static TEXT_TYPE crit;
 	public static final int BASE_HIT_CHANCE = 85;
@@ -53,18 +55,17 @@ public class Combat {
 		}
 	}
 
-	public static void heal(Combatant caster, Combatant receiver)	{
-
-	}
-
 	public static void usePotion(Combatant caster, Combatant receiver, Consumable usedItem)	{
 		if (usedItem.getHealthRestore() > 0)	{
-			healTarget(caster, receiver, usedItem);
+			healTarget(caster, receiver, usedItem.getHealthRestore());
 		}
 		if (usedItem.getManaRestore() > 0)	{
 			restoreMana(caster, receiver, usedItem);
 		}
-		addBattleText(receiver, usedItem);
+		
+		if (caster.getClass() == PartyMember.class)	{
+			((PartyMember) caster).startItemAnimation();
+		}
 	}
 
 	/**
@@ -80,9 +81,6 @@ public class Combat {
 		if (usedItem.getConsumableType() == CONSUMABLE_TYPE.POTION)	{
 			if ((usedItem.getHealthRestore() > 0 && validHealTargetEh(target)) || 
 					(usedItem.getManaRestore() > 0 && validManaRestoreTargetEh(target)))	{
-				if (user.getClass() == PartyMember.class)	{
-					((PartyMember) user).startItemAnimation();
-				}
 				usePotion(user, target, usedItem);
 				inventory.removeItem(usedItem);
 				return true;
@@ -94,6 +92,10 @@ public class Combat {
 
 	public static boolean castSpell(Spell spell, Combatant caster, Combatant target)	{
 
+		if (!validSpellCast(spell, caster, target))	{
+			return false;
+		}
+		
 		caster.modCurrentMana(-spell.getManaCost());
 
 		for (int i = 0; i < spell.getModules().length; i++)	{
@@ -107,20 +109,45 @@ public class Combat {
 				}
 			}
 			else if (spell.getModules()[i].getClass() == DirectHeal.class)	{
-				int heal = ((DirectHeal) spell.getModules()[i]).getHealingDone(caster);
-				target.modCurrentHealth(heal);
-				combatText.addDelayedBattleText(Integer.toString(heal), target, TEXT_TYPE.HEAL, 20);
-				if (caster.getClass() == PartyMember.class)	{
-					((PartyMember) caster).increaseHealingDone(heal);
-				}
+				int healAmount = ((DirectHeal) spell.getModules()[i]).getHealingDone(caster);
+				healTarget(caster, target, healAmount);
 			}
 			//TODO change arguments and case each spell module
 		}
 
+		animations.addAnimation(spell.generateAnimation(caster, target));
+		
+		if (caster.getClass() == PartyMember.class)	{
+			((PartyMember) caster).startItemAnimation();
+		}
+		
 		return true;
 
 	}
 
+	private static boolean validSpellCast(Spell spell, Combatant caster, Combatant target)	{
+		if (caster.getCurrentMana().getActual() < spell.getManaCost())	{
+			info.setText("Insufficient Mana");
+			return false;
+		}
+		if (spell.getModules()[0].getClass() == DirectDamage.class)	{
+			if (target.aliveEh() == false)	{
+				info.setText("Target is already dead");
+				return false;
+			}
+		}
+		if (spell.getModules()[0].getClass() == DirectHeal.class)	{
+			if (target.aliveEh() == false)	{
+				info.setText("Target is dead");
+				return false;
+			}
+			if (target.getMaxHealth().getActual() == target.getCurrentHealth().getActual())	{
+				info.setText("Target is already at full health");
+				return false;
+			}
+		}
+		return true;
+	}
 
 
 	/**
@@ -193,16 +220,19 @@ public class Combat {
 		return true;
 	}
 
-	private static void healTarget(Combatant caster, Combatant receiver, Consumable usedItem)	{
+	private static void healTarget(Combatant caster, Combatant receiver, int healAmount)	{
 		if (caster.getClass() == PartyMember.class)	{
-			((PartyMember) caster).increaseHealingDone(usedItem.getHealthRestore());
+			((PartyMember) caster).increaseHealingDone(healAmount);
 		}
-
-		receiver.modCurrentHealth(usedItem.getHealthRestore());
-
-		if (receiver.getCurrentHealth().getBase() > receiver.getMaxHealth().getActual())	{
-			receiver.getCurrentHealth().setBase(receiver.getMaxHealth().getActual());
+		
+		if (healAmount > (receiver.getMaxHealth().getActual() - receiver.getCurrentHealth().getActual()))	{
+			healAmount = receiver.getMaxHealth().getActual() - receiver.getCurrentHealth().getActual();
 		}
+		
+		receiver.modCurrentHealth(healAmount);
+		
+		combatText.addDelayedBattleText(Integer.toString(healAmount), receiver, TEXT_TYPE.HEAL, 20);
+		
 	}
 
 	private static void restoreMana(Combatant caster, Combatant receiver, Consumable usedItem) {

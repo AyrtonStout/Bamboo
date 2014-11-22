@@ -444,15 +444,17 @@ public class BattleScreen extends JPanel {
 	}
 	
 	private void useSpell()	{
-		info.setVisible(false);
-		Combat.castSpell(spellScreen.getSelectedSpell(), activeMember, battleArea.getTarget());
-		turnOrder.endCombatantTurn(spellScreen.getSelectedSpell().getPriority());
-		spellScreen.resetCursor();
-		this.remove(spellScreen);
-		this.add(menu, BorderLayout.SOUTH);
-		menu.update();
-		activeMember.setCombatState(COMBAT_ACTION.ITEM);
-		state = BATTLE_STATE.ANIMATION;
+		if (Combat.castSpell(spellScreen.getSelectedSpell(), activeMember, battleArea.getTarget()) == true)	{
+			info.setVisible(false);
+			turnOrder.endCombatantTurn(spellScreen.getSelectedSpell().getPriority());
+			spellScreen.resetCursor();
+			this.remove(spellScreen);
+			this.add(menu, BorderLayout.SOUTH);
+			menu.update();
+			activeMember.setCombatState(COMBAT_ACTION.ITEM);
+			state = BATTLE_STATE.ANIMATION;
+			
+		}
 	}
 
 
@@ -487,6 +489,7 @@ public class BattleScreen extends JPanel {
 	public void sync()	{
 		Combat.combatText = battleArea.getCombatText();
 		Combat.info = info;
+		Combat.animations = battleArea.getAnimations();
 	}
 	
 }

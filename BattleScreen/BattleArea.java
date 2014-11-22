@@ -23,6 +23,7 @@ public class BattleArea extends JPanel	{
 
 	private static final long serialVersionUID = 1081923729370436576L;
 	private BattleScreen battleScreen;
+	private BattleAnimations animations = new BattleAnimations();
 	private GameData data;
 
 	private FloatingCombatText battleText = new FloatingCombatText();
@@ -75,6 +76,7 @@ public class BattleArea extends JPanel	{
 				battleScreen.getState() == BATTLE_STATE.SPELL_TARGET)	{
 			drawTargetCursor(g);
 		}
+		animations.drawAnimations(g);
 		battleText.drawText(g);
 	}
 
@@ -192,6 +194,10 @@ public class BattleArea extends JPanel	{
 	
 	public FloatingCombatText getCombatText()	{
 		return battleText;
+	}
+
+	public BattleAnimations getAnimations() {
+		return animations;
 	}
 	
 }

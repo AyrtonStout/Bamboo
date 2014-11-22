@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import GUI.Frame;
 import Map.Enums.ACTION;
 import Systems.GameData;
 import Systems.PartyMember;
@@ -21,32 +22,32 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	private int backgroundX, backgroundY, walkDelay;                                              //Current map passed in by the Board
 	private int windowWidth, windowHeight;
 	private GameData data;
-	
+
 	private boolean doorTransition = false;                          //Whether or not the character just exited a door
 	private final int MOVEMENT_BUFFER = 235;                         /*Minimum number of pixels between the character and the side of the screen
                                                                       for the screen to begin scrolling */
 	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
 	                                                                   Recommended values 1-5 */
 	private NPC interactingNPC = null;                                //The NPC the player is (likely) talking to
-	
+
 	private boolean keyLeft = false;
 	private boolean keyUp = false;
 	private boolean keyRight = false;
 	private boolean keyDown = false;
-	
+
 	Random rand = new Random();
 	int stepsSinceBattle = 0;
 
 	public PlayerAvatar(String name, int windowWidth, int windowHeight, GameData data) {
-		
+
 		this.name = name;
 		this.data = data;
-		
+
 		left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
 		up= new ImageIcon("GUI/Resources/Sabin (Up).gif");
 		right= new ImageIcon("GUI/Resources/Sabin (Right).gif");
 		down= new ImageIcon("GUI/Resources/Sabin (Down).gif");
-	
+
 		backgroundX = 200;                        //How far the background has scrolled so far
 		backgroundY = 0;
 		coordX = 10;                                //Character's grid location
@@ -57,7 +58,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		facing = ACTION.DOWN;
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
-		
+
 		speed = 2;
 	}
 
@@ -86,7 +87,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			queuedAction = ACTION.DOWN;        
 		}
 	}
-	
+
 	/**
 	 * Cancels the queued move the character was going to make after its current move expired
 	 * The move that is cancelled depends on the key that is released. If another key is still
@@ -105,7 +106,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		case KeyEvent.VK_DOWN:
 			keyDown = false; break;
 		}
-		
+
 		if (keyLeft == true)
 			queuedAction = ACTION.LEFT;
 		else if (keyUp == true)
@@ -140,14 +141,14 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			if (remainingSteps == 0) {
 				updateCoordinate(action, false);
 				PartyMember.incrementStepsTaken();
-				
+
 				//Check to see if recently exited a door
 				if (doorTransition = true)	{
 					doorTransition = false;
 				}
-				
+
 				//Check to see if a monster was spawned
-				if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn() != null)	{
+				if (Frame.combatEnabled == true && data.getCurrentMap().getArray()[coordX][coordY].getSpawn() != null)	{
 					int random = rand.nextInt(100);
 					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random))	{
 						data.getBattleScreen().enterBattle(
@@ -155,7 +156,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 						queuedMove = false;
 					}
 				}
-				
+
 				//Continue Movement
 				if (queuedMove & validMoveEh(queuedAction))	{
 					action = queuedAction;
@@ -197,14 +198,14 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 				facing = queuedAction;
 			}	
 		}
-		
+
 		//Changing maps
 		if (transitionEh())	{
 			map.moveBlocks[coordX][coordY] = false;
 			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
 			setMap(enteredDoor.getLink().getParentMap());
 			centerBackground(enteredDoor);
-			
+
 			setCoordX(enteredDoor.getLink().getX());
 			setCoordY(enteredDoor.getLink().getY());
 			map.moveBlocks[coordX][coordY] = true;
@@ -213,7 +214,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			action = ACTION.STAND;
 			queuedAction = ACTION.STAND;
 		}
-		
+
 		//This has to happen after door checks or it leaves phantom moveblocks after transitions
 		if (moving)	{
 			updateCoordinate(action, true);
@@ -236,7 +237,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			walkDelay = MOVEMENT_DELAY;
 		}
 	}
-	
+
 	/**
 	 * Will return true if the character is walking into a door classified as a walkTransition.
 	 * Will return true if the character is already on a door classified as a directionTransition
@@ -245,7 +246,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	 * @return Whether or not the player has ended on a tile that warrants a map or area transition
 	 */
 	public boolean transitionEh()	{
-		
+
 		//Walk doors
 		if (!doorTransition)	{
 			if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
@@ -320,7 +321,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * After exiting a door, this method will attempt to center the player in the center of the screen. In the event that
 	 * the character is on the side of the screen, the method will attempt to center it as close as possible without ever
@@ -348,21 +349,21 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
 		}
 	}
-	
+
 	public void changePartyMember(PartyMember member)	{
 		name = member.getName();
-		
+
 		left = member.getLeft();
 		up = member.getUp();
 		right = member.getRight();
 		down = member.getDown();
-		
+
 		walkLeft = member.getWalkLeft();
 		walkUp = member.getWalkUp();
 		walkRight = member.getWalkRight();
 		walkDown = member.getWalkDown();
 	}
-	
+
 	/**
 	 * @return Background's X offset due to player movement
 	 */

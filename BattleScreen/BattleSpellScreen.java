@@ -19,7 +19,7 @@ public class BattleSpellScreen extends JPanel {
 
 	private static final long serialVersionUID = -6022290414676321151L;
 
-//	private GameData data;
+	//	private GameData data;
 	private PartyMember caster;
 	private final int LIST_LENGTH = 4;
 
@@ -33,7 +33,7 @@ public class BattleSpellScreen extends JPanel {
 
 
 	public BattleSpellScreen(GameData data)	{
-//		this.data = data;
+		//		this.data = data;
 
 		this.setLayout(new BorderLayout());
 
@@ -78,20 +78,24 @@ public class BattleSpellScreen extends JPanel {
 
 	public void updateList(PartyMember caster)	{
 		this.caster = caster;
+
+
+		for (int i = 0; i < 6; i++)	{
+			if (i < caster.getKnownSpells().size())	{
+				spellList[i].setSpell(caster.getKnownSpells().get(i + scrollOffset));
+				spellList[i].setVisible(true);
+			}
+			else	{
+				spellList[i].setVisible(false);
+			}
+		}
 		
 		if (caster.getKnownSpells().size() == 0)	{
 			spellList[0].declareEmpty();
+			cursorPosition = 0;
 		}
-		else	{
-			for (int i = 0; i < 6; i++)	{
-				if (i < caster.getKnownSpells().size())	{
-					spellList[i].setSpell(caster.getKnownSpells().get(i + scrollOffset));
-					spellList[i].setVisible(true);
-				}
-				else	{
-					spellList[i].setVisible(false);
-				}
-			}
+		else if (cursorPosition > caster.getKnownSpells().size() - 1)	{
+			cursorPosition = caster.getKnownSpells().size() - 1;
 		}
 	}
 
@@ -181,7 +185,7 @@ public class BattleSpellScreen extends JPanel {
 
 			spellName.setMaximumSize(new Dimension(200, 35));
 			spellName.setPreferredSize(new Dimension(200, 35));
-			
+
 			this.add(Box.createHorizontalStrut(65));
 			this.add(spellName);
 			this.add(spellCost);
