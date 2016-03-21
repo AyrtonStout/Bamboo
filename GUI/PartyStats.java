@@ -191,7 +191,7 @@ import Systems.Weapon;
 				change = -originalItem.getActual() + newItem.getActual();	
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
+			String statText = "\u2192";
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}
@@ -238,7 +238,7 @@ import Systems.Weapon;
 				}
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
+			String statText = "\u2192";
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}
@@ -279,7 +279,7 @@ import Systems.Weapon;
 				change = -originalItem.getIntellect().getActual() + newItem.getIntellect().getActual();	
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "➤";
+			String statText = "\u2192";
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}

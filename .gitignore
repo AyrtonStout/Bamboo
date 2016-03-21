@@ -1,0 +1,6 @@
+*.class
+*.iml
+out/
+*.idea
+.classpath
+
