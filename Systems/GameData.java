@@ -114,6 +114,7 @@ public class GameData {
 			currentMap.updateAll();
 		}
 		
+		
 		/*
 		 * TODO Figure out why I need this
 		 * If this statement is left out, the game will lose focus and become unresponsive
@@ -124,6 +125,7 @@ public class GameData {
 				input.requestFocusInWindow();
 			}
 		}
+//		System.out.println(battleScreen.getState());
 //		System.out.println(input.isFocusOwner());
 	}
 

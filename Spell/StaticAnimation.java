@@ -5,14 +5,14 @@ import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
-public class StaticAnimation implements Animation {
+public class StaticAnimation implements SpellAnimation {
 
 	private int duration;
 	private ImageIcon effect;
 	private Point origin;
 
-	public StaticAnimation(ANIMATION_TYPE type, int duration, Point origin)	{
-		this.duration = duration;
+	public StaticAnimation(ANIMATION_TYPE type, Point origin)	{
+		this.duration = type.getSpeed();
 		effect = new ImageIcon("GUI/Resources/Animation/" + type);
 		this.origin = origin;
 	}
