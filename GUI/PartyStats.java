@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
@@ -32,6 +28,7 @@ import Systems.Weapon;
 
 		private final int HEIGHT = 425;
 		private final int WIDTH = 235;
+        private String statArrow = "\u2191";
 
 		public PartyStats(Font statFont, Font boldFont)	{
 
@@ -191,7 +188,7 @@ import Systems.Weapon;
 				change = -originalItem.getActual() + newItem.getActual();	
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "\u2192";
+			String statText = statArrow;
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}
@@ -238,7 +235,7 @@ import Systems.Weapon;
 				}
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "\u2192";
+			String statText = statArrow;
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}
@@ -279,7 +276,7 @@ import Systems.Weapon;
 				change = -originalItem.getIntellect().getActual() + newItem.getIntellect().getActual();	
 			}
 			String tmp = Integer.toString(change + characterStat.getActual());
-			String statText = "\u2192";
+			String statText = statArrow;
 			for (int i = tmp.length(); i < COLUMN_WIDTH; i++)	{
 				statText += "  ";
 			}

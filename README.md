@@ -1,7 +1,7 @@
 ####An old school role playing game that borrows heavily from games like Pokemon and Final Fantasy.
 
 ##Completion Status-
-Game is continually being developed and is still missing some key systems. However many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen, inventory and party screens.
+Game is WIP though progress is pretty much dead. Some systems remain incomplete, however many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen, inventory and party screens.
 
 ###Current Focus: 
  - Bug fixes and enhancements to older code
