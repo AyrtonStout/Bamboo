@@ -1,5 +1,8 @@
 ####An old school role playing game that borrows heavily from games like Pokemon and Final Fantasy.
 
+Click the image for a demo video of most of the game's features
+[![Project Demo Video](https://img.youtube.com/vi/vMYlcoZ04Vs/0.jpg)](https://www.youtube.com/watch?v=vMYlcoZ04Vs)
+
 ##Completion Status-
 Game is WIP though progress is pretty much dead. Some systems remain incomplete, however many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen, inventory and party screens.
 
