@@ -1,19 +1,11 @@
 package GUI;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import Systems.PartyMember;
 
-public class PartyInfo extends JPanel	{
+import javax.swing.*;
+import java.awt.*;
+
+public class PartyInfo extends JPanel {
 
 	private static final long serialVersionUID = -6021372252484376467L;
 
@@ -28,8 +20,7 @@ public class PartyInfo extends JPanel	{
 
 	private ImageIcon portrait;
 
-
-	public PartyInfo(Font menuFont, Font boldFont)	{
+	public PartyInfo(Font menuFont, Font boldFont) {
 
 		this.setPreferredSize(new Dimension(600, HEIGHT));
 		this.setMaximumSize(new Dimension(600, HEIGHT));
@@ -94,7 +85,6 @@ public class PartyInfo extends JPanel	{
 		healthManaTextPanel.add(healthNumberLabel);
 		healthManaTextPanel.add(manaNumberLabel);
 
-
 		JPanel xpLabelPanel = new JPanel();
 		xpLabelPanel.setLayout(new BoxLayout(xpLabelPanel, BoxLayout.Y_AXIS));
 		xpLabelPanel.setPreferredSize(new Dimension(100, HEIGHT));
@@ -110,7 +100,6 @@ public class PartyInfo extends JPanel	{
 		xpLabelPanel.add(Box.createVerticalStrut(TOP_SPACE));
 		xpLabelPanel.add(xpEarnedLabel);
 		xpLabelPanel.add(xpToGoLabel);
-
 
 		JPanel xpTextPanel = new JPanel();
 		xpTextPanel.setLayout(new BoxLayout(xpTextPanel, BoxLayout.Y_AXIS));
@@ -138,17 +127,17 @@ public class PartyInfo extends JPanel	{
 		this.add(xpTextPanel);
 	}
 
-	protected void paintComponent(Graphics g)	{
+	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(portrait.getImage(), 60, TOP_SPACE - 10, null);
 	}
 
-	public void update(PartyMember displayedMember)	{
+	public void update(PartyMember displayedMember) {
 		portrait = displayedMember.getPortrait();
 		levelNumberLabel.setText(Integer.toString(displayedMember.getLevel()));
 		healthNumberLabel.setText(displayedMember.getCurrentHealth().toString() + "/" + displayedMember.getMaxHealth().toString());
 		manaNumberLabel.setText(displayedMember.getCurrentMana().toString() + "/" + displayedMember.getMaxMana().toString());
-		xpEarnedText.setText(displayedMember.getXpTotalEarned() + " (-" + 
+		xpEarnedText.setText(displayedMember.getXpTotalEarned() + " (-" +
 				Integer.toString(displayedMember.getXpRequirement() - displayedMember.getXpThisLevel()) + ")");
 		xpToGoText.setText(displayedMember.getXpThisLevel() + "/" + displayedMember.getXpRequirement());
 	}

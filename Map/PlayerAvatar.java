@@ -1,42 +1,38 @@
 package Map;
 
-import java.awt.event.KeyEvent;
-import java.io.Serializable;
-import java.util.Random;
-
-import javax.swing.ImageIcon;
-
 import GUI.Frame;
 import Map.Enums.ACTION;
 import Systems.GameData;
 import Systems.PartyMember;
 
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.io.Serializable;
+import java.util.Random;
+
 /**
  * @author mobius
- * The (player-controlled) character for the game. Has knowledge of its own position as a coordinate that corresponds to the map
- * as well as its pixels for when it is drawn to the screen. The offset for the background is also contained here
+ *         The (player-controlled) character for the game. Has knowledge of its own position as a coordinate that corresponds to the map
+ *         as well as its pixels for when it is drawn to the screen. The offset for the background is also contained here
  */
 public class PlayerAvatar extends CharacterAvatar implements Serializable {
 
 	private static final long serialVersionUID = 5680477392037994831L;
-	private int backgroundX, backgroundY, walkDelay;                                              //Current map passed in by the Board
-	private int windowWidth, windowHeight;
-	private GameData data;
-
-	private boolean doorTransition = false;                          //Whether or not the character just exited a door
 	private final int MOVEMENT_BUFFER = 235;                         /*Minimum number of pixels between the character and the side of the screen
-                                                                      for the screen to begin scrolling */
+																	  for the screen to begin scrolling */
 	private final int MOVEMENT_DELAY = 5;                            /*Delay before movement begins when changing directions
 	                                                                   Recommended values 1-5 */
+	Random rand = new Random();
+	int stepsSinceBattle = 0;
+	private int backgroundX, backgroundY, walkDelay;
+	private int windowWidth, windowHeight;
+	private GameData data;
+	private boolean doorTransition = false;                          //Whether or not the character just exited a door
 	private NPC interactingNPC = null;                                //The NPC the player is (likely) talking to
-
 	private boolean keyLeft = false;
 	private boolean keyUp = false;
 	private boolean keyRight = false;
 	private boolean keyDown = false;
-
-	Random rand = new Random();
-	int stepsSinceBattle = 0;
 
 	public PlayerAvatar(String name, int windowWidth, int windowHeight, GameData data) {
 
@@ -44,9 +40,9 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		this.data = data;
 
 		left = new ImageIcon("GUI/Resources/Sabin (Left).gif");
-		up= new ImageIcon("GUI/Resources/Sabin (Up).gif");
-		right= new ImageIcon("GUI/Resources/Sabin (Right).gif");
-		down= new ImageIcon("GUI/Resources/Sabin (Down).gif");
+		up = new ImageIcon("GUI/Resources/Sabin (Up).gif");
+		right = new ImageIcon("GUI/Resources/Sabin (Right).gif");
+		down = new ImageIcon("GUI/Resources/Sabin (Down).gif");
 
 		backgroundX = 200;                        //How far the background has scrolled so far
 		backgroundY = 0;
@@ -64,27 +60,24 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 
 	/**
 	 * @param e KeyEvent passed in from the Board. Can only be an arrow key input
-	 * 
-	 * The KeyEvent causes the character to queue up a move to make when its current move
-	 * has expired. This method does not start the action
+	 *          <p>
+	 *          The KeyEvent causes the character to queue up a move to make when its current move
+	 *          has expired. This method does not start the action
 	 */
 	public void move(KeyEvent e) {
 		queuedMove = true;
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)        {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			keyRight = true;
-			queuedAction = ACTION.RIGHT;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_LEFT)        {
+			queuedAction = ACTION.RIGHT;
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			keyLeft = true;
-			queuedAction = ACTION.LEFT;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_UP)        {
+			queuedAction = ACTION.LEFT;
+		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 			keyUp = true;
-			queuedAction = ACTION.UP;        
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_DOWN)        {
+			queuedAction = ACTION.UP;
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 			keyDown = true;
-			queuedAction = ACTION.DOWN;        
+			queuedAction = ACTION.DOWN;
 		}
 	}
 
@@ -92,19 +85,23 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	 * Cancels the queued move the character was going to make after its current move expired
 	 * The move that is cancelled depends on the key that is released. If another key is still
 	 * held down (denoted by the keyLeft, keyUp, etc booleans) that movement will take over instead
-	 * 
+	 *
 	 * @param e The move to be cancelled
 	 */
 	public void cancelMove(KeyEvent e) {
-		switch (e.getKeyCode())	{
-		case KeyEvent.VK_LEFT:
-			keyLeft = false; break;
-		case KeyEvent.VK_UP:
-			keyUp = false; break;
-		case KeyEvent.VK_RIGHT:
-			keyRight = false; break;
-		case KeyEvent.VK_DOWN:
-			keyDown = false; break;
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_LEFT:
+				keyLeft = false;
+				break;
+			case KeyEvent.VK_UP:
+				keyUp = false;
+				break;
+			case KeyEvent.VK_RIGHT:
+				keyRight = false;
+				break;
+			case KeyEvent.VK_DOWN:
+				keyDown = false;
+				break;
 		}
 
 		if (keyLeft == true)
@@ -115,7 +112,7 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 			queuedAction = ACTION.RIGHT;
 		else if (keyDown == true)
 			queuedAction = ACTION.DOWN;
-		else	{
+		else {
 			queuedAction = ACTION.STAND;
 			queuedMove = false;
 		}
@@ -125,17 +122,17 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	 * Actions to be performed when the Board updates the character.
 	 * If the character is moving, it will move 'speed' pixels (currently 2) in that direction
 	 * Depending on the current arrangement of the map, the character may move or the map may move instead
-	 * 
-	 * If there is no current action playing, any queued action will become the current action for the next 
+	 * <p>
+	 * If there is no current action playing, any queued action will become the current action for the next
 	 * (STEP_SIZE / speed) updates (currently 20 updates)
 	 */
-	public void update()        {
-		if (moving)        {
-			if (remainingSteps == 40)	{
+	public void update() {
+		if (moving) {
+			if (remainingSteps == 40) {
 				updateCoordinate(action, true);
 			}
 			updatePixels(action);
-			remainingSteps -= speed;        
+			remainingSteps -= speed;
 
 			//When current move finishes, keep moving or stop movement
 			if (remainingSteps == 0) {
@@ -143,14 +140,14 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 				PartyMember.incrementStepsTaken();
 
 				//Check to see if recently exited a door
-				if (doorTransition = true)	{
+				if (doorTransition = true) {
 					doorTransition = false;
 				}
 
 				//Check to see if a monster was spawned
-				if (Frame.combatEnabled == true && data.getCurrentMap().getArray()[coordX][coordY].getSpawn() != null)	{
+				if (Frame.combatEnabled == true && data.getCurrentMap().getArray()[coordX][coordY].getSpawn() != null) {
 					int random = rand.nextInt(100);
-					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random))	{
+					if (data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEh(random)) {
 						data.getBattleScreen().enterBattle(
 								data.getCurrentMap().getArray()[coordX][coordY].getSpawn().spawnEncounter(random));
 						queuedMove = false;
@@ -158,13 +155,12 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 				}
 
 				//Continue Movement
-				if (queuedMove & validMoveEh(queuedAction))	{
+				if (queuedMove & validMoveEh(queuedAction)) {
 					action = queuedAction;
 					facing = action;
 					remainingSteps = STEP_SIZE;
 					currentImage = startAnimation(action);
-				}
-				else	{
+				} else {
 					currentImage = stopAnimation(action);
 					moving = false;
 					action = ACTION.STAND;
@@ -179,28 +175,26 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		 * 
 		 * This allows the player to change the direction they are facing while standing still
 		 */
-		else if (!moving)	{
-			if (walkDelay > -1)	{
+		else if (!moving) {
+			if (walkDelay > -1) {
 				walkDelay--;
 			}
-			if (queuedMove && validMoveEh(queuedAction))	{
-				if (walkDelay == 0)	{
+			if (queuedMove && validMoveEh(queuedAction)) {
+				if (walkDelay == 0) {
 					action = queuedAction;
 					remainingSteps = STEP_SIZE;
 					moving = true;
 					currentImage = startAnimation(queuedAction);
-				}
-				else if (walkDelay < 1)	{
+				} else if (walkDelay < 1) {
 					facingDelay(queuedAction);
 				}
-			}
-			else if (queuedMove)	{
+			} else if (queuedMove) {
 				facing = queuedAction;
-			}	
+			}
 		}
 
 		//Changing maps
-		if (transitionEh())	{
+		if (transitionEh()) {
 			map.moveBlocks[coordX][coordY] = false;
 			Door enteredDoor = map.findDoor(getCoordX(), getCoordY());
 			setMap(enteredDoor.getLink().getParentMap());
@@ -216,22 +210,21 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		}
 
 		//This has to happen after door checks or it leaves phantom moveblocks after transitions
-		if (moving)	{
+		if (moving) {
 			updateCoordinate(action, true);
 		}
 	}
 
 	/**
 	 * @param action The player's queued move
-	 * 
-	 * Delays the next move of the player if it is facing a new direction
+	 *               <p>
+	 *               Delays the next move of the player if it is facing a new direction
 	 */
-	private void facingDelay(ACTION action)	{
-		if (facing == action)	{
+	private void facingDelay(ACTION action) {
+		if (facing == action) {
 			currentImage = stopAnimation(action);
 			walkDelay = 1;
-		}
-		else if (action != ACTION.STAND)	{
+		} else if (action != ACTION.STAND) {
 			currentImage = stopAnimation(action);
 			facing = action;
 			walkDelay = MOVEMENT_DELAY;
@@ -242,29 +235,28 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	 * Will return true if the character is walking into a door classified as a walkTransition.
 	 * Will return true if the character is already on a door classified as a directionTransition
 	 * and pushes the key that corresponds to the transition.
-	 * 
+	 *
 	 * @return Whether or not the player has ended on a tile that warrants a map or area transition
 	 */
-	public boolean transitionEh()	{
+	public boolean transitionEh() {
 
 		//Walk doors
-		if (!doorTransition)	{
-			if (map.getArray()[coordX][coordY].getDoodad() != null)	{	
-				if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class)	{
-					if (((Door) map.getArray()[coordX][coordY].getDoodad()).walkTransitionEh())	{
+		if (!doorTransition) {
+			if (map.getArray()[coordX][coordY].getDoodad() != null) {
+				if (map.getArray()[coordX][coordY].getDoodad().getClass() == Door.class) {
+					if (((Door) map.getArray()[coordX][coordY].getDoodad()).walkTransitionEh()) {
 						doorTransition = true;
 						return true;
-					}
-					else if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh())	{
+					} else if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh()) {
 						doorTransition = true;
 					}
 				}
 			}
 		}
 		//Transition doors
-		else if (doorTransition && !moving)	{
-			if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh())	{
-				if (((Door) map.getArray()[coordX][coordY].getDoodad()).getDirection() == queuedAction)	{
+		else if (doorTransition && !moving) {
+			if (((Door) map.getArray()[coordX][coordY].getDoodad()).directionTransitionEh()) {
+				if (((Door) map.getArray()[coordX][coordY].getDoodad()).getDirection() == queuedAction) {
 					return true;
 				}
 			}
@@ -273,50 +265,38 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 		return false;
 	}
 
-
 	@Override
 	protected void updatePixels(ACTION action) {
-		if (action == ACTION.RIGHT)        {
-			if (charX + speed <= windowWidth - MOVEMENT_BUFFER)        {             //Movement until character reaches the screen scroll buffer
-				charX += speed;        
-			}
-			else if (backgroundX + windowWidth < map.getDrawingX())        {         //Movement of screen while character on buffer
+		if (action == ACTION.RIGHT) {
+			if (charX + speed <= windowWidth - MOVEMENT_BUFFER) {             //Movement until character reaches the screen scroll buffer
+				charX += speed;
+			} else if (backgroundX + windowWidth < map.getDrawingX()) {         //Movement of screen while character on buffer
 				backgroundX += speed;
-			}
-			else if (charX < windowWidth - 35)        {                              //Movement of character when there is no more screen left to scroll
+			} else if (charX < windowWidth - 35) {                              //Movement of character when there is no more screen left to scroll
 				charX += speed;
 			}
-		}
-		else if (action == ACTION.LEFT)        {
-			if (charX - speed >= MOVEMENT_BUFFER - 32)        {
+		} else if (action == ACTION.LEFT) {
+			if (charX - speed >= MOVEMENT_BUFFER - 32) {
 				charX -= speed;
-			}
-			else if (backgroundX > 0)        {
+			} else if (backgroundX > 0) {
 				backgroundX -= speed;
-			}
-			else if (charX > 4)        {
+			} else if (charX > 4) {
 				charX -= speed;
-			}        
-		}
-		else if (action == ACTION.UP)        {
-			if (charY - speed >= MOVEMENT_BUFFER - 5)        {
-				charY -= speed;
 			}
-			else if (backgroundY > 0)        {
+		} else if (action == ACTION.UP) {
+			if (charY - speed >= MOVEMENT_BUFFER - 5) {
+				charY -= speed;
+			} else if (backgroundY > 0) {
 				backgroundY -= speed;
-			}
-			else if (charY > -10)        {
+			} else if (charY > -10) {
 				charY -= speed;
-			}        
-		}
-		else if (action == ACTION.DOWN)        {
-			if (charY + speed <= windowHeight - MOVEMENT_BUFFER - 15)        {        
+			}
+		} else if (action == ACTION.DOWN) {
+			if (charY + speed <= windowHeight - MOVEMENT_BUFFER - 15) {
 				charY += speed;
-			}
-			else if (backgroundY + windowHeight < map.getDrawingY())        {                
+			} else if (backgroundY + windowHeight < map.getDrawingY()) {
 				backgroundY += speed;
-			}
-			else if (charY < windowHeight - 40)        {                                                
+			} else if (charY < windowHeight - 40) {
 				charY += speed;
 			}
 		}
@@ -326,31 +306,27 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	 * After exiting a door, this method will attempt to center the player in the center of the screen. In the event that
 	 * the character is on the side of the screen, the method will attempt to center it as close as possible without ever
 	 * moving the camera off the edge of the playable map.
-	 * 
+	 *
 	 * @param enteredDoor The door that the player just entered (the method will automatically find the link to the exited door)
 	 */
-	private void centerBackground(Door enteredDoor)	{
-		if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0)	{
+	private void centerBackground(Door enteredDoor) {
+		if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) < 0) {
 			setBackgroundX(0);
-		}
-		else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > map.getWidth() * 40 - windowWidth)	{
+		} else if (enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2) > map.getWidth() * 40 - windowWidth) {
 			setBackgroundX(map.getWidth() * 40 - windowWidth);
-		}
-		else	{
+		} else {
 			setBackgroundX(enteredDoor.getLink().getX() * 40 + 20 - (windowWidth / 2));
 		}
-		if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0)	{
+		if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) < 0) {
 			setBackgroundY(0);
-		}
-		else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > map.getHeight() * 40 - windowHeight)	{
+		} else if (enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2) > map.getHeight() * 40 - windowHeight) {
 			setBackgroundY(map.getHeight() * 40 - windowHeight);
-		}
-		else	{
+		} else {
 			setBackgroundY(enteredDoor.getLink().getY() * 40 + 20 - (windowHeight / 2));
 		}
 	}
 
-	public void changePartyMember(PartyMember member)	{
+	public void changePartyMember(PartyMember member) {
 		name = member.getName();
 
 		left = member.getLeft();
@@ -370,54 +346,62 @@ public class PlayerAvatar extends CharacterAvatar implements Serializable {
 	public int getBackgroundX() {
 		return backgroundX;
 	}
-	/**
-	 * @return Background's Y offset due to player movement
-	 */
-	public int getBackgroundY()        {
-		return backgroundY;
-	}
-	/**
-	 * @param x The new X coordinate for the player
-	 * 
-	 * This method also updates the player's charX value (where the player is drawn on the screen)
-	 */
-	public void setCoordX(int x)	{
-		coordX = x;
-		charX = coordX * 40 + 4 - backgroundX;
-	}
-	/**
-	 * @param y The new Y coordinate for the player
-	 * 
-	 * This method also updates the player's charY value (where the player is drawn on the screen)
-	 */
-	public void setCoordY(int y)	{
-		coordY = y;
-		charY = coordY * 40 - 10 - backgroundY;
-	}
+
 	/**
 	 * @param x The new X offset for the background
 	 */
-	public void setBackgroundX(int x)	{
+	public void setBackgroundX(int x) {
 		backgroundX = x;
 	}
+
+	/**
+	 * @return Background's Y offset due to player movement
+	 */
+	public int getBackgroundY() {
+		return backgroundY;
+	}
+
 	/**
 	 * @param y The new Y offset for the background
 	 */
-	public void setBackgroundY(int y)	{
+	public void setBackgroundY(int y) {
 		backgroundY = y;
 	}
+
+	/**
+	 * @param x The new X coordinate for the player
+	 *          <p>
+	 *          This method also updates the player's charX value (where the player is drawn on the screen)
+	 */
+	public void setCoordX(int x) {
+		coordX = x;
+		charX = coordX * 40 + 4 - backgroundX;
+	}
+
+	/**
+	 * @param y The new Y coordinate for the player
+	 *          <p>
+	 *          This method also updates the player's charY value (where the player is drawn on the screen)
+	 */
+	public void setCoordY(int y) {
+		coordY = y;
+		charY = coordY * 40 - 10 - backgroundY;
+	}
+
 	/**
 	 * @return Whether or not the player has just exited a door
 	 */
-	public boolean doorTransitionEh()	{
+	public boolean doorTransitionEh() {
 		return doorTransition;
 	}
+
 	/**
 	 * @return The NPC the player is interacting/talking with
 	 */
-	public NPC getInteractingNPC()	{
+	public NPC getInteractingNPC() {
 		return interactingNPC;
 	}
+
 	/**
 	 * @param interactedNPC The NPC the player is now talking to
 	 */

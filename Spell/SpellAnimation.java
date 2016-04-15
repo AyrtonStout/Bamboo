@@ -1,10 +1,12 @@
 package Spell;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 public interface SpellAnimation {
-	
+
 	public void update();
+
 	public boolean doneEh();
+
 	public void drawAnimation(Graphics g);
 }

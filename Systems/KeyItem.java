@@ -1,16 +1,14 @@
 package Systems;
 
-import javax.swing.ImageIcon;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 public class KeyItem implements Item {
-	
+
 	private String name;
 	private String description;
 	private ImageIcon icon;
 
-	
-	public KeyItem(String name, String description)	{
+	public KeyItem(String name, String description) {
 		this.name = name;
 	}
 
@@ -43,5 +41,4 @@ public class KeyItem implements Item {
 	public JTextArea getBuffText() {
 		return null;
 	}
-
 }

@@ -1,40 +1,35 @@
 package GUI;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics;
+import Systems.Enums.GAME_STATE;
+import Systems.GameData;
+import Systems.Item;
+import Systems.PartyMember;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import Systems.Enums.GAME_STATE;
-import Systems.GameData;
-import Systems.Item;
-import Systems.PartyMember;
-
 /**
  * @author mobius
- * Creates a text box to use for status messages or dialogue from characters or signs. When a text box has been
- * given text to write through the Read() method, it will write a new letter every time it is updated() until
- * it runs out of room or out of text. If it stopped because it ran out of room, it will continue the next time
- * Read() is called.
+ *         Creates a text box to use for status messages or dialogue from characters or signs. When a text box has been
+ *         given text to write through the Read() method, it will write a new letter every time it is updated() until
+ *         it runs out of room or out of text. If it stopped because it ran out of room, it will continue the next time
+ *         Read() is called.
  */
 @SuppressWarnings("serial")
-public class DialogueBox extends JPanel{
-	
+public class DialogueBox extends JPanel {
+
+	private final String delimiter = "\\ ";
+	private final int FRAME_SKIP = 1;
+	private final int FONT_HEIGHT = 28;
+	private final int MAX_LINE_LENGTH = 24;
+	private final int ARROW_FLASH_SPEED = 12;
 	private GameData data;
 	private GAME_STATE restoreState;
-	
 	private boolean visible = true;
 	private boolean writing = false;
 	private boolean writeFaster = false;
@@ -45,19 +40,14 @@ public class DialogueBox extends JPanel{
 	private ArrayList<String> dialogue = new ArrayList<String>();
 	private ArrayList<String> currentFullSentence = new ArrayList<String>();
 	private String currentLabelSentence = "", pendingWord;
-	private final String delimiter = "\\ ";
-	private final int FRAME_SKIP = 1;
 	private int currentFrame = 0;
-	private final int FONT_HEIGHT = 28;
-	private final int MAX_LINE_LENGTH = 24;
-	private final int ARROW_FLASH_SPEED = 12;
 	private int currentArrowFlash = 0;
 	private int pendingWordLocation, currentLabel;
-	
-	private JPanel[] panels = new JPanel[] {new JPanel(), new JPanel(), new JPanel()};
-	private JLabel[] labels = new JLabel[] {new JLabel("", SwingConstants.LEFT), new JLabel("", SwingConstants.LEFT),
+
+	private JPanel[] panels = new JPanel[]{new JPanel(), new JPanel(), new JPanel()};
+	private JLabel[] labels = new JLabel[]{new JLabel("", SwingConstants.LEFT), new JLabel("", SwingConstants.LEFT),
 			new JLabel("", SwingConstants.LEFT)};
-	
+
 	private Font baseFont;
 	private Font gameFont;
 	private InputStream stream;
@@ -65,22 +55,21 @@ public class DialogueBox extends JPanel{
 	/**
 	 * Formats the text box with panels and labels. Loads the font from file and assigns it to the labels
 	 */
-	public DialogueBox(GameData data)	{
-		
+	public DialogueBox(GameData data) {
+
 		this.data = data;
-		
+
 		try {
 			stream = new BufferedInputStream(
-                    new FileInputStream("GUI/Resources/Font_Main.ttf"));
+					new FileInputStream("GUI/Resources/Font_Main.ttf"));
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			gameFont = baseFont.deriveFont(Font.PLAIN, 22);
-			
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Use your words!! Font not found");
 			e.printStackTrace();
 		}
-		
-		for (int i = 0; i < panels.length; i++)	{
+
+		for (int i = 0; i < panels.length; i++) {
 			panels[i].setLayout(new BoxLayout(panels[i], BoxLayout.X_AXIS));
 			panels[i].setOpaque(false);
 			panels[i].setAlignmentX(LEFT_ALIGNMENT);
@@ -89,38 +78,37 @@ public class DialogueBox extends JPanel{
 		}
 
 		this.add(Box.createVerticalStrut(10));
-		
-		for (int i = 0; i < labels.length; i++)	{
+
+		for (int i = 0; i < labels.length; i++) {
 			labels[i].setPreferredSize(new Dimension(555, FONT_HEIGHT));
 			labels[i].setMinimumSize(new Dimension(555, FONT_HEIGHT));
-			labels[i].setMaximumSize(new Dimension(555, FONT_HEIGHT));			
+			labels[i].setMaximumSize(new Dimension(555, FONT_HEIGHT));
 			labels[i].setFont(gameFont);
-			
+
 			panels[i].add(labels[i]);
 			this.add(panels[i]);
 		}
-		
+
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(600, 150));
 		this.setVisible(false);
 	}
-	
+
 	/* 
 	 * Paints the background image (border) for the text box
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (visible == true)	{
+		if (visible == true) {
 			g.drawImage(background.getImage(), 0, 0, null);
-			if (!writing && dialogue.size() > 0)	{
-				if (currentArrowFlash > ARROW_FLASH_SPEED)	{
+			if (!writing && dialogue.size() > 0) {
+				if (currentArrowFlash > ARROW_FLASH_SPEED) {
 					g.drawImage(textArrow.getImage(), 550, 130, null);
 					currentArrowFlash++;
-					if (currentArrowFlash > ARROW_FLASH_SPEED * 2)	{
+					if (currentArrowFlash > ARROW_FLASH_SPEED * 2) {
 						currentArrowFlash = 0;
 					}
-				}
-				else	{
+				} else {
 					currentArrowFlash++;
 				}
 			}
@@ -142,46 +130,43 @@ public class DialogueBox extends JPanel{
 	@Override
 	public void setVisible(boolean b) {
 		visible = b;
-		if (b == true)	{
+		if (b == true) {
 			this.setOpaque(true);
-			for (int i = 0; i < labels.length; i++)	{
+			for (int i = 0; i < labels.length; i++) {
 				labels[i].setVisible(true);
 			}
-		}
-		else	{
+		} else {
 			this.setOpaque(false);
-			for (int i = 0; i < labels.length; i++)	{
+			for (int i = 0; i < labels.length; i++) {
 				labels[i].setVisible(false);
 				labels[i].setText("");
 			}
 		}
-		
 	}
 
 	/**
 	 * Writes another letter to the text box each time this is called, unless frame skip doesn't match the current frame
 	 * Increase frame skip to slow down text scrolling
 	 */
-	public void update()	{
+	public void update() {
 		/*
 		 * Controls writing for signs
 		 */
-		if (instantWrite)	{
-			while (writing)	{
-				if (currentFullSentence.size() == 0)	{
+		if (instantWrite) {
+			while (writing) {
+				if (currentFullSentence.size() == 0) {
 					writing = false;
 					currentArrowFlash = 0;
 					currentLabelSentence = "";
-				}
-				else	{
+				} else {
 					pendingWord = currentFullSentence.remove(0);
 					pendingWord += " ";
 
-					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH)	{
+					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH) {
 						currentLabel++;
 						currentLabelSentence = "";
 					}
-					
+
 					labels[currentLabel].setText(currentLabelSentence += pendingWord);
 					pendingWord = "";
 				}
@@ -190,30 +175,28 @@ public class DialogueBox extends JPanel{
 		/*
 		 * Controls writing for NPCs
 		 */
-		else	{ 
-			if (pendingWord == "")	{
-				if (currentFullSentence.size() == 0)	{
+		else {
+			if (pendingWord == "") {
+				if (currentFullSentence.size() == 0) {
 					writing = false;
 					currentArrowFlash = 0;
 					currentLabelSentence = "";
-				}
-				else	{
+				} else {
 					pendingWord = currentFullSentence.remove(0);
 					pendingWord += " ";
 					pendingWordLocation = 0;
 
-					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH)	{
+					if (currentLabelSentence.length() + pendingWord.length() > MAX_LINE_LENGTH) {
 						currentLabel++;
 						currentLabelSentence = "";
 					}
 				}
 			}
-			if (writing)	{
-				if (currentFrame == FRAME_SKIP || writeFaster)	{
+			if (writing) {
+				if (currentFrame == FRAME_SKIP || writeFaster) {
 					writeLine(currentLabel);
 					currentFrame = 0;
-				}
-				else	{
+				} else {
 					currentFrame++;
 				}
 			}
@@ -222,31 +205,28 @@ public class DialogueBox extends JPanel{
 
 	/**
 	 * Writes a word to the specified text box line
-	 * 
+	 *
 	 * @param currentLabel The current text box line to be drawn on
- 	 */
-	private void writeLine(int currentLabel)	{
+	 */
+	private void writeLine(int currentLabel) {
 		labels[currentLabel].setText(currentLabelSentence += pendingWord.charAt(pendingWordLocation));
 		pendingWordLocation++;
-		if (pendingWordLocation == pendingWord.length())	{
+		if (pendingWordLocation == pendingWord.length()) {
 			pendingWord = "";
 		}
 	}
-	
-	public void advanceDialogue()	{
-		if (writing && !writeFaster)	{
+
+	public void advanceDialogue() {
+		if (writing && !writeFaster) {
 			writeFaster = true;
-		}
-		else if (!writing)	{
-			if (hasNextLine())	{
+		} else if (!writing) {
+			if (hasNextLine()) {
 				read();
-			}
-			else	{
+			} else {
 				data.setGameState(restoreState);
-				if (restoreState == GAME_STATE.BATTLE)	{
+				if (restoreState == GAME_STATE.BATTLE) {
 					data.getBattleScreen().switchToMain();
-				}
-				else if (data.getPlayer().getInteractingNPC() != null)	{
+				} else if (data.getPlayer().getInteractingNPC() != null) {
 					data.getPlayer().getInteractingNPC().setTalking(false);
 					data.getPlayer().getInteractingNPC().setTalkedTo(true);
 					data.getPlayer().setInteractingNPC(null);
@@ -255,6 +235,7 @@ public class DialogueBox extends JPanel{
 			}
 		}
 	}
+
 	/**
 	 * Gets the text box started on writing the Sign's next sentence
 	 */
@@ -263,25 +244,24 @@ public class DialogueBox extends JPanel{
 		labels[0].setText("");
 		labels[1].setText("");
 		labels[2].setText("");
-		
+
 		String[] tmp = this.dialogue.remove(0).split(delimiter);
-		
-		for (int i = 0; i < tmp.length; i++)	{
+
+		for (int i = 0; i < tmp.length; i++) {
 			currentFullSentence.add(tmp[i]);
 		}
-				
+
 		pendingWord = "";
 		currentLabel = 0;
 		writing = true;
 		writeFaster = false;
-		
 	}
 
 	/**
 	 * Pulls all of the dialogue from a Sign into the text box. If supplied "true", the TextBox
 	 * will write everything all at once. If "false", it will iterate one character at a time
-	 * 
-	 * @param dialogue The full information contained on a Sign
+	 *
+	 * @param dialogue     The full information contained on a Sign
 	 * @param instantWrite Whether or not the text will come one letter at a time or all at once
 	 */
 	public void setDialogue(ArrayList<String> dialogue, boolean instantWrite) {
@@ -289,108 +269,113 @@ public class DialogueBox extends JPanel{
 		this.instantWrite = instantWrite;
 		startDialogue();
 	}
-	
+
 	/**
 	 * Add a message to the current dialogue box's messages. Instant write will be turned off
-	 * 
+	 *
 	 * @param str The message to be added
 	 */
-	public void addDialogue(String str)	{
+	public void addDialogue(String str) {
 		dialogue.add(str);
 		instantWrite = false;
 	}
+
 	/**
 	 * Uses the text box to show what item has just been looted.
-	 * 
+	 *
 	 * @param item The item that was just received.
 	 */
-	public void receiveItem(Item item)	{
+	public void receiveItem(Item item) {
 		this.dialogue.add("You looted " + vowelEh(item.getName()) + item.getName() + "!");
 		this.instantWrite = false;
 		startDialogue();
 	}
+
 	/**
 	 * Uses the text box to show who just joined the party.
-	 * 
+	 *
 	 * @param member The party member that just joined.
 	 */
-	public void joinParty(PartyMember member)	{
+	public void joinParty(PartyMember member) {
 		this.dialogue.add(member.getName() + " has joined the party!");
 		this.instantWrite = false;
 		startDialogue();
 	}
+
 	/**
 	 * Will start the dialogue that the sign has been provided. This is automatically called
 	 * when "setDialogue()" is invoked. Use this only when you have manually added dialogue
 	 * via the "addDialogue" method.
 	 */
-	public void startDialogue()	{
+	public void startDialogue() {
 		restoreState = data.getGameState();
-		
+
 		setVisible(true);
 		data.setGameState(GAME_STATE.TALK);
 		advanceDialogue();
 	}
+
 	/**
-	 * Used to have intelligent sounding dialogue when using the articles "a" and "an". 
-	 * 
+	 * Used to have intelligent sounding dialogue when using the articles "a" and "an".
+	 *
 	 * @param str The word to be checked for a vowel.
 	 * @return The string "a" or "an".
 	 */
-	private String vowelEh(String str)	{
-		
+	private String vowelEh(String str) {
+
 		if (str.charAt(0) == 'a' || str.charAt(0) == 'e' || str.charAt(0) == 'i' || str.charAt(0) == 'o' || str.charAt(0) == 'u' ||
-				str.charAt(0) == 'A' || str.charAt(0) == 'E' || str.charAt(0) == 'I' || str.charAt(0) == 'O' || str.charAt(0) == 'U')	{
+				str.charAt(0) == 'A' || str.charAt(0) == 'E' || str.charAt(0) == 'I' || str.charAt(0) == 'O' || str.charAt(0) == 'U') {
 			return "an ";
-		}
-		else	{
+		} else {
 			return "a ";
 		}
-		
 	}
+
 	/**
 	 * @param b Whether or not the sign should be writing
 	 */
-	public void setWriting(boolean b)	{
+	public void setWriting(boolean b) {
 		writing = b;
 	}
+
 	/**
 	 * @return Whether or not the sign is writing
 	 */
-	public boolean writingEh()	{
+	public boolean writingEh() {
 		return writing;
 	}
+
 	/**
 	 * @return Whether or not the text box has more information to give
 	 */
-	public boolean hasNextLine()	{
+	public boolean hasNextLine() {
 		if (dialogue.size() > 0)
 			return true;
 		else
 			return false;
 	}
-	
+
 	/**
 	 * Shrinks the text box down to allow other components to occupy the screen area
 	 */
-	public void shrink()	{
-		for (int i = 0; i < panels.length; i++)	{
+	public void shrink() {
+		for (int i = 0; i < panels.length; i++) {
 			panels[i].setPreferredSize(new Dimension(0, 50));
 		}
 		this.setPreferredSize(new Dimension(600, 0));
 		shrunken = true;
 	}
+
 	/**
 	 * Returns the text box to its full size after being shrink()'d
 	 */
-	public void restore()	{
-		if (shrunken)	{
-			for (int i = 0; i < panels.length; i++)	{
+	public void restore() {
+		if (shrunken) {
+			for (int i = 0; i < panels.length; i++) {
 				panels[i].setPreferredSize(new Dimension(600, 50));
 			}
 			this.setPreferredSize(new Dimension(600, 150));
 			shrunken = false;
 		}
 	}
-	
 }

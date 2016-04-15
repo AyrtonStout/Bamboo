@@ -1,35 +1,24 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-
 import Systems.Item;
 import Systems.PartyMember;
 
-public class PartyEquipment extends JPanel{
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class PartyEquipment extends JPanel {
 
 	private static final long serialVersionUID = -6841005924579611279L;
 
-	final int HEIGHT = 265;
-	final int WIDTH = 365;
+	private final int HEIGHT = 265;
+	private final int WIDTH = 365;
 	private JTextPane equipmentNames;
-	
+
 	private int cursorPosition;
 	private ImageIcon optionsCursor = new ImageIcon("GUI/Resources/Sideways_Arrow.png");
 
-	public PartyEquipment(Font statFont, Font boldFont)	{
-
+	public PartyEquipment(Font statFont, Font boldFont) {
 
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -79,9 +68,15 @@ public class PartyEquipment extends JPanel{
 		JLabel debuffs = new JLabel("Debuffs");
 		JLabel effects = new JLabel("Effects");
 
-		title.setFont(boldFont); buffs.setFont(boldFont); debuffs.setFont(boldFont); effects.setFont(boldFont);
+		title.setFont(boldFont);
+		buffs.setFont(boldFont);
+		debuffs.setFont(boldFont);
+		effects.setFont(boldFont);
 
-		status.add(title); status.add(buffs); status.add(debuffs); status.add(effects);
+		status.add(title);
+		status.add(buffs);
+		status.add(debuffs);
+		status.add(effects);
 
 		JPanel bottomWrapper = new JPanel();
 		bottomWrapper.setLayout(new BorderLayout());
@@ -99,51 +94,45 @@ public class PartyEquipment extends JPanel{
 
 		textWrapper.add(equipmentSlots);
 
-
-
 		top.add(Box.createHorizontalStrut(30));
 		top.add(textWrapper);
 		top.add(equipmentNames);
 		top.add(Box.createHorizontalStrut(15));
 
-
 		this.add(top, BorderLayout.NORTH);
 		this.add(bottomWrapper, BorderLayout.SOUTH);
-
 	}
 
-	public void update(PartyMember displayedMember)	{
+	public void update(PartyMember displayedMember) {
 		Item[] equipment = displayedMember.getEquipment().toArray();
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < 8; i++)	{
-			if (equipment[i] != null)	{
+		for (int i = 0; i < 8; i++) {
+			if (equipment[i] != null) {
 				builder.append(equipment[i].getName() + "\n");
-			}
-			else	{
+			} else {
 				builder.append("Empty\n");
 			}
 		}
 		equipmentNames.setText(builder.toString());
 	}
-	
-	public void respondToKeyPress(KeyEvent e)	{
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-			if (cursorPosition < 7)	{
+
+	public void respondToKeyPress(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			if (cursorPosition < 7) {
 				cursorPosition++;
 			}
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_UP)	{
-			if (cursorPosition > 0)	{
+		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+			if (cursorPosition > 0) {
 				cursorPosition--;
 			}
 		}
 	}
-	
-	public void clear()	{
+
+	public void clear() {
 		cursorPosition = 0;
 	}
-	
-	public int getCursorPosition()	{
+
+	public int getCursorPosition() {
 		return cursorPosition;
 	}
 

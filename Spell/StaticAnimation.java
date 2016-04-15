@@ -1,9 +1,7 @@
 package Spell;
 
-import java.awt.Graphics;
-import java.awt.Point;
-
-import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
 
 public class StaticAnimation implements SpellAnimation {
 
@@ -11,12 +9,12 @@ public class StaticAnimation implements SpellAnimation {
 	private ImageIcon effect;
 	private Point origin;
 
-	public StaticAnimation(ANIMATION_TYPE type, Point origin)	{
+	public StaticAnimation(ANIMATION_TYPE type, Point origin) {
 		this.duration = type.getSpeed();
 		effect = new ImageIcon("GUI/Resources/Animation/" + type);
 		this.origin = origin;
 	}
-	
+
 	@Override
 	public void update() {
 		duration--;
@@ -24,12 +22,12 @@ public class StaticAnimation implements SpellAnimation {
 
 	@Override
 	public boolean doneEh() {
-		if (duration <= 0) return true;
+		if (duration <= 0)
+			return true;
 		return false;
 	}
-	
-	public void drawAnimation(Graphics g)	{
+
+	public void drawAnimation(Graphics g) {
 		g.drawImage(effect.getImage(), origin.x, origin.y, null);
 	}
-
 }

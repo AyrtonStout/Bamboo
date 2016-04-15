@@ -1,33 +1,23 @@
 package BattleScreen;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics;
+import BattleScreen.Enums.BATTLE_STATE;
+import Systems.GameData;
+import Systems.PartyMember;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import BattleScreen.Enums.BATTLE_STATE;
-import Systems.GameData;
-import Systems.PartyMember;
-
 /**
  * @author mobius
- * The region of the battle screen where the party's HP is displayed and the battle options are
- * presented to the player
+ *         The region of the battle screen where the party's HP is displayed and the battle options are
+ *         presented to the player
  */
-public class BattleMenu extends JPanel	{
+public class BattleMenu extends JPanel {
 
 	private static final long serialVersionUID = 7952290532732938184L;
 	private GameData data;
@@ -45,10 +35,9 @@ public class BattleMenu extends JPanel	{
 
 	private partyStatus[] partyStatuses;
 
-
-	public BattleMenu(GameData data)	{
+	public BattleMenu(GameData data) {
 		this.data = data;
-		
+
 		Dimension screenSize = new Dimension(600, 150);
 		this.setPreferredSize(screenSize);
 		this.setMaximumSize(screenSize);
@@ -65,15 +54,14 @@ public class BattleMenu extends JPanel	{
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, stream);
 			partyFont = baseFont.deriveFont(Font.PLAIN, 18);
 			actionFont = baseFont.deriveFont(Font.BOLD, 24);
-
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Use your words!! Font not found");
 			e.printStackTrace();
 		}
 
 		JLabel[] labels = new JLabel[]{attack, magic, item, run};
-		partyStatuses = new partyStatus[] {new partyStatus(), 
-				new partyStatus(), new partyStatus(), new partyStatus()}; 
+		partyStatuses = new partyStatus[]{new partyStatus(),
+				new partyStatus(), new partyStatus(), new partyStatus()};
 
 		JPanel status = new JPanel();
 		status.setPreferredSize(new Dimension(320, 150));
@@ -81,14 +69,13 @@ public class BattleMenu extends JPanel	{
 		status.setOpaque(false);
 
 		status.add(Box.createVerticalStrut(10));
-		for (int i = 0; i < partyStatuses.length - 1; i++)	{
+		for (int i = 0; i < partyStatuses.length - 1; i++) {
 			status.add(partyStatuses[i]);
 			status.add(Box.createVerticalStrut(6));
 		}
 		status.add(partyStatuses[partyStatuses.length - 1]);
 
-
-		for (int i = 0; i < labels.length; i++)	{
+		for (int i = 0; i < labels.length; i++) {
 			labels[i].setFont(actionFont);
 		}
 
@@ -132,22 +119,25 @@ public class BattleMenu extends JPanel	{
 
 		this.add(status, BorderLayout.WEST);
 		this.add(commands, BorderLayout.EAST);
-
 	}
 
 	@Override
-	protected void paintComponent(Graphics g)	{
+	protected void paintComponent(Graphics g) {
 		g.drawImage(background.getImage(), 0, 0, null);
-		if (data.getBattleScreen().getState() == BATTLE_STATE.MAIN)	{
-			switch (cursorPosition)	{
-			case 0:
-				g.drawImage(cursor.getImage(), 350, 36, null); break;
-			case 1:
-				g.drawImage(cursor.getImage(), 462, 36, null); break;
-			case 2:
-				g.drawImage(cursor.getImage(), 350, 86, null); break;
-			case 3:
-				g.drawImage(cursor.getImage(), 462, 86, null); break;
+		if (data.getBattleScreen().getState() == BATTLE_STATE.MAIN) {
+			switch (cursorPosition) {
+				case 0:
+					g.drawImage(cursor.getImage(), 350, 36, null);
+					break;
+				case 1:
+					g.drawImage(cursor.getImage(), 462, 36, null);
+					break;
+				case 2:
+					g.drawImage(cursor.getImage(), 350, 86, null);
+					break;
+				case 3:
+					g.drawImage(cursor.getImage(), 462, 86, null);
+					break;
 			}
 		}
 	}
@@ -155,9 +145,9 @@ public class BattleMenu extends JPanel	{
 	/**
 	 * Updates the status of the party to reflect any changes that happened during combat
 	 */
-	public void update()	{
-		for (int i = 0; i < partyStatuses.length; i++)	{
-			if (data.getParty()[i] != null)	{
+	public void update() {
+		for (int i = 0; i < partyStatuses.length; i++) {
+			if (data.getParty()[i] != null) {
 				partyStatuses[i].update(data.getParty()[i]);
 			}
 		}
@@ -167,55 +157,51 @@ public class BattleMenu extends JPanel	{
 	 * Zeroes out the information stored for the party in the battle screen and resets
 	 * the cursor to 0
 	 */
-	public void clear()	{
-		for (int i = 0; i < partyStatuses.length; i++)	{
+	public void clear() {
+		for (int i = 0; i < partyStatuses.length; i++) {
 			partyStatuses[i].erase();
 		}
 		cursorPosition = 0;
 	}
-	
+
 	/**
 	 * Returns the position of the cursor in the battle menu. 0 for attack, 1 for items, 2 for magic, 3 for run.
-	 * 
+	 *
 	 * @return The position of the menu's cursor.
 	 */
-	public int getCursorPosition()	{
+	public int getCursorPosition() {
 		return cursorPosition;
 	}
-	
+
 	/**
 	 * Moves the cursor around the screen given that it is a valid move
-	 * 
+	 *
 	 * @param e Direction of the key press
 	 */
-	public void modifyCursorPosition(KeyEvent e)	{
-		if (e.getKeyCode() == KeyEvent.VK_UP)	{
-			if (cursorPosition == 2 || cursorPosition == 3)	{
+	public void modifyCursorPosition(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			if (cursorPosition == 2 || cursorPosition == 3) {
 				cursorPosition -= 2;
 			}
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)	{
-			if (cursorPosition == 0 || cursorPosition == 2)	{
+		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if (cursorPosition == 0 || cursorPosition == 2) {
 				cursorPosition += 1;
 			}
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_DOWN)	{
-			if (cursorPosition == 0 || cursorPosition == 1)	{
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			if (cursorPosition == 0 || cursorPosition == 1) {
 				cursorPosition += 2;
 			}
-		}
-		else if (e.getKeyCode() == KeyEvent.VK_LEFT)	{
-			if (cursorPosition == 1 || cursorPosition == 3)	{
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if (cursorPosition == 1 || cursorPosition == 3) {
 				cursorPosition -= 1;
 			}
 		}
 	}
 
-
 	/**
 	 * A label that displays basic information on the party members involved in the battle
 	 */
-	private class partyStatus extends JPanel	{
+	private class partyStatus extends JPanel {
 
 		private static final long serialVersionUID = 7766824167479673649L;
 
@@ -223,7 +209,7 @@ public class BattleMenu extends JPanel	{
 		JLabel health = new JLabel();
 		JLabel mana = new JLabel();
 
-		public partyStatus()	{
+		public partyStatus() {
 			this.setPreferredSize(new Dimension(320, 30));
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setOpaque(false);
@@ -235,7 +221,7 @@ public class BattleMenu extends JPanel	{
 			JPanel[] panels = new JPanel[]{nameLabel, healthLabel, manaLabel};
 
 			Dimension panelSize = new Dimension();
-			for (int i = 0; i < panels.length; i++)	{
+			for (int i = 0; i < panels.length; i++) {
 				panels[i].setPreferredSize(panelSize);
 				panels[i].setFont(partyFont);
 				panels[i].setOpaque(false);
@@ -252,31 +238,26 @@ public class BattleMenu extends JPanel	{
 			this.add(Box.createHorizontalStrut(10));
 			this.add(manaLabel);
 			this.add(Box.createHorizontalStrut(20));
-
-
 		}
 
 		/**
-		 * Updates the label to reflect the party member's current 
-		 * 
+		 * Updates the label to reflect the party member's current
+		 *
 		 * @param member The party member getting their information updated
 		 */
-		public void update(PartyMember member)	{
+		public void update(PartyMember member) {
 			name.setText(member.getName());
 			health.setText(member.getCurrentHealth().getActual() + "/" + member.getMaxHealth().getActual());
 			mana.setText(member.getCurrentMana().getActual() + "/" + member.getMaxMana().getActual());
-
 		}
 
 		/**
 		 * Clears all of the text on the label
 		 */
-		public void erase()	{
+		public void erase() {
 			name.setText("");
 			health.setText("");
 			mana.setText("");
 		}
-
 	}
-
 }

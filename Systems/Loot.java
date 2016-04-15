@@ -1,15 +1,13 @@
 package Systems;
 
-import javax.swing.ImageIcon;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 public class Loot implements Item {
-	
+
 	private String name;
 	private ImageIcon icon;
 
-	
-	public Loot(String name)	{
+	public Loot(String name) {
 		this.name = name;
 	}
 
@@ -46,5 +44,4 @@ public class Loot implements Item {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
