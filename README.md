@@ -1,22 +1,22 @@
-####An old school role playing game that borrows heavily from games like Pokemon and Final Fantasy.
+#### An old school role playing game that borrows heavily from games like Pokemon and Final Fantasy.
 
 Click the image for a demo video of most of the game's features
 [![Project Demo Video](https://img.youtube.com/vi/vMYlcoZ04Vs/0.jpg)](https://www.youtube.com/watch?v=vMYlcoZ04Vs)
 
-##Completion Status-
+## Completion Status-
 Game is WIP though progress is pretty much dead. Some systems remain incomplete, however many systems are fully (or near fully) developed such as player / NPC movement, area transitions, dialogue, signs, treasure chests, in-game clock, combat screen, inventory and party screens.
 
-###Current Focus: 
+### Current Focus: 
  - Bug fixes and enhancements to older code
 
-###Current Issues: 
+### Current Issues: 
   - Spells are still WIP. Using them during combat will sometimes create infinite loops
   - Game is developed in a Linux environment. Some things (like text or alignment) can behave oddly when run on Windows or MacOS
 
-###Note on running the game
+### Note on running the game
 Run the game from the GUI/Frame class. If an error is thrown, first run the MapWriter class to regenerate the map and then run again from the Frame class.
 
-###Note on playing the game-
+### Note on playing the game-
   - Current keybinds are hard coded. 
   - Z will interact with the world and advance dialogue
   - X will backtrack menus
@@ -24,19 +24,19 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
   - I and P will directly access inventory and party panels
   - Level-ups may be easily tested with the G key
 
-##Changelog
+## Changelog
 
-######v0.50 - Spell Series
+###### v0.50 - Spell Series
 - Early spell implementation
 - Combat class is now static
 
-######v0.41
+###### v0.41
 - Before equipping an item, the item will now show what the stat changes will be
 - Mana now changes depending on the character's intellect
 - Equipping weapons will no longer fully restore a character's health
 - Fragmented PartyPanel class into like 5 smaller classes
 
-######v0.40 - The fix and enhance random crap series
+###### v0.40 - The fix and enhance random crap series
 - Redid inventory class and its methods to make more sense at the expense of code length 
 - Fixed long standing bug that would destroy the currently equipped item if equipping a  different item
 - It is now possible to equip more than just weapons, though such gear does not yet exist
@@ -46,7 +46,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Weapon attack values are now included into the combat calculations
 
 
-######v0.39
+###### v0.39
 - Potions are now only usable on valid targets (targets that would benefit/ are alive)
 - Info panel now correctly displays during item targeting
 - Info panel now serves as a smaller text box that will also display information
@@ -54,7 +54,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Enemies now attack a random target instead of the first target. Still a placeholder for a more robust system; just a better one
 - This concludes the combat series until after the spells and abilities series.
 
-######v0.38
+###### v0.38
 - Item option now brings up a new panel that will display consumables
 - Items are displayed in two columns of 4 items each
 - Cursor will no longer travel to items that dont exist
@@ -63,7 +63,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Started fixing the rather badly coded inventory class but chickened out after seeing how much work it would end up being. Will return to it later
 - Health and mana potions now functional
 
-######v0.37
+###### v0.37
 - Characters are now able to crit in combat
   (Crit chance has been increased to make this more easily seen)
 - Floating text from crits now appear in yellow text
@@ -74,7 +74,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Dead party members no longer receive XP
 - Predictive turn ordering for fleeing now happens automatically after a failed attempt
 
-######v0.36
+###### v0.36
 - Player can now target their own party members for attacks
 - Party members now change appearance when they are dead
 - Floating combat text is now drawn above other combat elements
@@ -82,7 +82,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Running now causes only a partial use of the turn to be used
  + This is reflected in the turn order prediction
 
-######v0.35
+###### v0.35
 - Turn prediction now hides itself after combat is over when xp is being awarded
 - Floating combat text is now properly aligned to all actors
 - Trimmed crab's transparent pixels and fixed its dimensions
@@ -92,44 +92,44 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
  + This makes seeing the floating damage text somewhat difficult for the time being
   (sacrifices had to be made)
 
-######v0.34
+###### v0.34
 - Enemies now fight back, though are limited to attacking the first party member
 - Party members and enemies now attack more frequently relative to their speed
 - This turn order is visible, and predictive
 - Battles support multiple party members
 
-######v0.33
+###### v0.33
 - Fixed several bugs with monsters. They now are new monsters every time instead of spawning the same one
 - Basic attack now works and a basic damage indicator is available
 - Text box will properly share certain information such as the XP from an enemy's death
 - Battle properly exits upon an enemy dying though XP is not yet properly awarded
 
-######v0.32
+###### v0.32
 - Arrows now appear and disappear at more logical times
 - Friendly and enemy targetting arrows
 - Methods to call the dialogue box to be used in combat screen to display information
 - Groups of enemies can now attack instead of just individual enemies
 
-######v0.31
+###### v0.31
 - Combat screen now has a properly formatted menu
 - Arrows show selected option
 - Arrows respond to key commands
 - Run option will escape combat 100% of the time
 
-######v0.30 - Combat Series
+###### v0.30 - Combat Series
 - Starter map now has a chance to spawn a random enemy of 3 types, though all 3 types currently use the same placeholder picture
 - Combat screen is currently inescapable and functionless. This build is not recommended for experiencing other parts of the game
 
-######v0.29 - Stats Panel Resurrection
+###### v0.29 - Stats Panel Resurrection
 - Stats panel that used to be part of the Party panel has now been somewhat restored. Previous functionality has been retained but new stuff is non functional and a placeholder
 
-######v0.28 - Enemy Update
+###### v0.28 - Enemy Update
 - Structure for enemy units is in place though the ability to spawn them is not
 - Three enemies, Giant Rat, Razorclaw Crab, and DeathStalker Crow have been added; though all enemies currently use old placeholder art for the crab.
 - Inventory screen now properly displays the current party instead of hard coded values
  (A note on this is that the way that the equip screen now works, showing unique party members in the item screen may soon be deleted altogether)
 
-######v0.27 - Party Overhaul
+###### v0.27 - Party Overhaul
 - Partial redesign of party panel to be more of an equipment panel. Statistics will be moved to their own section at a later date
 - Party panel now supports 3 out of 4 options, equip, remove, and removeAll. Auto will be completed at a later date once it is better determined what metrics will be used.
 - In continued effort to compact down the code in the InputManager class, all key presses related to the party panel are now handled by the party panel. This will instead cause the party panel to have the sprawling code maze instead. This will be looked at to make more readible in the next update.
@@ -139,7 +139,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Created method for Inventory to add an item without calling up the dialogue box and changing the game state
 
 
-######v0.26 - Level Algorithm
+###### v0.26 - Level Algorithm
 - Party members are now have a piecewise XP growth algorithm in place for when they level up. Algorithm may grow too slowly but will be re-evaluated later.
 - Testing level ups is possible at any time by pressing the 'G' key.
 - Talking to the teal haired NPC in the first map will now result in her joining the party.
@@ -154,7 +154,7 @@ Run the game from the GUI/Frame class. If an error is thrown, first run the MapW
 - Input Manager has been partially broken into methods for improved readability
 
 
-######v0.25 - Party Panel
+###### v0.25 - Party Panel
 - Initial party screen submit.
 
 Older version changelogs not well documented.
